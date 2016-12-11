@@ -1,5 +1,5 @@
 /**
- * Created by Gildur on 2016-12-11.
+ * The main class of this application
  */
 public class EconoStatsMain {
     public static void main(String args[]) {
