@@ -12,22 +12,24 @@ public class EconoStatsMain {
         //TODO: Make this dynamic
         final String CSV_FILE = "c:/temp/testdata/export.csv";
 
-        //TODO: General goal 1a --> Read transactions from CSV into DB
-        //TODO: goal 1b --> handle redundant csv reads (same file twice)
+        //TODO: 1. read csv
+        //TODO: create object for each transaction in csv, put each object in List<accountTransaction>
+        //TODO: (later/bonus) insert all objects into DB
+        //TODO: remove all objects from list that do not exist in premade list of names (don't forget to LOG the removals!)
+        //TODO: now we should have a list of all transactions that should be in the new CSV
 
-        //TODO: General goal 2 --> Use data from DB (write test with dummy data first) to create NEW csv that look and...
-        //TODO: ... work exactly like the Google drive spreadsheet
+        //TODO: 2. create new csv
+        //TODO: create headers
+        //TODO: sort List<accountTransaction> by date
+        //TODO: for each object in List<accountTransaction>, insert into new csv (rows=trans, cols=month)
 
-        //TODO: General goal 3 --> find a good statistics tool and display some nice stats... start with a pie chart!
+        //TODO: 3. handle redundant csv reads (eg. same file twice)
+        //TODO: (this requires that all objects are saved into DB in "1. read csv")
+        //TODO: check DB for identical transactions --> don't add those to csv, but add all others
 
-        //TODO: General goal 4 -->
+        //TODO: 4. find a good statistics tool and display some nice stats... start with a pie chart!
 
-        //TODO: Read csv file
-        //TODO: Put info into DB
-        //TODO: Create spredsheet/csv(?) from data
-        //TODO: In the first version, just use premade constants like "FOLKSAM_HOUSE_LOAN"
-
-        DatabaseConnector.createTables();
+//        DatabaseConnector.createTables();
 
 //        try {
 //            FileReader fr = new FileReader(CSV_FILE);
