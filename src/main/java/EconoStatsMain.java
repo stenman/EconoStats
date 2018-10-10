@@ -1,8 +1,22 @@
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderHeaderAware;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Integer.valueOf;
 
 /**
  * The main class of this application
@@ -20,26 +34,11 @@ public class EconoStatsMain {
         //TODO: (later/bonus) insert all objects into DB
         //TODO: remove all objects from list that do not exist in premade list of names (don't forget to LOG the removals!)
         //TODO: now we should have a list of all transactions that should be in the new CSV
-
-        CsvReader cr = new CsvReader();
-        List<String[]> lines = null;
+        NordeaCsvReader nordeaCsvReader = new NordeaCsvReader();
         try {
-            lines = cr.parseCsv(CSV_FILE, ";");
+            nordeaCsvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        // Datum,Transaktion,Kategori,Belopp,Saldo
-        for (String[] line : lines) {
-//            AccountTransaction at = new AccountTransaction();
-//            at.setUserId(1); //TODO: fix this
-//            at.setAccountId(1); //TODO: fix this
-//            at.setStampInserted(LocalDateTime.now()); //TODO: is this really necessary?
-//            at.setStampChanged(LocalDateTime.now()); //TODO: is this really necessary?
-//            at.setDate(line);
-//            at.setName();
-//            at.setCategoryId();
-//            at.setAmount();
-//            at.setBalance();
         }
 
 
