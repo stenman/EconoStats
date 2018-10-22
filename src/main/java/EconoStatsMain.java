@@ -1,5 +1,7 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.perfektum.econostats.bank.nordea.NordeaCsvReader;
+import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ public class EconoStatsMain {
             e.printStackTrace();
         }
 
-//        DatabaseConnector.createTables();
+//        se.perfektum.econostats.dao.DatabaseConnector.createTables();
 
         //TODO: 2. create new csv
         //TODO: create headers

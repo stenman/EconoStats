@@ -1,4 +1,8 @@
+package econostats.bank.nordea;
+
 import org.junit.Test;
+import se.perfektum.econostats.bank.nordea.NordeaCsvReader;
+import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,7 +12,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
 
-public class CsvReaderTest {
+public class NordeaCsvReaderTest {
     @Test
     public void readCsvShouldReturnAllLines() {
         NordeaCsvReader csvReader = new NordeaCsvReader();

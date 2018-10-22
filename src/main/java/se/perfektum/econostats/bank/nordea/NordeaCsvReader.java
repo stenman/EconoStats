@@ -1,4 +1,7 @@
+package se.perfektum.econostats.bank.nordea;
+
 import com.opencsv.CSVReaderHeaderAware;
+import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

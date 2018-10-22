@@ -1,3 +1,5 @@
+package se.perfektum.econostats.dao;
+
 /**
  * Created by stenman on 2017-01-08.
  */
