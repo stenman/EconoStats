@@ -1,4 +1,4 @@
-package se.perfektum.econostats.bank.nordea;
+package se.perfektum.econostats.spreadsheet;
 
 import org.jopendocument.dom.OOUtils;
 import org.odftoolkit.simple.SpreadsheetDocument;
@@ -14,6 +14,12 @@ import java.util.List;
  * A wrapper class that simply manages spreadsheet creation and saving the produced spreadsheet file.
  */
 public class SpreadsheetManager {
+
+    private SpreadsheetMaker spreadsheetMaker;
+
+    public SpreadsheetManager(SpreadsheetMaker spreadsheetMaker) {
+        this.spreadsheetMaker = spreadsheetMaker;
+    }
 
     public void manageSpreadsheet() throws Exception {
 

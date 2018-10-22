@@ -1,4 +1,4 @@
-package se.perfektum.econostats.bank.nordea;
+package se.perfektum.econostats.spreadsheet;
 
 import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.SpreadsheetDocument;

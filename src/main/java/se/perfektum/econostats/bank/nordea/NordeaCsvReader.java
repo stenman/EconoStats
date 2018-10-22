@@ -1,6 +1,7 @@
 package se.perfektum.econostats.bank.nordea;
 
 import com.opencsv.CSVReaderHeaderAware;
+import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.io.FileNotFoundException;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Parses a CSV file.
  */
-public class NordeaCsvReader {
+public class NordeaCsvReader implements CsvReader {
     /**
      * Reads each line of provided csv file and strips the header if existing.
      *

@@ -3,8 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="item1" class="org.baeldung.store.ItemImpl1" />
-    <bean id="store" class="org.baeldung.store.Store">
-        <constructor-arg type="ItemImpl1" index="0" name="item" ref="item1" />
+    <bean id="econoStats" class="se.perfektum.econostats.EconoStats" />
+    <bean id="spreadsheetMaker" class="se.perfektum.econostats.spreadsheet.SpreadsheetMaker"/>
+    <bean id="spreadsheetManager" class="se.perfektum.econostats.spreadsheet.SpreadsheetManager">
+        <constructor-arg type="SpreadsheetMaker" index="0" name="spreadsheetMaker" ref="spreadsheetMaker" />
     </bean>
 </beans>
