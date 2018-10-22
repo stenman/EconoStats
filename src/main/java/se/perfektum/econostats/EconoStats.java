@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.perfektum.econostats.bank.nordea.NordeaCsvReader;
+import se.perfektum.econostats.spreadsheet.ISpreadsheetManager;
 import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
 import se.perfektum.econostats.domain.AccountTransaction;
 
@@ -19,7 +20,7 @@ public class EconoStats {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
 
-        SpreadsheetManager spredsheetManager = (SpreadsheetManager) context.getBean("spreadsheetManager");
+        ISpreadsheetManager spredsheetManager = (SpreadsheetManager) context.getBean("spreadsheetManager");
 
         final Logger LOGGER = LoggerFactory.getLogger(EconoStats.class);
 

@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="econoStats" class="se.perfektum.econostats.EconoStats" />
-    <bean id="spreadsheetMaker" class="se.perfektum.econostats.spreadsheet.SpreadsheetMaker"/>
+    <bean id="spreadsheetMaker" class="se.perfektum.econostats.spreadsheet.SpreadsheetProcessor"/>
     <bean id="spreadsheetManager" class="se.perfektum.econostats.spreadsheet.SpreadsheetManager">
         <constructor-arg type="SpreadsheetMaker" index="0" name="spreadsheetMaker" ref="spreadsheetMaker" />
     </bean>

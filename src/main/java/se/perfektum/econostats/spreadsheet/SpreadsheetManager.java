@@ -13,22 +13,23 @@ import java.util.List;
 /**
  * A wrapper class that simply manages spreadsheet creation and saving the produced spreadsheet file.
  */
-public class SpreadsheetManager {
+public class SpreadsheetManager implements ISpreadsheetManager {
 
-    private SpreadsheetMaker spreadsheetMaker;
+    private ISpreadsheetProcessor spreadsheetProcessor;
 
-    public SpreadsheetManager(SpreadsheetMaker spreadsheetMaker) {
-        this.spreadsheetMaker = spreadsheetMaker;
+    public SpreadsheetManager(SpreadsheetProcessor spreadsheetProcessor) {
+        this.spreadsheetProcessor = spreadsheetProcessor;
     }
 
+    @Override
     public void manageSpreadsheet() throws Exception {
 
-        SpreadsheetMaker spreadsheetMaker = new SpreadsheetMaker();
+        SpreadsheetProcessor spreadsheetMaker = new SpreadsheetProcessor();
 
         List<String> payeesConfigs = new ArrayList<>();
         List<AccountTransaction> payees = new ArrayList<>();
 
-        SpreadsheetDocument doc = spreadsheetMaker.makeSpreadsheet(payees, payeesConfigs);
+        SpreadsheetDocument doc = spreadsheetMaker.createSpreadsheet(payees, payeesConfigs);
 
         //TODO: path should be configurable!
         final File file = new File("c:/temp/testdata/simpleodf.ods");

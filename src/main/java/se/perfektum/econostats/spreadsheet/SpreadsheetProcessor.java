@@ -12,13 +12,14 @@ import java.util.List;
 /**
  * Creates a spreadsheet, fills the spreadsheet, does various calculations on spreadsheet values
  */
-public class SpreadsheetMaker {
+public class SpreadsheetProcessor implements ISpreadsheetProcessor {
 
     //TODO: This framework could work, but can you calculate on "empty" cells (ie. not 0 but empty)?
 
     private static final String MONTH = "Month";
 
-    public SpreadsheetDocument makeSpreadsheet(List<AccountTransaction> payees, List<String> payeesConfigs) throws Exception {
+    @Override
+    public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> payees, List<String> payeesConfigs) throws Exception {
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);

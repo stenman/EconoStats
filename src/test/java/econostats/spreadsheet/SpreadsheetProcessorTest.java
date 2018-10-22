@@ -1,11 +1,11 @@
-package econostats.bank.nordea;
+package econostats.spreadsheet;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpreadsheetMakerTest {
+public class SpreadsheetProcessorTest {
 
     @Test
     public void createSpreadSheet() {
