@@ -177,5 +177,4 @@ public class AccountTransaction {
                 Objects.equals(stampInserted, at.stampInserted) &&
                 Objects.equals(stampChanged, at.stampChanged);
     }
-
 }

@@ -5,6 +5,7 @@ import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
+import se.perfektum.econostats.domain.PayeeConfig;
 
 import java.util.List;
 
@@ -26,8 +27,9 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
     private static final String MONTH = "Month";
 
     @Override
-    public SpreadsheetDocument createSpreadsheet(List<String> payeesConfigs) throws Exception {
+    public SpreadsheetDocument createSpreadsheet(List<PayeeConfig> payeesConfigs) throws Exception {
 
+        List<PayeeConfig> payeeConfig = accountTransactionDao.loadPayeeConfig();
         List<AccountTransaction> payees = accountTransactionDao.loadAccountTransactions();
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();

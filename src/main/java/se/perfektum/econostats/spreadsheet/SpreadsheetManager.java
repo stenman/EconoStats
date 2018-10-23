@@ -4,6 +4,7 @@ import org.jopendocument.dom.OOUtils;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
+import se.perfektum.econostats.domain.PayeeConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class SpreadsheetManager implements ISpreadsheetManager {
     public void manageSpreadsheet() throws Exception {
 
         //TODO: Create and get the config
-        List<String> payeesConfigs = new ArrayList<>();
+        List<PayeeConfig> payeesConfigs = new ArrayList<>();
 
         SpreadsheetDocument doc = spreadsheetProcessor.createSpreadsheet(payeesConfigs);
 
