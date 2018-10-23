@@ -1,7 +1,7 @@
 package se.perfektum.econostats.dao;
 
 import se.perfektum.econostats.domain.AccountTransaction;
-import se.perfektum.econostats.domain.PayeeConfig;
+import se.perfektum.econostats.domain.PayeeFilter;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ import java.util.List;
 public interface IAccountTransactionDao {
     public List<AccountTransaction> loadAccountTransactions();
 
-    public List<PayeeConfig> loadPayeeConfig();
+    public List<PayeeFilter> loadPayeeConfig();
 }

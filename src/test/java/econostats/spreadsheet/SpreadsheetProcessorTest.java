@@ -8,7 +8,7 @@ import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
-import se.perfektum.econostats.domain.PayeeConfig;
+import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.SpreadsheetProcessor;
 
 import java.time.LocalDate;
@@ -34,8 +34,8 @@ public class SpreadsheetProcessorTest {
 
     @Test
     public void createSpreadSheet() throws Exception {
-        List<PayeeConfig> payeeConfigs = new ArrayList<>();
-        PayeeConfig pc = new PayeeConfig();
+        List<PayeeFilter> payeeConfigs = new ArrayList<>();
+        PayeeFilter pc = new PayeeFilter();
         pc.setUserId(1);
         pc.setAccountId(1);
         pc.setPayee("Autogiro FRISKTANDV");

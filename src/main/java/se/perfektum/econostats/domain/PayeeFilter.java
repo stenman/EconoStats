@@ -1,6 +1,6 @@
 package se.perfektum.econostats.domain;
 
-public class PayeeConfig {
+public class PayeeFilter {
     private int userId;
     private int accountId;
     private String payee;

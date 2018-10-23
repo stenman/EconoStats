@@ -5,7 +5,7 @@ import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
-import se.perfektum.econostats.domain.PayeeConfig;
+import se.perfektum.econostats.domain.PayeeFilter;
 
 import java.time.Month;
 import java.time.format.TextStyle;
@@ -30,16 +30,17 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
     private static final String MONTH = "Month";
 
     @Override
-    public SpreadsheetDocument createSpreadsheet(List<PayeeConfig> payeesConfigs) throws Exception {
+    public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
 
-        List<PayeeConfig> payeeConfig = accountTransactionDao.loadPayeeConfig();
+        List<PayeeFilter> payeeConfig = accountTransactionDao.loadPayeeConfig();
         List<AccountTransaction> payees = accountTransactionDao.loadAccountTransactions();
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
 
+        sheet.getCellByPosition(0, 0).setStringValue(MONTH);
+
         // Payee - should be dynamic (from user input/config file)
-        sheet.getCellByPosition(0, 0).setStringValue("Month");
         sheet.getCellByPosition(1, 0).setStringValue("Parkering");
         sheet.getCellByPosition(2, 0).setStringValue("Netflix");
 
