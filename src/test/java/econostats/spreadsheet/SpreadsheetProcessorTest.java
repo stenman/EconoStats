@@ -3,6 +3,7 @@ package econostats.spreadsheet;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.odftoolkit.simple.SpreadsheetDocument;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
@@ -29,7 +30,7 @@ public class SpreadsheetProcessorTest {
 
     @Test
     public void createSpreadSheet() throws Exception {
-        spreadsheetProcessor.createSpreadsheet(getPayeesConfig());
+        SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(getPayeesConfig());
     }
 
     private List<String> getPayeesConfig() {
@@ -39,6 +40,33 @@ public class SpreadsheetProcessorTest {
         payeesConfig.add("Spotify");
         return payeesConfig;
     }
+
+// STATISK
+//    2018-09-28,Autogiro FRISKTANDV,,"-67,00","11.478,77"
+//    2018-07-31,Autogiro FOLKSAM,,"-1000,00","13.703,77"
+//    2018-08-31,Autogiro FOLKSAM,,"-1000,00","13.703,77"
+
+// GRUPP + STATISK
+//    2018-09-03,Nordea LIV 3051 66 66661,,"-25,00","5.239,77"
+//    2018-09-03,Nordea LIV 3051 66 66662,,"-24,00","5.264,77"
+//    2018-09-03,Nordea LIV 3051 66 66663,,"-78,00","5.288,77"
+//    2018-09-03,Nordea LIV 3051 66 66664,,"-63,00","5.366,77"
+
+// VARIERANDE
+//    2018-07-11,Betalning BG 170-3453 Inteleon AB,,"-8,00","1.731,77"
+//    2018-08-11,Betalning BG 170-3453 Inteleon AB,,"-58,00","1.731,77"
+//    2018-09-11,Betalning BG 170-3453 Inteleon AB,,"-238,00","1.731,77"
+
+// GRUPP + VARIERANDE
+//    2018-08-29,Omsättning lån 3998 77 77771,,"-231,00","13.896,77"
+//    2018-08-27,Omsättning lån 3998 77 77771,,"-1.008,00","0,77"
+//    2018-08-27,Omsättning lån 3998 77 77772,,"-578,00","1.008,77"
+//    2018-08-27,Omsättning lån 3991 77 77773,,"-2.395,00","1.586,77"
+
+// SKALL EJ TAS MED (FINNS EJ I CONFIG)
+//    2018-08-03,Överföring 112233-4455,,"-1.000,00","7.613,77"
+
+
 
     private List<AccountTransaction> getAccountTransactions() {
         LocalDateTime now = LocalDateTime.now();
