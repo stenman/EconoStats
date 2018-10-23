@@ -7,7 +7,10 @@ import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeConfig;
 
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 //TODO: This class needs to be refactored (and renamed)!
 
@@ -40,10 +43,18 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         sheet.getCellByPosition(1, 0).setStringValue("Parkering");
         sheet.getCellByPosition(2, 0).setStringValue("Netflix");
 
-        // These should be static
-        sheet.getCellByPosition(0, 1).setStringValue("Jan");
-        sheet.getCellByPosition(0, 2).setStringValue("Feb");
-        sheet.getCellByPosition(0, 3).setStringValue("Mar");
+        sheet.getCellByPosition(0, 1).setStringValue(Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 2).setStringValue(Month.FEBRUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 3).setStringValue(Month.MARCH.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 4).setStringValue(Month.APRIL.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 5).setStringValue(Month.MAY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 6).setStringValue(Month.JUNE.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 7).setStringValue(Month.JULY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 8).setStringValue(Month.AUGUST.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 9).setStringValue(Month.SEPTEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 10).setStringValue(Month.OCTOBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 11).setStringValue(Month.NOVEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        sheet.getCellByPosition(0, 12).setStringValue(Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
 
         // Payments
         sheet.getCellByPosition(1, 1).setDoubleValue(23.0);

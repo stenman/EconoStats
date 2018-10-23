@@ -48,7 +48,23 @@ public class SpreadsheetProcessorTest {
         SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeConfigs);
 
         Table sheet = sd.getSheetByIndex(0);
+        assertMonths(sheet);
+    }
+
+    private void assertMonths(Table sheet) {
         assertEquals("Month", sheet.getCellByPosition(0, 0).getStringValue());
+        assertEquals("Jan", sheet.getCellByPosition(0, 1).getStringValue());
+        assertEquals("Feb", sheet.getCellByPosition(0, 2).getStringValue());
+        assertEquals("Mar", sheet.getCellByPosition(0, 3).getStringValue());
+        assertEquals("Apr", sheet.getCellByPosition(0, 4).getStringValue());
+        assertEquals("May", sheet.getCellByPosition(0, 5).getStringValue());
+        assertEquals("Jun", sheet.getCellByPosition(0, 6).getStringValue());
+        assertEquals("Jul", sheet.getCellByPosition(0, 7).getStringValue());
+        assertEquals("Aug", sheet.getCellByPosition(0, 8).getStringValue());
+        assertEquals("Sep", sheet.getCellByPosition(0, 9).getStringValue());
+        assertEquals("Oct", sheet.getCellByPosition(0, 10).getStringValue());
+        assertEquals("Nov", sheet.getCellByPosition(0, 11).getStringValue());
+        assertEquals("Dec", sheet.getCellByPosition(0, 12).getStringValue());
     }
 
     private List<String> getPayeesConfig() {
