@@ -3,9 +3,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="econoStats" class="se.perfektum.econostats.EconoStats" />
-    <bean id="spreadsheetMaker" class="se.perfektum.econostats.spreadsheet.SpreadsheetProcessor"/>
+    <!--Main-->
+    <bean id="econoStats" class="se.perfektum.econostats.EconoStats"/>
+
+    <!--Dao-->
+    <bean id="accountTransactionDao" class="se.perfektum.econostats.dao.AccountTransactionDao"/>
+
+    <!--Spreadsheet-->
+    <bean id="spreadsheetProcessor" class="se.perfektum.econostats.spreadsheet.SpreadsheetProcessor">
+        <constructor-arg index="0" name="accountTransactionDao" ref="accountTransactionDao"/>
+    </bean>
     <bean id="spreadsheetManager" class="se.perfektum.econostats.spreadsheet.SpreadsheetManager">
-        <constructor-arg type="SpreadsheetMaker" index="0" name="spreadsheetMaker" ref="spreadsheetMaker" />
+        <constructor-arg index="0" name="spreadsheetProcessor" ref="spreadsheetProcessor"/>
     </bean>
 </beans>

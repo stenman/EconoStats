@@ -3,6 +3,7 @@ package se.perfektum.econostats.spreadsheet;
 import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
+import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.util.List;
@@ -16,10 +17,18 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
 
     //TODO: This framework could work, but can you calculate on "empty" cells (ie. not 0 but empty)?
 
+    private IAccountTransactionDao accountTransactionDao;
+
+    public SpreadsheetProcessor(IAccountTransactionDao accountTransactionDao) {
+        this.accountTransactionDao = accountTransactionDao;
+    }
+
     private static final String MONTH = "Month";
 
     @Override
-    public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> payees, List<String> payeesConfigs) throws Exception {
+    public SpreadsheetDocument createSpreadsheet(List<String> payeesConfigs) throws Exception {
+
+        List<AccountTransaction> payees = accountTransactionDao.loadAccountTransactions();
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);

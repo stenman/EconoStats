@@ -2,6 +2,7 @@ package se.perfektum.econostats.spreadsheet;
 
 import org.jopendocument.dom.OOUtils;
 import org.odftoolkit.simple.SpreadsheetDocument;
+import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.io.File;
@@ -24,12 +25,10 @@ public class SpreadsheetManager implements ISpreadsheetManager {
     @Override
     public void manageSpreadsheet() throws Exception {
 
-        SpreadsheetProcessor spreadsheetMaker = new SpreadsheetProcessor();
-
+        //TODO: Create and get the config
         List<String> payeesConfigs = new ArrayList<>();
-        List<AccountTransaction> payees = new ArrayList<>();
 
-        SpreadsheetDocument doc = spreadsheetMaker.createSpreadsheet(payees, payeesConfigs);
+        SpreadsheetDocument doc = spreadsheetProcessor.createSpreadsheet(payeesConfigs);
 
         //TODO: path should be configurable!
         final File file = new File("c:/temp/testdata/simpleodf.ods");
