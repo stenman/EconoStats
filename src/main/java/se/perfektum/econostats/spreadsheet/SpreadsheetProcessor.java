@@ -33,7 +33,7 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
 
         List<PayeeFilter> payeeConfig = accountTransactionDao.loadPayeeConfig();
-        List<AccountTransaction> payees = accountTransactionDao.loadAccountTransactions();
+        List<AccountTransaction> transactions = accountTransactionDao.loadAccountTransactions();
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
@@ -41,8 +41,17 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         sheet.getCellByPosition(0, 0).setStringValue(MONTH);
 
         // Payee - should be dynamic (from user input/config file)
-        sheet.getCellByPosition(1, 0).setStringValue("Parkering");
-        sheet.getCellByPosition(2, 0).setStringValue("Netflix");
+        for (int i = 0; i < payeeConfig.size(); i++) {
+            for (AccountTransaction transaction : transactions) {
+                if (transaction.getName().contains(payeeConfig.get(i).getPayee())) {
+                    sheet.getCellByPosition(i + 1, 0).setStringValue(payeeConfig.get(i).getAlias());
+                    sheet.getCellByPosition(i + 1, transaction.getDate().getMonthValue()).setDoubleValue(new Double(transaction.getAmount()/100));
+                }
+            }
+        }
+
+//        sheet.getCellByPosition(1, 0).setStringValue("Parkering");
+//        sheet.getCellByPosition(2, 0).setStringValue("Netflix");
 
         sheet.getCellByPosition(0, 1).setStringValue(Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         sheet.getCellByPosition(0, 2).setStringValue(Month.FEBRUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
@@ -58,16 +67,16 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         sheet.getCellByPosition(0, 12).setStringValue(Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
 
         // Payments
-        sheet.getCellByPosition(1, 1).setDoubleValue(23.0);
-        sheet.getCellByPosition(1, 1).setCellBackgroundColor(new Color(240, 190, 130));
-        sheet.getCellByPosition(1, 2).setDoubleValue(133.0);
-        sheet.getCellByPosition(1, 2).setCellBackgroundColor(new Color(240, 190, 130));
-        sheet.getCellByPosition(1, 3).setDoubleValue(0.0); //must be able to have "empty" here, else some averages wont work properly
-        sheet.getCellByPosition(1, 3).setCellBackgroundColor(new Color(240, 190, 130));
-
-        sheet.getCellByPosition(2, 1).setDoubleValue(109.0);
-        sheet.getCellByPosition(2, 2).setDoubleValue(109.0);
-        sheet.getCellByPosition(2, 3).setDoubleValue(109.0);
+//        sheet.getCellByPosition(1, 1).setDoubleValue(23.0);
+//        sheet.getCellByPosition(1, 1).setCellBackgroundColor(new Color(240, 190, 130));
+//        sheet.getCellByPosition(1, 2).setDoubleValue(133.0);
+//        sheet.getCellByPosition(1, 2).setCellBackgroundColor(new Color(240, 190, 130));
+//        sheet.getCellByPosition(1, 3).setDoubleValue(0.0); //must be able to have "empty" here, else some averages wont work properly
+//        sheet.getCellByPosition(1, 3).setCellBackgroundColor(new Color(240, 190, 130));
+//
+//        sheet.getCellByPosition(2, 1).setDoubleValue(109.0);
+//        sheet.getCellByPosition(2, 2).setDoubleValue(109.0);
+//        sheet.getCellByPosition(2, 3).setDoubleValue(109.0);
 
         // Payee average
         sheet.getCellByPosition(1, 4).setFormula("(B2+B3+B4)/3");

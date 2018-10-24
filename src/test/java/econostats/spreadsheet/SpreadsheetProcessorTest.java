@@ -13,6 +13,7 @@ import se.perfektum.econostats.spreadsheet.SpreadsheetProcessor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +40,7 @@ public class SpreadsheetProcessorTest {
         pc.setUserId(1);
         pc.setAccountId(1);
         pc.setPayee("Autogiro FRISKTANDV");
+        pc.setAlias("Frisktandvården");
         pc.setGroup(Character.MIN_VALUE);
         pc.setVarying(false);
         payeeConfigs.add(pc);
@@ -48,7 +50,31 @@ public class SpreadsheetProcessorTest {
         SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeConfigs);
 
         Table sheet = sd.getSheetByIndex(0);
+
         assertMonths(sheet);
+
+        String[][] c = {{"Frisktandvården"
+                , ""
+                , ""
+                , ""
+                , ""
+                , ""
+                , ""
+                , ""
+                , "-67.0"
+                , ""
+                , ""
+                , ""
+                , ""}};
+
+
+        for (int i = 0; i < payeeConfigs.size(); i++) {
+            for (int j = 0; j < 13; j++) {
+                System.out.println(sheet.getCellByPosition(i+1, j).getDisplayText());
+                assertEquals(c[i][j], sheet.getCellByPosition(i + 1, j).getDisplayText());
+            }
+        }
+
     }
 
     private void assertMonths(Table sheet) {
@@ -67,6 +93,7 @@ public class SpreadsheetProcessorTest {
         assertEquals("Dec", sheet.getCellByPosition(0, 12).getStringValue());
     }
 
+    @Deprecated
     private List<String> getPayeesConfig() {
         List<String> payeesConfig = new ArrayList<>();
         payeesConfig.add("Autogiro FRISKTANDV");

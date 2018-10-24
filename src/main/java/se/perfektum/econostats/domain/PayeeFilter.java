@@ -4,6 +4,7 @@ public class PayeeFilter {
     private int userId;
     private int accountId;
     private String payee;
+    private String alias;
     private char group;
     private boolean varying;
 
@@ -30,6 +31,14 @@ public class PayeeFilter {
     public void setPayee(String payee) {
 
         this.payee = payee;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public char getGroup() {
