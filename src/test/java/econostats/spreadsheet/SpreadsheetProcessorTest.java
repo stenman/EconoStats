@@ -13,7 +13,6 @@ import se.perfektum.econostats.spreadsheet.SpreadsheetProcessor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +26,9 @@ public class SpreadsheetProcessorTest {
 
     private SpreadsheetProcessor spreadsheetProcessor = new SpreadsheetProcessor(accountTransactionDao);
 
+    private static final int ROW_COUNT = 13;
+    private static final int COLUMN_OFFSET = 1;
+
     @Before
     public void before() {
         List<AccountTransaction> accountTransactions = getAccountTransactions();
@@ -34,8 +36,8 @@ public class SpreadsheetProcessorTest {
     }
 
     @Test
-    public void createSpreadSheet() throws Exception {
-        List<PayeeFilter> payeeConfigs = new ArrayList<>();
+    public void simpleHappyFlow() throws Exception {
+        List<PayeeFilter> payeeFilters = new ArrayList<>();
         PayeeFilter pc = new PayeeFilter();
         pc.setUserId(1);
         pc.setAccountId(1);
@@ -43,11 +45,13 @@ public class SpreadsheetProcessorTest {
         pc.setAlias("Frisktandvården");
         pc.setGroup(Character.MIN_VALUE);
         pc.setVarying(false);
-        payeeConfigs.add(pc);
+        payeeFilters.add(pc);
 
-        Mockito.when(accountTransactionDao.loadPayeeConfig()).thenReturn(payeeConfigs);
+        final int columnsToAssert = payeeFilters.size() + 1; // number of configs + tot/avg column
 
-        SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeConfigs);
+        Mockito.when(accountTransactionDao.loadPayeeFilter()).thenReturn(payeeFilters);
+
+        SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeFilters);
 
         Table sheet = sd.getSheetByIndex(0);
 
@@ -65,16 +69,35 @@ public class SpreadsheetProcessorTest {
                 , ""
                 , ""
                 , ""
-                , ""}};
-
-
-        for (int i = 0; i < payeeConfigs.size(); i++) {
-            for (int j = 0; j < 13; j++) {
-                System.out.println(sheet.getCellByPosition(i+1, j).getDisplayText());
-                assertEquals(c[i][j], sheet.getCellByPosition(i + 1, j).getDisplayText());
+                , ""}
+                , {"Total"
+                , "SUM(B1:B1)"
+                , "SUM(B2:B2)"
+                , "SUM(B3:B3)"
+                , "SUM(B4:B4)"
+                , "SUM(B5:B5)"
+                , "SUM(B6:B6)"
+                , "SUM(B7:B7)"
+                , "SUM(B8:B8)"
+                , "SUM(B9:B9)"
+                , "SUM(B10:B10)"
+                , "SUM(B11:B11)"
+                , "SUM(B12:B12)"
+                , "SUM(B13:B13)"}};
+        // assert all filters per month and their monthly totals
+        for (int i = 0; i < columnsToAssert; i++) {
+            for (int j = 0; j < ROW_COUNT; j++) {
+                //TODO: Formulas needs to be fixed! Can't asserst formulas with getDisplayText!
+                assertEquals(c[i][j], sheet.getCellByPosition(i + COLUMN_OFFSET, j).getDisplayText());
             }
         }
+        // assert totals and averages per filter
+        assertEquals("=AVERAGE(B2:B13)", sheet.getCellByPosition(0 + COLUMN_OFFSET, 13).getFormula());
+        assertEquals("=SUM(B2:B13)", sheet.getCellByPosition(0 + COLUMN_OFFSET, 14).getFormula());
 
+        //TODO: Assert total number of cells in sheet...
+        System.out.println(sheet.getColumnCount());
+        System.out.println(sheet.getRowCount());
     }
 
     private void assertMonths(Table sheet) {

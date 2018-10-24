@@ -11,5 +11,5 @@ import java.util.List;
 public interface IAccountTransactionDao {
     public List<AccountTransaction> loadAccountTransactions();
 
-    public List<PayeeFilter> loadPayeeConfig();
+    public List<PayeeFilter> loadPayeeFilter();
 }

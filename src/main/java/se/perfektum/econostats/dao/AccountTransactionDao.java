@@ -13,7 +13,7 @@ public class AccountTransactionDao implements IAccountTransactionDao {
     }
 
     @Override
-    public List<PayeeFilter> loadPayeeConfig() {
+    public List<PayeeFilter> loadPayeeFilter() {
         // Not yet implemented
         return null;
     }

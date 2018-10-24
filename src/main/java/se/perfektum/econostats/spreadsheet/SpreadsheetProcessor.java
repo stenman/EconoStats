@@ -1,6 +1,5 @@
 package se.perfektum.econostats.spreadsheet;
 
-import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
@@ -27,32 +26,52 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         this.accountTransactionDao = accountTransactionDao;
     }
 
+    private static final int ROW_COUNT = 14;
+    private static final int COLUMN_OFFSET = 1;
     private static final String MONTH = "Month";
+    private static final String TOTAL = "Total";
 
     @Override
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
 
-        List<PayeeFilter> payeeConfig = accountTransactionDao.loadPayeeConfig();
+        List<PayeeFilter> payeeConfig = accountTransactionDao.loadPayeeFilter();
         List<AccountTransaction> transactions = accountTransactionDao.loadAccountTransactions();
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
 
         sheet.getCellByPosition(0, 0).setStringValue(MONTH);
+        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 0).setStringValue(TOTAL);
+        createMonthColumn(sheet);
 
         // Payee - should be dynamic (from user input/config file)
         for (int i = 0; i < payeeConfig.size(); i++) {
             for (AccountTransaction transaction : transactions) {
                 if (transaction.getName().contains(payeeConfig.get(i).getPayee())) {
-                    sheet.getCellByPosition(i + 1, 0).setStringValue(payeeConfig.get(i).getAlias());
-                    sheet.getCellByPosition(i + 1, transaction.getDate().getMonthValue()).setDoubleValue(new Double(transaction.getAmount()/100));
+                    //TODO: This is possibly set multiple times, see if there's a way to fix that...
+                    sheet.getCellByPosition(i + COLUMN_OFFSET, 0).setStringValue(payeeConfig.get(i).getAlias());
+                    //TODO: Make ABSolute value (we just want positive numbers here)
+                    sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue()).setDoubleValue(new Double(transaction.getAmount() / 100));
                 }
             }
+            // Calculate average and totals by payee
+            String odfColName = getColumnName(i + COLUMN_OFFSET + 1);
+            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1).setFormula("=AVERAGE(" + odfColName + "2:" + odfColName + "13)");
+            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT).setFormula("=SUM(" + odfColName + "2:" + odfColName + "13)");
         }
 
-//        sheet.getCellByPosition(1, 0).setStringValue("Parkering");
-//        sheet.getCellByPosition(2, 0).setStringValue("Netflix");
+        // Monthly totals, counting all payees
+        for (int i = 1; i < ROW_COUNT; i++) {
+            sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, i).setFormula("SUM(B" + i + ":" + getColumnName(payeeConfig.size() + COLUMN_OFFSET) + i + ")");
+        }
 
+        // Grand total
+        sheet.getCellByPosition(3, 4).setFormula("D2+D3+D4");
+
+        return doc;
+    }
+
+    private void createMonthColumn(Table sheet) {
         sheet.getCellByPosition(0, 1).setStringValue(Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         sheet.getCellByPosition(0, 2).setStringValue(Month.FEBRUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         sheet.getCellByPosition(0, 3).setStringValue(Month.MARCH.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
@@ -65,32 +84,21 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         sheet.getCellByPosition(0, 10).setStringValue(Month.OCTOBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         sheet.getCellByPosition(0, 11).setStringValue(Month.NOVEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         sheet.getCellByPosition(0, 12).setStringValue(Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-
-        // Payments
-//        sheet.getCellByPosition(1, 1).setDoubleValue(23.0);
-//        sheet.getCellByPosition(1, 1).setCellBackgroundColor(new Color(240, 190, 130));
-//        sheet.getCellByPosition(1, 2).setDoubleValue(133.0);
-//        sheet.getCellByPosition(1, 2).setCellBackgroundColor(new Color(240, 190, 130));
-//        sheet.getCellByPosition(1, 3).setDoubleValue(0.0); //must be able to have "empty" here, else some averages wont work properly
-//        sheet.getCellByPosition(1, 3).setCellBackgroundColor(new Color(240, 190, 130));
-//
-//        sheet.getCellByPosition(2, 1).setDoubleValue(109.0);
-//        sheet.getCellByPosition(2, 2).setDoubleValue(109.0);
-//        sheet.getCellByPosition(2, 3).setDoubleValue(109.0);
-
-        // Payee average
-        sheet.getCellByPosition(1, 4).setFormula("(B2+B3+B4)/3");
-        sheet.getCellByPosition(2, 4).setFormula("(C2+C3+C4)/3");
-
-        // Month total
-        sheet.getCellByPosition(3, 1).setFormula("B2+C2");
-        sheet.getCellByPosition(3, 2).setFormula("B3+C3");
-        sheet.getCellByPosition(3, 3).setFormula("B4+C4");
-
-        // Grand total
-        sheet.getCellByPosition(3, 4).setFormula("D2+D3+D4");
-
-        return doc;
     }
+
+    public static String getColumnName(int index) {
+        String[] result = new String[index];
+        String colName = "";
+        for (int i = 0; i < index; i++) {
+            char c = (char) ('A' + (i % 26));
+            colName = c + "";
+            if (i > 25) {
+                colName = result[(i / 26) - 1] + "" + c;
+            }
+            result[i] = colName;
+        }
+        return result[result.length - 1];
+    }
+
 }
 
