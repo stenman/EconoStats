@@ -46,28 +46,27 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 0).setStringValue(TOTAL);
         createMonthColumn(sheet);
 
-        // Payee - should be dynamic (from user input/config file)
+        // Calculate payee invoices
         for (int i = 0; i < payeeConfig.size(); i++) {
             for (AccountTransaction transaction : transactions) {
                 if (transaction.getName().contains(payeeConfig.get(i).getPayee())) {
                     //TODO: This is possibly set multiple times, see if there's a way to fix that...
                     sheet.getCellByPosition(i + COLUMN_OFFSET, 0).setStringValue(payeeConfig.get(i).getAlias());
-                    //TODO: Make ABSolute value (we just want positive numbers here)
-                    sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue()).setDoubleValue(new Double(transaction.getAmount() / 100));
+                    sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue()).setDoubleValue(new Double(Math.abs(transaction.getAmount() / 100)));
                 }
             }
-            // Calculate average and totals by payee
+            // Calculate average and totals per payee
             String odfColName = getColumnName(i + COLUMN_OFFSET + 1);
             sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1).setFormula("=AVERAGE(" + odfColName + "2:" + odfColName + "13)");
             sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT).setFormula("=SUM(" + odfColName + "2:" + odfColName + "13)");
         }
 
-        // Calculate monthly totals, counting all payees
+        // Calculate monthly totals for all payees
         for (int i = 2; i < ROW_COUNT; i++) {
             sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, i - 1).setFormula("=SUM(B" + i + ":" + getColumnName(payeeConfig.size() + COLUMN_OFFSET) + i + ")");
         }
 
-        // Calculate average monthly
+        // Calculate total average monthly
         sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 13).setFormula("=AVERAGE(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
 
         // Calculate grand total
@@ -76,7 +75,7 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         //TODO: The 3 rows below are for dev purposes only. Remove after finished!
 //        final File file = new File("c:/temp/testdata/simpleodf.ods");
 //        doc.save(file);
-//        OOUtils.open(file); //TODO: remove this. exists only for testing purposes
+//        OOUtils.open(file);
 
         return doc;
     }
