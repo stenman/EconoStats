@@ -33,6 +33,7 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
 
+    //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
     @Override
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
 

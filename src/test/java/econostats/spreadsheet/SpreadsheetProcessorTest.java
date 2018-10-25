@@ -48,16 +48,6 @@ public class SpreadsheetProcessorTest {
         pc.setVarying(false);
         payeeFilters.add(pc);
 
-        final int columnsToAssert = payeeFilters.size() + 1; // number of configs + tot/avg column
-
-        Mockito.when(accountTransactionDao.loadPayeeFilter()).thenReturn(payeeFilters);
-
-        SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeFilters);
-
-        Table sheet = sd.getSheetByIndex(0);
-
-        assertMonths(sheet);
-
         String[][] c = {{"Frisktandvården"
                 , ""
                 , ""
@@ -88,19 +78,29 @@ public class SpreadsheetProcessorTest {
                 , "=SUM(B13:B13)"
                 , "=AVERAGE(C2:C13)"
                 , "=SUM(C2:C13)"}};
-        for (int i = 0; i < columnsToAssert; i++) {
+
+        Mockito.when(accountTransactionDao.loadPayeeFilter()).thenReturn(payeeFilters);
+
+        SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeFilters);
+        Table sheet = sd.getSheetByIndex(0);
+
+        assertMonths(sheet);
+        assertSheetData(sheet, c);
+        assertEquals(3, sheet.getColumnCount());
+        assertEquals(15, sheet.getRowCount());
+    }
+
+    private void assertSheetData(Table sheet, String[][] expectedSheetData) {
+        for (int i = 0; i < expectedSheetData.length; i++) {
             for (int j = 0; j < ROW_COUNT; j++) {
                 Cell cell = sheet.getCellByPosition(i + COLUMN_OFFSET, j);
                 if (cell != null && cell.getFormula() != null && !cell.getFormula().isEmpty()) {
-                    assertEquals(c[i][j], cell.getFormula());
+                    assertEquals(expectedSheetData[i][j], cell.getFormula());
                 } else {
-                    assertEquals(c[i][j], cell.getDisplayText());
+                    assertEquals(expectedSheetData[i][j], cell.getDisplayText());
                 }
             }
         }
-
-        assertEquals(3, sheet.getColumnCount());
-        assertEquals(15, sheet.getRowCount());
     }
 
     private void assertMonths(Table sheet) {
