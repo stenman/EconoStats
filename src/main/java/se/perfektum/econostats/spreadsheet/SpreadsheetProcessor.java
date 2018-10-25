@@ -1,26 +1,20 @@
 package se.perfektum.econostats.spreadsheet;
 
-import org.jopendocument.dom.OOUtils;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
-import java.io.File;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
-//TODO: This class needs to be refactored (and renamed)!
-
 /**
  * Creates a spreadsheet, fills the spreadsheet, does various calculations on spreadsheet values
  */
 public class SpreadsheetProcessor implements ISpreadsheetProcessor {
-
-    //TODO: This framework could work, but can you calculate on "empty" cells (ie. not 0 but empty)?
 
     private IAccountTransactionDao accountTransactionDao;
 
@@ -33,7 +27,6 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
 
-    //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
     @Override
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
 
@@ -47,6 +40,11 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 0).setStringValue(TOTAL);
         createMonthColumn(sheet);
 
+        //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
+        //TODO: Set background colors accordingly
+        //TODO: Set font styles (Bold etc) accordingly
+        //TODO: Logging
+        //TODO: I18N
         // Calculate payee invoices
         for (int i = 0; i < payeeConfig.size(); i++) {
             for (AccountTransaction transaction : transactions) {
@@ -73,11 +71,6 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         // Calculate grand total
         sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 14).setFormula("=SUM(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
 
-        //TODO: The 3 rows below are for dev purposes only. Remove after finished!
-//        final File file = new File("c:/temp/testdata/simpleodf.ods");
-//        doc.save(file);
-//        OOUtils.open(file);
-
         return doc;
     }
 
@@ -96,6 +89,7 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         sheet.getCellByPosition(0, 12).setStringValue(Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
     }
 
+    //TODO: Should be a static class in a Spreadsheet utility class!
     public static String getColumnName(int index) {
         String[] result = new String[index];
         String colName = "";
