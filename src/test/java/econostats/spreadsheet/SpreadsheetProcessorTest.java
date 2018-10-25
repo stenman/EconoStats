@@ -1,5 +1,8 @@
 package econostats.spreadsheet;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -12,6 +15,8 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.SpreadsheetProcessor;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,7 +42,7 @@ public class SpreadsheetProcessorTest {
     }
 
     @Test
-    public void simpleHappyFlow() throws Exception {
+    public void singlePayee_oneColumn() throws Exception {
         List<PayeeFilter> payeeFilters = new ArrayList<>();
         PayeeFilter pc = new PayeeFilter();
         pc.setUserId(1);
@@ -48,36 +53,8 @@ public class SpreadsheetProcessorTest {
         pc.setVarying(false);
         payeeFilters.add(pc);
 
-        String[][] c = {{"Frisktandvården"
-                , ""
-                , ""
-                , ""
-                , ""
-                , ""
-                , ""
-                , ""
-                , "67.0"
-                , ""
-                , ""
-                , ""
-                , ""
-                , "=AVERAGE(B2:B13)"
-                , "=SUM(B2:B13)"}
-                , {"Total"
-                , "=SUM(B2:B2)"
-                , "=SUM(B3:B3)"
-                , "=SUM(B4:B4)"
-                , "=SUM(B5:B5)"
-                , "=SUM(B6:B6)"
-                , "=SUM(B7:B7)"
-                , "=SUM(B8:B8)"
-                , "=SUM(B9:B9)"
-                , "=SUM(B10:B10)"
-                , "=SUM(B11:B11)"
-                , "=SUM(B12:B12)"
-                , "=SUM(B13:B13)"
-                , "=AVERAGE(C2:C13)"
-                , "=SUM(C2:C13)"}};
+        Gson gson = new GsonBuilder().create();
+        String[][] sheetTestData = gson.fromJson(getSheetTestData(), String[][].class);
 
         Mockito.when(accountTransactionDao.loadPayeeFilter()).thenReturn(payeeFilters);
 
@@ -85,9 +62,20 @@ public class SpreadsheetProcessorTest {
         Table sheet = sd.getSheetByIndex(0);
 
         assertMonths(sheet);
-        assertSheetData(sheet, c);
+        assertSheetData(sheet, sheetTestData);
         assertEquals(3, sheet.getColumnCount());
         assertEquals(15, sheet.getRowCount());
+    }
+
+    private String getSheetTestData() {
+        String result = "";
+        ClassLoader classLoader = getClass().getClassLoader();
+        try {
+            result = IOUtils.toString(classLoader.getResourceAsStream("sheetTestData.json"), "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private void assertSheetData(Table sheet, String[][] expectedSheetData) {
