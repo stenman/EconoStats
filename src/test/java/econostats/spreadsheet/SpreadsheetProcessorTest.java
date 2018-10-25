@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.odftoolkit.simple.SpreadsheetDocument;
+import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
@@ -26,7 +27,7 @@ public class SpreadsheetProcessorTest {
 
     private SpreadsheetProcessor spreadsheetProcessor = new SpreadsheetProcessor(accountTransactionDao);
 
-    private static final int ROW_COUNT = 13;
+    private static final int ROW_COUNT = 15;
     private static final int COLUMN_OFFSET = 1;
 
     @Before
@@ -69,35 +70,37 @@ public class SpreadsheetProcessorTest {
                 , ""
                 , ""
                 , ""
-                , ""}
+                , ""
+                , "=AVERAGE(B2:B13)"
+                , "=SUM(B2:B13)"}
                 , {"Total"
-                , "SUM(B1:B1)"
-                , "SUM(B2:B2)"
-                , "SUM(B3:B3)"
-                , "SUM(B4:B4)"
-                , "SUM(B5:B5)"
-                , "SUM(B6:B6)"
-                , "SUM(B7:B7)"
-                , "SUM(B8:B8)"
-                , "SUM(B9:B9)"
-                , "SUM(B10:B10)"
-                , "SUM(B11:B11)"
-                , "SUM(B12:B12)"
-                , "SUM(B13:B13)"}};
-        // assert all filters per month and their monthly totals
+                , "=SUM(B2:B2)"
+                , "=SUM(B3:B3)"
+                , "=SUM(B4:B4)"
+                , "=SUM(B5:B5)"
+                , "=SUM(B6:B6)"
+                , "=SUM(B7:B7)"
+                , "=SUM(B8:B8)"
+                , "=SUM(B9:B9)"
+                , "=SUM(B10:B10)"
+                , "=SUM(B11:B11)"
+                , "=SUM(B12:B12)"
+                , "=SUM(B13:B13)"
+                , "=AVERAGE(C2:C13)"
+                , "=SUM(C2:C13)"}};
         for (int i = 0; i < columnsToAssert; i++) {
             for (int j = 0; j < ROW_COUNT; j++) {
-                //TODO: Formulas needs to be fixed! Can't asserst formulas with getDisplayText!
-                assertEquals(c[i][j], sheet.getCellByPosition(i + COLUMN_OFFSET, j).getDisplayText());
+                Cell cell = sheet.getCellByPosition(i + COLUMN_OFFSET, j);
+                if (cell != null && cell.getFormula() != null && !cell.getFormula().isEmpty()) {
+                    assertEquals(c[i][j], cell.getFormula());
+                } else {
+                    assertEquals(c[i][j], cell.getDisplayText());
+                }
             }
         }
-        // assert totals and averages per filter
-        assertEquals("=AVERAGE(B2:B13)", sheet.getCellByPosition(0 + COLUMN_OFFSET, 13).getFormula());
-        assertEquals("=SUM(B2:B13)", sheet.getCellByPosition(0 + COLUMN_OFFSET, 14).getFormula());
 
-        //TODO: Assert total number of cells in sheet...
-        System.out.println(sheet.getColumnCount());
-        System.out.println(sheet.getRowCount());
+        assertEquals(3, sheet.getColumnCount());
+        assertEquals(15, sheet.getRowCount());
     }
 
     private void assertMonths(Table sheet) {
@@ -114,18 +117,6 @@ public class SpreadsheetProcessorTest {
         assertEquals("Oct", sheet.getCellByPosition(0, 10).getStringValue());
         assertEquals("Nov", sheet.getCellByPosition(0, 11).getStringValue());
         assertEquals("Dec", sheet.getCellByPosition(0, 12).getStringValue());
-    }
-
-    @Deprecated
-    private List<String> getPayeesConfig() {
-        List<String> payeesConfig = new ArrayList<>();
-        payeesConfig.add("Autogiro FRISKTANDV");
-        payeesConfig.add("Autogiro FOLKSAM");
-        payeesConfig.add("Betalning BG 170-3453 Inteleon AB");
-        payeesConfig.add("Omsättning lån 3998 77 77771");
-        payeesConfig.add("Omsättning lån 3998 77 77772");
-        payeesConfig.add("Omsättning lån 3998 77 77773");
-        return payeesConfig;
     }
 
     private List<AccountTransaction> getAccountTransactions() {
@@ -242,5 +233,4 @@ public class SpreadsheetProcessorTest {
                         .stampChanged(now)
                         .build());
     }
-
 }

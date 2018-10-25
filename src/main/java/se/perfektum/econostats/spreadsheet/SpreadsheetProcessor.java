@@ -1,11 +1,13 @@
 package se.perfektum.econostats.spreadsheet;
 
+import org.jopendocument.dom.OOUtils;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
+import java.io.File;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -60,13 +62,21 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
             sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT).setFormula("=SUM(" + odfColName + "2:" + odfColName + "13)");
         }
 
-        // Monthly totals, counting all payees
-        for (int i = 1; i < ROW_COUNT; i++) {
-            sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, i).setFormula("SUM(B" + i + ":" + getColumnName(payeeConfig.size() + COLUMN_OFFSET) + i + ")");
+        // Calculate monthly totals, counting all payees
+        for (int i = 2; i < ROW_COUNT; i++) {
+            sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, i - 1).setFormula("=SUM(B" + i + ":" + getColumnName(payeeConfig.size() + COLUMN_OFFSET) + i + ")");
         }
 
-        // Grand total
-        sheet.getCellByPosition(3, 4).setFormula("D2+D3+D4");
+        // Calculate average monthly
+        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 13).setFormula("=AVERAGE(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
+
+        // Calculate grand total
+        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 14).setFormula("=SUM(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
+
+        //TODO: The 3 rows below are for dev purposes only. Remove after finished!
+//        final File file = new File("c:/temp/testdata/simpleodf.ods");
+//        doc.save(file);
+//        OOUtils.open(file); //TODO: remove this. exists only for testing purposes
 
         return doc;
     }
