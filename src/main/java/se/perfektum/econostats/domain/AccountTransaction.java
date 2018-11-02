@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AccountTransaction {
-    private int userId;
-    private int accountId;
     private LocalDate date;
     private String name;
     private String category;
@@ -16,8 +14,6 @@ public class AccountTransaction {
     private LocalDateTime stampChanged;
 
     public AccountTransaction(Builder b) {
-        this.userId = b.userId;
-        this.accountId = b.accountId;
         this.date = b.date;
         this.name = b.name;
         this.category = b.category;
@@ -28,22 +24,6 @@ public class AccountTransaction {
     }
 
     public AccountTransaction() {
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
     }
 
     public LocalDate getDate() {
@@ -168,9 +148,7 @@ public class AccountTransaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountTransaction at = (AccountTransaction) o;
-        return userId == at.userId &&
-                accountId == at.accountId &&
-                Objects.equals(name, at.name) &&
+        return Objects.equals(name, at.name) &&
                 Objects.equals(category, at.category) &&
                 amount == at.amount &&
                 balance == at.balance &&

@@ -40,7 +40,7 @@ public class EconoStats {
             e.printStackTrace();
         }
 
-//        se.perfektum.econostats.dao.DatabaseConnector.createTables();
+//        se.perfektum.econostats.dao.DatabaseConnector.dbInit();
 
         //TODO: 2. create new csv
         //TODO: create headers

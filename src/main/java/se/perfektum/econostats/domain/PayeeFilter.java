@@ -1,36 +1,18 @@
 package se.perfektum.econostats.domain;
 
 public class PayeeFilter {
-    private int userId;
-    private int accountId;
-    private String payee;
+    private String payeeName;
     private String alias;
     private char group;
     private boolean varying;
 
-    public int getUserId() {
-        return userId;
+    public String getPayeeName() {
+        return payeeName;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+    public void setPayeeName(String payeeName) {
 
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
-    }
-
-    public String getPayee() {
-        return payee;
-    }
-
-    public void setPayee(String payee) {
-
-        this.payee = payee;
+        this.payeeName = payeeName;
     }
 
     public String getAlias() {

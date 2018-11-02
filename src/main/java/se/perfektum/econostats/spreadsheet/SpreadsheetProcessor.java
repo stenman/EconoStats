@@ -41,6 +41,7 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         createMonthColumn(sheet);
 
         //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
+        //TODO: Set widths accordingly
         //TODO: Set background colors accordingly
         //TODO: Set font styles (Bold etc) accordingly
         //TODO: Logging
@@ -48,28 +49,35 @@ public class SpreadsheetProcessor implements ISpreadsheetProcessor {
         // Calculate payee invoices
         for (int i = 0; i < payeeConfig.size(); i++) {
             for (AccountTransaction transaction : transactions) {
-                if (transaction.getName().contains(payeeConfig.get(i).getPayee())) {
+                if (transaction.getName().contains(payeeConfig.get(i).getPayeeName())) {
                     //TODO: This is possibly set multiple times, see if there's a way to fix that...
-                    sheet.getCellByPosition(i + COLUMN_OFFSET, 0).setStringValue(payeeConfig.get(i).getAlias());
-                    sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue()).setDoubleValue(new Double(Math.abs(transaction.getAmount() / 100)));
+                    sheet.getCellByPosition(i + COLUMN_OFFSET, 0)
+                            .setStringValue(payeeConfig.get(i).getAlias());
+                    sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue())
+                            .setDoubleValue((double) Math.abs(transaction.getAmount() / 100));
                 }
             }
             // Calculate average and totals per payee
             String odfColName = getColumnName(i + COLUMN_OFFSET + 1);
-            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1).setFormula("=AVERAGE(" + odfColName + "2:" + odfColName + "13)");
-            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT).setFormula("=SUM(" + odfColName + "2:" + odfColName + "13)");
+            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1)
+                    .setFormula("=AVERAGE(" + odfColName + "2:" + odfColName + "13)");
+            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT)
+                    .setFormula("=SUM(" + odfColName + "2:" + odfColName + "13)");
         }
 
         // Calculate monthly totals for all payees
         for (int i = 2; i < ROW_COUNT; i++) {
-            sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, i - 1).setFormula("=SUM(B" + i + ":" + getColumnName(payeeConfig.size() + COLUMN_OFFSET) + i + ")");
+            sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, i - 1)
+                    .setFormula("=SUM(B" + i + ":" + getColumnName(payeeConfig.size() + COLUMN_OFFSET) + i + ")");
         }
 
         // Calculate total average monthly
-        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 13).setFormula("=AVERAGE(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
+        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 13)
+                .setFormula("=AVERAGE(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
 
         // Calculate grand total
-        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 14).setFormula("=SUM(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
+        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 14)
+                .setFormula("=SUM(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
 
         return doc;
     }

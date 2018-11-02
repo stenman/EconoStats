@@ -15,7 +15,6 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.SpreadsheetProcessor;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,7 +46,7 @@ public class SpreadsheetProcessorTest {
         PayeeFilter pc = new PayeeFilter();
         pc.setUserId(1);
         pc.setAccountId(1);
-        pc.setPayee("Autogiro FRISKTANDV");
+        pc.setPayeeName("Autogiro FRISKTANDV");
         pc.setAlias("Frisktandvården");
         pc.setGroup(Character.MIN_VALUE);
         pc.setVarying(false);
