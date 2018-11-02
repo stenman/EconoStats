@@ -1,6 +1,5 @@
 package se.perfektum.econostats.spreadsheet;
 
-import org.jopendocument.dom.OOUtils;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import se.perfektum.econostats.domain.PayeeFilter;
 
@@ -32,7 +31,7 @@ public class SpreadsheetManager implements ISpreadsheetManager {
         //TODO: path should be configurable!
         final File file = new File("c:/temp/testdata/simpleodf.ods");
         doc.save(file);
-        OOUtils.open(file); //TODO: remove this. exists only for testing purposes
+//        OOUtils.open(file); //TODO: find another way of opening odf files locally
 
     }
 }

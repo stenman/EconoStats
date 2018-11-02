@@ -40,8 +40,6 @@ public class NordeaCsvReader implements ICsvReader {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 AccountTransaction at = new AccountTransaction();
-                at.setUserId(1); //fix this
-                at.setAccountId(1); //fix this
                 at.setDate(LocalDate.parse(nextLine[0], formatter));
                 at.setName(nextLine[1]);
                 at.setCategory(nextLine[2]);

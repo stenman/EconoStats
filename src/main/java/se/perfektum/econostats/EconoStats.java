@@ -16,7 +16,7 @@ import java.util.List;
  * The main class of this application
  */
 public class EconoStats {
-    public static void main(String args[]) {
+    public static void mainTemp(String args[]) {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
 

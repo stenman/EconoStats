@@ -44,8 +44,6 @@ public class SpreadsheetProcessorTest {
     public void singlePayee_oneColumn() throws Exception {
         List<PayeeFilter> payeeFilters = new ArrayList<>();
         PayeeFilter pc = new PayeeFilter();
-        pc.setUserId(1);
-        pc.setAccountId(1);
         pc.setPayeeName("Autogiro FRISKTANDV");
         pc.setAlias("Frisktandvården");
         pc.setGroup(Character.MIN_VALUE);
