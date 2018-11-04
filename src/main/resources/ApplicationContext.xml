@@ -4,16 +4,25 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!--Main-->
-    <bean id="econoStats" class="se.perfektum.econostats.EconoStats"/>
+    <bean id="econoStatsMain" class="se.perfektum.econostats.EconostatsMain"/>
+    <bean id="econoStats" class="se.perfektum.econostats.EconoStats">
+        <constructor-arg index="0" name="spreadSheetManager" ref="odfToolkitSpreadsheetManager"/>
+        <constructor-arg index="1" name="csvReader" ref="nordeaCsvReader"/>
+        <constructor-arg index="2" name="accountTransactionDao" ref="googleDriveDao"/>
+    </bean>
+
+    <!--Csv Reader-->
+    <bean id="nordeaCsvReader" class="se.perfektum.econostats.bank.nordea.NordeaCsvReader"/>
 
     <!--Dao-->
-    <bean id="accountTransactionDao" class="se.perfektum.econostats.dao.AccountTransactionDao"/>
+    <bean id="googleDriveDao" class="se.perfektum.econostats.dao.googledrive.GoogleDriveDao"/>
 
     <!--Spreadsheet-->
-    <bean id="spreadsheetProcessor" class="se.perfektum.econostats.spreadsheet.SpreadsheetProcessor">
-        <constructor-arg index="0" name="accountTransactionDao" ref="accountTransactionDao"/>
+    <bean id="odfToolkitSpreadsheetProcessor"
+          class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor">
+        <constructor-arg index="0" name="accountTransactionDao" ref="googleDriveDao"/>
     </bean>
-    <bean id="spreadsheetManager" class="se.perfektum.econostats.spreadsheet.SpreadsheetManager">
-        <constructor-arg index="0" name="spreadsheetProcessor" ref="spreadsheetProcessor"/>
+    <bean id="odfToolkitSpreadsheetManager" class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetManager">
+        <constructor-arg index="0" name="spreadsheetProcessor" ref="odfToolkitSpreadsheetProcessor"/>
     </bean>
 </beans>

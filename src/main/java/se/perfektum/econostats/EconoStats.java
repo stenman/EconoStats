@@ -2,13 +2,14 @@ package se.perfektum.econostats;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.bank.nordea.NordeaCsvReader;
-import se.perfektum.econostats.spreadsheet.ISpreadsheetManager;
-import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
+import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
+import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,39 +17,32 @@ import java.util.List;
  * The main class of this application
  */
 public class EconoStats {
-    public static void mainTemp(String args[]) {
+    final Logger LOGGER = LoggerFactory.getLogger(EconoStats.class);
 
-        // [x]  read CSV
-        // [ ]  create object for each transaction in CSV, put each object in List<accountTransaction>
-        // [ ]  download existing JSON from /economy folder (if exists)
-        // [ ]  convert existing JSON into another List<AccountTransaction>
-        // [ ]  compare new and old List<AccountTransaction>:
-        // [ ]       merge the two lists (insert (into a "full" list) all objects that are not redundant)
-        // [ ]       create a full JSON from the full list
-        // [ ]       save the full JSON to drive (overwrite old)
-        // [ ]  remove all objects from list that do not exist in premade configuration list of names
-        // [ ]  use the new list to create ODF file
-        // [ ]  save ODF file to /economy folder
-        //
-        // [ ]  future: LOG all removals etc.!
-        // [ ]  future: use config file, save in /economy folder
-        // [ ]  find a good statistics tool and display some nice stats... start with a pie chart!
+    private SpreadsheetManager spreadsheetManager;
+    private CsvReader csvReader;
+    private AccountTransactionDao accountTransactionDao;
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
+    public EconoStats(SpreadsheetManager spreadSheetManager, CsvReader csvReader, AccountTransactionDao accountTransactionDao) {
+        this.spreadsheetManager = spreadsheetManager;
+        this.csvReader = csvReader;
+        this.accountTransactionDao = accountTransactionDao;
+    }
 
-        ISpreadsheetManager spredsheetManager = (SpreadsheetManager) context.getBean("spreadsheetManager");
-
-        final Logger LOGGER = LoggerFactory.getLogger(EconoStats.class);
-
+    public void start() throws Exception {
+        // Read CSV and put into object list
         //TODO: Put in config
-        final String CSV_FILE = "c:/temp/testdata/export.csv";
+//        final String CSV_FILE = "c:/temp/testdata/export.csv";
+//        List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
 
-        List<AccountTransaction> accountTransactions = new ArrayList<>();
-        NordeaCsvReader nordeaCsvReader = new NordeaCsvReader();
-        try {
-            accountTransactions = nordeaCsvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Download existing JSON from GDrive
+//        List<AccountTransaction> storedAccountTransactions = accountTransactionDao.loadAccountTransactions();
+//        for (AccountTransaction storedAccountTransaction : storedAccountTransactions) {
+//            System.out.println(storedAccountTransaction.getName());
+//        }
+
+        // Store full JSON on Drive
+        System.out.println("File ID: " + accountTransactionDao.storeAccountTransactions());
+
     }
 }

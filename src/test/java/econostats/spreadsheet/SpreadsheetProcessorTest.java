@@ -10,12 +10,12 @@ import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.AccountTransactionDao;
-import se.perfektum.econostats.dao.IAccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
-import se.perfektum.econostats.spreadsheet.SpreadsheetProcessor;
+import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,15 +27,15 @@ import static org.junit.Assert.assertEquals;
 
 public class SpreadsheetProcessorTest {
 
-    private IAccountTransactionDao accountTransactionDao = Mockito.mock(AccountTransactionDao.class);
+    private AccountTransactionDao accountTransactionDao = Mockito.mock(AccountTransactionDao.class);
 
-    private SpreadsheetProcessor spreadsheetProcessor = new SpreadsheetProcessor(accountTransactionDao);
+    private OdfToolkitSpreadsheetProcessor spreadsheetProcessor = new OdfToolkitSpreadsheetProcessor(accountTransactionDao);
 
     private static final int ROW_COUNT = 15;
     private static final int COLUMN_OFFSET = 1;
 
     @Before
-    public void before() {
+    public void before() throws IOException, GeneralSecurityException {
         List<AccountTransaction> accountTransactions = getAccountTransactions();
         Mockito.when(accountTransactionDao.loadAccountTransactions()).thenReturn(accountTransactions);
     }

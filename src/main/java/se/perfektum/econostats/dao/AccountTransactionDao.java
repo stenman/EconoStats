@@ -1,20 +1,22 @@
 package se.perfektum.econostats.dao;
 
+import com.google.api.services.drive.model.File;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
-public class AccountTransactionDao implements IAccountTransactionDao {
-    @Override
-    public List<AccountTransaction> loadAccountTransactions() {
-        // Not yet implemented
-        return null;
-    }
+/**
+ * Dao that handles loads and writes to data storage
+ */
+public interface AccountTransactionDao {
+    String storeAccountTransactions() throws IOException, GeneralSecurityException;
 
-    @Override
-    public List<PayeeFilter> loadPayeeFilter() {
-        // Not yet implemented
-        return null;
-    }
+    String updateAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException;
+
+    List<AccountTransaction> loadAccountTransactions() throws IOException, GeneralSecurityException;
+
+    List<PayeeFilter> loadPayeeFilter();
 }

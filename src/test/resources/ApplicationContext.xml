@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--Main-->
+    <bean id="econoStats" class="se.perfektum.econostats.EconoStats"/>
+
+    <!--Dao-->
+    <bean id="accountTransactionDao" class="se.perfektum.econostats.dao.googledrive.GoogleDriveDao"/>
+
+    <!--Spreadsheet-->
+    <bean id="spreadsheetProcessor" class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor">
+        <constructor-arg index="0" name="accountTransactionDao" ref="accountTransactionDao"/>
+    </bean>
+    <bean id="spreadsheetManager" class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetManager">
+        <constructor-arg index="0" name="spreadsheetProcessor" ref="spreadsheetProcessor"/>
+    </bean>
+</beans>
