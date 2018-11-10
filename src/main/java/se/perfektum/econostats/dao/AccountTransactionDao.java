@@ -14,9 +14,12 @@ import java.util.List;
 public interface AccountTransactionDao {
     String storeAccountTransactions() throws IOException, GeneralSecurityException;
 
-    String updateAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException;
+    String storeAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException;
 
-    List<AccountTransaction> loadAccountTransactions() throws IOException, GeneralSecurityException;
+    List<AccountTransaction> getAccountTransactions() throws IOException, GeneralSecurityException;
 
-    List<PayeeFilter> loadPayeeFilter();
+//    getFolderStructure
+//    createFolder
+
+    List<PayeeFilter> getPayeeFilter();
 }

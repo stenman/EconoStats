@@ -37,7 +37,7 @@ public class SpreadsheetProcessorTest {
     @Before
     public void before() throws IOException, GeneralSecurityException {
         List<AccountTransaction> accountTransactions = getAccountTransactions();
-        Mockito.when(accountTransactionDao.loadAccountTransactions()).thenReturn(accountTransactions);
+        Mockito.when(accountTransactionDao.getAccountTransactions()).thenReturn(accountTransactions);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class SpreadsheetProcessorTest {
         Gson gson = new GsonBuilder().create();
         String[][] sheetTestData = gson.fromJson(getSheetTestData(), String[][].class);
 
-        Mockito.when(accountTransactionDao.loadPayeeFilter()).thenReturn(payeeFilters);
+        Mockito.when(accountTransactionDao.getPayeeFilter()).thenReturn(payeeFilters);
 
         SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeFilters);
         Table sheet = sd.getSheetByIndex(0);

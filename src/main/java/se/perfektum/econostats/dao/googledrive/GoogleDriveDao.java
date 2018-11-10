@@ -83,7 +83,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
-    public String updateAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException {
+    public String storeAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException {
         File fileMetadata = new File();
         fileMetadata.setName("sample.json");
         fileMetadata.setMimeType("application/json");
@@ -94,7 +94,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
-    public List<AccountTransaction> loadAccountTransactions() throws IOException, GeneralSecurityException {
+    public List<AccountTransaction> getAccountTransactions() throws IOException, GeneralSecurityException {
         String pageToken = null;
         do {
             FileList result = getService().files().list()
@@ -113,7 +113,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
-    public List<PayeeFilter> loadPayeeFilter() {
+    public List<PayeeFilter> getPayeeFilter() {
         return null;
     }
 }

@@ -30,8 +30,8 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     @Override
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
 
-        List<PayeeFilter> payeeConfig = accountTransactionDao.loadPayeeFilter();
-        List<AccountTransaction> transactions = accountTransactionDao.loadAccountTransactions();
+        List<PayeeFilter> payeeConfig = accountTransactionDao.getPayeeFilter();
+        List<AccountTransaction> transactions = accountTransactionDao.getAccountTransactions();
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);

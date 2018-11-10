@@ -36,7 +36,7 @@ public class EconoStats {
 //        List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
 
         // Download existing JSON from GDrive
-//        List<AccountTransaction> storedAccountTransactions = accountTransactionDao.loadAccountTransactions();
+//        List<AccountTransaction> storedAccountTransactions = accountTransactionDao.getAccountTransactions();
 //        for (AccountTransaction storedAccountTransaction : storedAccountTransactions) {
 //            System.out.println(storedAccountTransaction.getName());
 //        }
