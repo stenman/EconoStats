@@ -42,7 +42,10 @@ public class EconoStats {
 //        }
 
         // Store full JSON on Drive
-        System.out.println("File ID: " + accountTransactionDao.storeAccountTransactions());
+//        System.out.println("File ID: " + accountTransactionDao.storeAccountTransactions());
+
+        // Create folder on Drive
+        System.out.println("File ID: "+ accountTransactionDao.createFolder("EconoStats"));
 
     }
 }

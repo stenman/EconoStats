@@ -10,13 +10,18 @@ import java.util.List;
 
 /**
  * Dao that handles loads and writes to data storage
+ * NOTE: Using Google Drive as an implementation breaks this interface. Maybe it should be renamed/repurposed?
  */
 public interface AccountTransactionDao {
+    String createFolder(String name) throws IOException, GeneralSecurityException;
+
     String storeAccountTransactions() throws IOException, GeneralSecurityException;
 
     String storeAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException;
 
     List<AccountTransaction> getAccountTransactions() throws IOException, GeneralSecurityException;
+
+
 
 //    getFolderStructure
 //    createFolder

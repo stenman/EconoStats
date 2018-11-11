@@ -70,6 +70,19 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
+    public String createFolder(String name) throws IOException, GeneralSecurityException {
+        File fileMetadata = new File();
+        fileMetadata.setName(name);
+        fileMetadata.setMimeType("application/vnd.google-apps.folder");
+
+        File file = getService().files().create(fileMetadata)
+                .setFields("id")
+                .execute();
+        System.out.println("Folder ID: " + file.getId());
+        return file.getId();
+    }
+
+    @Override
     public String storeAccountTransactions() throws IOException, GeneralSecurityException {
         File fileMetadata = new File();
         fileMetadata.setName("sample.json");
