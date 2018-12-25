@@ -10,6 +10,7 @@ public class EconostatsMain {
     // [x]  [x] read CSV
     // [x]  [x] create object for each transaction in CSV, put each object in List<accountTransaction>
     // [ ]  [ ] implement a search that can search for folders and files and returns a file-ID
+    //              (To avoid creating new EconoStats-folders every time)
     // [x]  [ ] create "folder" /EconoStats
     // [ ]  [ ] get existing JSON from /EconoStats folder (if exists)
     // [ ]  [ ]     if it doesn't exist, just create a new ODF from input file and save it to GDrive

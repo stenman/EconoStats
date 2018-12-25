@@ -70,6 +70,36 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
+    public String searchFile(String name) throws IOException, GeneralSecurityException {
+        String queryParam = "modifiedTime > '2012-06-04T12:00:00' and (mimeType contains 'json') and trashed = false";
+        com.google.api.services.drive.Drive.Files.List qry = getService().files().list().setFields("files(id, name)").setQ(queryParam);
+        com.google.api.services.drive.model.FileList gLst = qry.execute();
+        for (com.google.api.services.drive.model.File gFl : gLst.getFiles()) {
+            System.out.println("ID==>" + gFl.getId() + "    Name: " + gFl.getName());
+        }
+        return null;
+    }
+
+    @Override
+    public List<AccountTransaction> getAccountTransactions() throws IOException, GeneralSecurityException {
+        String pageToken = null;
+        do {
+            FileList result = getService().files().list()
+                    .setQ("'root' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false")
+                    .setSpaces("drive")
+                    .setFields("nextPageToken, files(id, name, parents)")
+                    .setPageToken(pageToken)
+                    .execute();
+            for (File file : result.getFiles()) {
+                System.out.printf("Found file: %s (%s)\n",
+                        file.getName(), file.getId());
+            }
+            pageToken = result.getNextPageToken();
+        } while (pageToken != null);
+        return null;
+    }
+
+    @Override
     public String createFolder(String name) throws IOException, GeneralSecurityException {
         File fileMetadata = new File();
         fileMetadata.setName(name);
@@ -104,25 +134,6 @@ public class GoogleDriveDao implements AccountTransactionDao {
         FileContent mediaContent = new FileContent("application/json", filePath);
         File updatedFile = getService().files().update(fileId, file, mediaContent).execute();
         return updatedFile.getId();
-    }
-
-    @Override
-    public List<AccountTransaction> getAccountTransactions() throws IOException, GeneralSecurityException {
-        String pageToken = null;
-        do {
-            FileList result = getService().files().list()
-                    .setQ("'root' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false")
-                    .setSpaces("drive")
-                    .setFields("nextPageToken, files(id, name, parents)")
-                    .setPageToken(pageToken)
-                    .execute();
-            for (File file : result.getFiles()) {
-                System.out.printf("Found file: %s (%s)\n",
-                        file.getName(), file.getId());
-            }
-            pageToken = result.getNextPageToken();
-        } while (pageToken != null);
-        return null;
     }
 
     @Override

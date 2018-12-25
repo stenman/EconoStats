@@ -13,6 +13,8 @@ import java.util.List;
  * NOTE: Using Google Drive as an implementation breaks this interface. Maybe it should be renamed/repurposed?
  */
 public interface AccountTransactionDao {
+    String searchFile(String name) throws IOException, GeneralSecurityException;
+
     String createFolder(String name) throws IOException, GeneralSecurityException;
 
     String storeAccountTransactions() throws IOException, GeneralSecurityException;
