@@ -138,10 +138,4 @@ public class GoogleDriveDao implements AccountTransactionDao {
                 .executeMediaAndDownloadTo(outputStream);
         return outputStream.toString();
     }
-
-    // hmmm, this seems like an odd place to have this filter?
-    @Override
-    public List<PayeeFilter> getPayeeFilter() {
-        return null;
-    }
 }

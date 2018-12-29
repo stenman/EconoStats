@@ -1,4 +1,12 @@
 {
+  "payeeFilters": [
+    {
+      "payeeName": "Autogiro FRISKTANDV",
+      "alias": "Frisktandvården",
+      "group": " ",
+      "varying": false
+    }
+  ],
   "accountTransactions": [
     {
       "date": {

@@ -46,17 +46,15 @@ public class SpreadsheetProcessorTest {
     @Test
     public void singlePayee_oneColumn() throws Exception {
         List<PayeeFilter> payeeFilters = new ArrayList<>();
-        PayeeFilter pc = new PayeeFilter();
-        pc.setPayeeName("Autogiro FRISKTANDV");
-        pc.setAlias("Frisktandvården");
-        pc.setGroup(Character.MIN_VALUE);
-        pc.setVarying(false);
-        payeeFilters.add(pc);
+        PayeeFilter pf = new PayeeFilter();
+        pf.setPayeeName("Autogiro FRISKTANDV");
+        pf.setAlias("Frisktandvården");
+        pf.setGroup(Character.MIN_VALUE);
+        pf.setVarying(false);
+        payeeFilters.add(pf);
 
         Gson gson = new GsonBuilder().create();
         String[][] sheetTestData = gson.fromJson(getSheetTestData(), String[][].class);
-
-        Mockito.when(accountTransactionDao.getPayeeFilter()).thenReturn(payeeFilters);
 
         SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeFilters);
         Table sheet = sd.getSheetByIndex(0);
@@ -105,120 +103,5 @@ public class SpreadsheetProcessorTest {
         assertEquals("Oct", sheet.getCellByPosition(0, 10).getStringValue());
         assertEquals("Nov", sheet.getCellByPosition(0, 11).getStringValue());
         assertEquals("Dec", sheet.getCellByPosition(0, 12).getStringValue());
-    }
-
-    private List<AccountTransaction> getAccountTransactions() {
-        LocalDateTime now = LocalDateTime.now();
-
-        return Arrays.asList(new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-08-28", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Autogiro FRISKTANDV")
-                        .category("")
-                        .amount(-6700)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-08-31", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Autogiro FOLKSAM")
-                        .category("Household")
-                        .amount(-100000)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-09-30", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Autogiro FOLKSAM")
-                        .category("")
-                        .amount(-100000)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-07-11", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Betalning BG 170-3453 Inteleon AB")
-                        .category("")
-                        .amount(-800)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-08-11", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Betalning BG 170-3453 Inteleon AB")
-                        .category("")
-                        .amount(-5800)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-09-11", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Betalning BG 170-3453 Inteleon AB")
-                        .category("")
-                        .amount(-23800)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-09-29", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Omsättning lån 3998 77 77771")
-                        .category("")
-                        .amount(-23100)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-09-27", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Omsättning lån 3998 77 77771")
-                        .category("")
-                        .amount(-100800)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-09-27", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Omsättning lån 3998 77 77772")
-                        .category("")
-                        .amount(-57800)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build(),
-                new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
-                        .date(LocalDate.parse("2018-09-27", DateTimeFormatter.ISO_LOCAL_DATE))
-                        .name("Omsättning lån 3998 77 77773")
-                        .category("")
-                        .amount(-239500)
-                        .balance(0)
-                        .stampInserted(now)
-                        .stampChanged(now)
-                        .build());
     }
 }

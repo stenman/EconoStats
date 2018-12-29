@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Creates a spreadsheet, fills the spreadsheet, does various calculations on spreadsheet values
+ * Gets AccountTransactions from storage
+ * Performs various calculations on transaction values
+ * Creates a spreadsheet on monthly payments
  */
 public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
 
@@ -32,27 +34,28 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final int COLUMN_OFFSET = 1;
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
-    private static final String TOP_LEVEL_JSON = "accountTransactions";
+    private static final String ACCOUNT_TRANSACTIONS = "accountTransactions";
+    private static final String PAYEE_FILTERS = "payeeFilters";
 
     @Override
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
-
-        List<PayeeFilter> payeeConfig = accountTransactionDao.getPayeeFilter();
         String downloadedTransactions = accountTransactionDao.getFile("some-id");
 
         JsonParser parser = new JsonParser();
         JsonObject transactions = (JsonObject) parser.parse(downloadedTransactions);
 
         // @formatter:off
-        Type listType = new TypeToken<ArrayList<AccountTransaction>>() {}.getType();
+        Type listTypeAccountTransaction = new TypeToken<ArrayList<AccountTransaction>>() {}.getType();
+        Type listTypePayeeFilter = new TypeToken<ArrayList<PayeeFilter>>() {}.getType();
         // @formatter:on
-        List<AccountTransaction> accountTransactions = new Gson().fromJson(transactions.getAsJsonArray(TOP_LEVEL_JSON), listType);
+        List<AccountTransaction> accountTransactions = new Gson().fromJson(transactions.getAsJsonArray(ACCOUNT_TRANSACTIONS), listTypeAccountTransaction);
+        List<PayeeFilter> payeeFilters = new Gson().fromJson(transactions.getAsJsonArray(PAYEE_FILTERS), listTypePayeeFilter);
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
 
         sheet.getCellByPosition(0, 0).setStringValue(MONTH);
-        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 0).setStringValue(TOTAL);
+        sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0).setStringValue(TOTAL);
         createMonthColumn(sheet);
 
         //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
@@ -62,39 +65,47 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         //TODO: Logging
         //TODO: I18N
         // Calculate payee invoices
-        for (int i = 0; i < payeeConfig.size(); i++) {
+        for (int i = 0; i < payeeFilters.size(); i++) {
             for (AccountTransaction transaction : accountTransactions) {
-                if (transaction.getName().contains(payeeConfig.get(i).getPayeeName())) {
+                if (transaction.getName().contains(payeeFilters.get(i).getPayeeName())) {
                     //TODO: This is possibly set multiple times, see if there's a way to fix that...
                     sheet.getCellByPosition(i + COLUMN_OFFSET, 0)
-                            .setStringValue(payeeConfig.get(i).getAlias());
+                            .setStringValue(payeeFilters.get(i).getAlias());
                     sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue())
                             .setDoubleValue((double) Math.abs(transaction.getAmount() / 100));
                 }
             }
-            // Calculate average and totals per payee
+            // Calculate average per payee
             String odfColName = getColumnName(i + COLUMN_OFFSET + 1);
             sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1)
                     .setFormula("=AVERAGE(" + odfColName + "2:" + odfColName + "13)");
+            // Calculate totals per payee
             sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT)
                     .setFormula("=SUM(" + odfColName + "2:" + odfColName + "13)");
         }
 
         // Calculate monthly totals for all payees
-        for (int i = 2; i < ROW_COUNT; i++) {
-            sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, i - 1)
-                    .setFormula("=SUM(B" + i + ":" + getColumnName(payeeConfig.size() + COLUMN_OFFSET) + i + ")");
-        }
+        calcMonthlyTotals(payeeFilters, sheet);
 
         // Calculate total average monthly
-        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 13)
-                .setFormula("=AVERAGE(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
+        calcTotals(payeeFilters, sheet, 13, "=AVERAGE(");
 
         // Calculate grand total
-        sheet.getCellByPosition(payeeConfig.size() + COLUMN_OFFSET, 14)
-                .setFormula("=SUM(" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeConfig.size() + COLUMN_OFFSET + 1) + "13)");
+        calcTotals(payeeFilters, sheet, 14, "=SUM(");
 
         return doc;
+    }
+
+    private void calcTotals(List<PayeeFilter> payeeFilters, Table sheet, int rowIndex, String function) {
+        sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex)
+                .setFormula(function + getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1) + "13)");
+    }
+
+    private void calcMonthlyTotals(List<PayeeFilter> payeeFilters, Table sheet) {
+        for (int i = 2; i < ROW_COUNT; i++) {
+            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1)
+                    .setFormula("=SUM(B" + i + ":" + getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i + ")");
+        }
     }
 
     private void createMonthColumn(Table sheet) {

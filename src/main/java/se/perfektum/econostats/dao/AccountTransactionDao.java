@@ -22,7 +22,4 @@ public interface AccountTransactionDao {
     List<String> searchForFile(String name, String mimeType) throws IOException, GeneralSecurityException;
 
     String getFile(String fileId) throws IOException, GeneralSecurityException;
-
-    // TODO: This filter should probably be somewhere else....
-    List<PayeeFilter> getPayeeFilter();
 }
