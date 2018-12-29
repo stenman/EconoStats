@@ -1,0 +1,16 @@
+return Arrays.asList(new AccountTransaction.Builder()
+.userId(1)
+.accountId(1)
+.date(LocalDate.parse("2018-08-28", DateTimeFormatter.ISO_LOCAL_DATE))
+.name("Autogiro FRISKTANDV")
+.category("")
+.amount(-6700)
+.balance(0)
+.stampInserted(now)
+.stampChanged(now)
+.build(),
+
+{
+  "Name": "SomeName",
+  "Number": 666
+}

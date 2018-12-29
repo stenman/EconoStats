@@ -16,20 +16,22 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import se.perfektum.econostats.dao.AccountTransactionDao;
-import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GoogleDriveDao implements AccountTransactionDao {
     private static final String APPLICATION_NAME = "EconoStats";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
+
+    public static final String APPLICATION_VND_GOOGLE_APPS_FOLDER = "application/vnd.google-apps.folder";
+    public static final String APPLICATION_VND_GOOGLE_APPS_FILE = "application/json";
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -70,55 +72,27 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
-    public String searchFile(String name) throws IOException, GeneralSecurityException {
-        String queryParam = "modifiedTime > '2012-06-04T12:00:00' and (mimeType contains 'json') and trashed = false";
-        com.google.api.services.drive.Drive.Files.List qry = getService().files().list().setFields("files(id, name)").setQ(queryParam);
-        com.google.api.services.drive.model.FileList gLst = qry.execute();
-        for (com.google.api.services.drive.model.File gFl : gLst.getFiles()) {
-            System.out.println("ID==>" + gFl.getId() + "    Name: " + gFl.getName());
-        }
-        return null;
-    }
-
-    @Override
-    public List<AccountTransaction> getAccountTransactions() throws IOException, GeneralSecurityException {
-        String pageToken = null;
-        do {
-            FileList result = getService().files().list()
-                    .setQ("'root' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false")
-                    .setSpaces("drive")
-                    .setFields("nextPageToken, files(id, name, parents)")
-                    .setPageToken(pageToken)
-                    .execute();
-            for (File file : result.getFiles()) {
-                System.out.printf("Found file: %s (%s)\n",
-                        file.getName(), file.getId());
-            }
-            pageToken = result.getNextPageToken();
-        } while (pageToken != null);
-        return null;
-    }
-
-    @Override
     public String createFolder(String name) throws IOException, GeneralSecurityException {
         File fileMetadata = new File();
         fileMetadata.setName(name);
-        fileMetadata.setMimeType("application/vnd.google-apps.folder");
+        fileMetadata.setMimeType(APPLICATION_VND_GOOGLE_APPS_FOLDER);
 
         File file = getService().files().create(fileMetadata)
                 .setFields("id")
                 .execute();
-        System.out.println("Folder ID: " + file.getId());
         return file.getId();
     }
 
     @Override
-    public String storeAccountTransactions() throws IOException, GeneralSecurityException {
+    public String createFile(List<String> parents) throws IOException, GeneralSecurityException {
         File fileMetadata = new File();
-        fileMetadata.setName("sample.json");
-        fileMetadata.setMimeType("application/json");
-        java.io.File filePath = new java.io.File("src/main/resources/sample.json");
+        fileMetadata.setName("transactions.json");
+        fileMetadata.setParents(parents);
+        fileMetadata.setMimeType(APPLICATION_VND_GOOGLE_APPS_FILE);
+
+        java.io.File filePath = new java.io.File("GoogleDriveSandbox/src/main/resources/transactions.json");
         FileContent mediaContent = new FileContent("application/json", filePath);
+
         File file = getService().files().create(fileMetadata, mediaContent)
                 .setFields("id")
                 .execute();
@@ -126,16 +100,46 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
-    public String storeAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException {
+    public void updateFile(String fileId) throws IOException, GeneralSecurityException {
+        File existingFile = getService().files().get(fileId).execute();
         File fileMetadata = new File();
-        fileMetadata.setName("sample.json");
-        fileMetadata.setMimeType("application/json");
-        java.io.File filePath = new java.io.File("src/main/resources/sample.json");
+        fileMetadata.setName(existingFile.getName());
+        fileMetadata.setParents(existingFile.getParents());
+        fileMetadata.setMimeType(existingFile.getMimeType());
+
+        java.io.File filePath = new java.io.File("GoogleDriveSandbox/src/main/resources/transactions.json");
         FileContent mediaContent = new FileContent("application/json", filePath);
-        File updatedFile = getService().files().update(fileId, file, mediaContent).execute();
-        return updatedFile.getId();
+
+        getService().files().update(fileId, fileMetadata, mediaContent).execute();
     }
 
+    @Override
+    public List<String> searchForFile(String name, String mimeType) throws IOException, GeneralSecurityException {
+        String pageToken = null;
+        List<String> items = new ArrayList<>();
+        do {
+            FileList result = getService().files().list()
+                    .setQ("mimeType = '" + mimeType + "' and trashed = false")
+                    .setSpaces("drive")
+                    .setFields("nextPageToken, files(id, name, parents)")
+                    .setPageToken(pageToken)
+                    .execute();
+            items.addAll(result.getFiles().stream().filter(d -> d.getName().equals(name)).map(File::getId).collect(Collectors.toList()));
+            pageToken = result.getNextPageToken();
+        } while (pageToken != null);
+
+        return items;
+    }
+
+    @Override
+    public String getFile(String fileId) throws IOException, GeneralSecurityException {
+        OutputStream outputStream = new ByteArrayOutputStream();
+        getService().files().get(fileId)
+                .executeMediaAndDownloadTo(outputStream);
+        return outputStream.toString();
+    }
+
+    // hmmm, this seems like an odd place to have this filter?
     @Override
     public List<PayeeFilter> getPayeeFilter() {
         return null;

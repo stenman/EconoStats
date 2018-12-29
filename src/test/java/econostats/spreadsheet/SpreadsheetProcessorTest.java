@@ -14,6 +14,7 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 
 public class SpreadsheetProcessorTest {
 
@@ -37,7 +39,9 @@ public class SpreadsheetProcessorTest {
     @Before
     public void before() throws IOException, GeneralSecurityException {
         List<AccountTransaction> accountTransactions = getAccountTransactions();
-        Mockito.when(accountTransactionDao.getAccountTransactions()).thenReturn(accountTransactions);
+//        sheetTestData.json
+        File file = new File("/sheetTestData.json");
+        Mockito.when(accountTransactionDao.getFile(anyString())).thenReturn(file.toString());
     }
 
     @Test

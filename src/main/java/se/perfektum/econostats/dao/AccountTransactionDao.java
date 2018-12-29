@@ -13,20 +13,16 @@ import java.util.List;
  * NOTE: Using Google Drive as an implementation breaks this interface. Maybe it should be renamed/repurposed?
  */
 public interface AccountTransactionDao {
-    String searchFile(String name) throws IOException, GeneralSecurityException;
-
     String createFolder(String name) throws IOException, GeneralSecurityException;
 
-    String storeAccountTransactions() throws IOException, GeneralSecurityException;
+    String createFile(List<String> parents) throws IOException, GeneralSecurityException;
 
-    String storeAccountTransactions(String fileId, File file) throws IOException, GeneralSecurityException;
+    void updateFile(String fileId) throws IOException, GeneralSecurityException;
 
-    List<AccountTransaction> getAccountTransactions() throws IOException, GeneralSecurityException;
+    List<String> searchForFile(String name, String mimeType) throws IOException, GeneralSecurityException;
 
+    String getFile(String fileId) throws IOException, GeneralSecurityException;
 
-
-//    getFolderStructure
-//    createFolder
-
+    // TODO: This filter should probably be somewhere else....
     List<PayeeFilter> getPayeeFilter();
 }

@@ -1,5 +1,7 @@
 package se.perfektum.econostats.spreadsheet;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.AccountTransactionDao;
@@ -8,6 +10,7 @@ import se.perfektum.econostats.domain.PayeeFilter;
 
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,7 +34,13 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
 
         List<PayeeFilter> payeeConfig = accountTransactionDao.getPayeeFilter();
-        List<AccountTransaction> transactions = accountTransactionDao.getAccountTransactions();
+        String downloadedTransactions = accountTransactionDao.getFile("some-id");
+
+        JsonParser parser = new JsonParser();
+//        JsonObject transactions = (JsonObject) parser.parse(downloadedTransactions);
+
+//        ............ fortsätt parsa! Allt här ska bli en lista av AccountTransaction
+        List<AccountTransaction> transactions = new ArrayList<>(); //remove this, it's just temporary
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
