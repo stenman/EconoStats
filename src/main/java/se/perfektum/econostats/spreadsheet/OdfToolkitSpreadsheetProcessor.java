@@ -1,13 +1,16 @@
 package se.perfektum.econostats.spreadsheet;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
+import java.lang.reflect.Type;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final int COLUMN_OFFSET = 1;
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
+    private static final String TOP_LEVEL_JSON = "accountTransactions";
 
     @Override
     public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
@@ -37,10 +41,12 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         String downloadedTransactions = accountTransactionDao.getFile("some-id");
 
         JsonParser parser = new JsonParser();
-//        JsonObject transactions = (JsonObject) parser.parse(downloadedTransactions);
+        JsonObject transactions = (JsonObject) parser.parse(downloadedTransactions);
 
-//        ............ fortsätt parsa! Allt här ska bli en lista av AccountTransaction
-        List<AccountTransaction> transactions = new ArrayList<>(); //remove this, it's just temporary
+        // @formatter:off
+        Type listType = new TypeToken<ArrayList<AccountTransaction>>() {}.getType();
+        // @formatter:on
+        List<AccountTransaction> accountTransactions = new Gson().fromJson(transactions.getAsJsonArray(TOP_LEVEL_JSON), listType);
 
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
@@ -57,7 +63,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         //TODO: I18N
         // Calculate payee invoices
         for (int i = 0; i < payeeConfig.size(); i++) {
-            for (AccountTransaction transaction : transactions) {
+            for (AccountTransaction transaction : accountTransactions) {
                 if (transaction.getName().contains(payeeConfig.get(i).getPayeeName())) {
                     //TODO: This is possibly set multiple times, see if there's a way to fix that...
                     sheet.getCellByPosition(i + COLUMN_OFFSET, 0)

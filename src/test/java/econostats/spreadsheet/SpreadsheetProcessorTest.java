@@ -38,10 +38,9 @@ public class SpreadsheetProcessorTest {
 
     @Before
     public void before() throws IOException, GeneralSecurityException {
-        List<AccountTransaction> accountTransactions = getAccountTransactions();
-//        sheetTestData.json
-        File file = new File("/sheetTestData.json");
-        Mockito.when(accountTransactionDao.getFile(anyString())).thenReturn(file.toString());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String file = IOUtils.toString(classLoader.getResourceAsStream("transactions-1.json"), "UTF-8");
+        Mockito.when(accountTransactionDao.getFile(anyString())).thenReturn(file);
     }
 
     @Test
