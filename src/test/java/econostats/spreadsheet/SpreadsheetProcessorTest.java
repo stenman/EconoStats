@@ -15,6 +15,7 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
@@ -39,6 +40,7 @@ public class SpreadsheetProcessorTest {
         String[][] sheetTestData = gson.fromJson(getSheetTestData(), String[][].class);
 
         SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(accountTransactions, payeeFilters);
+
         Table sheet = sd.getSheetByIndex(0);
 
         assertMonths(sheet);

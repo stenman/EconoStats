@@ -19,9 +19,7 @@
 
     <!--Spreadsheet-->
     <bean id="odfToolkitSpreadsheetProcessor"
-          class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor">
-        <constructor-arg index="0" name="accountTransactionDao" ref="googleDriveDao"/>
-    </bean>
+          class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor"/>
     <bean id="odfToolkitSpreadsheetManager" class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetManager">
         <constructor-arg index="0" name="spreadsheetProcessor" ref="odfToolkitSpreadsheetProcessor"/>
     </bean>

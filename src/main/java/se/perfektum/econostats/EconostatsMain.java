@@ -2,8 +2,6 @@ package se.perfektum.econostats;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetManager;
-import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
 
 public class EconostatsMain {
     // Done Tested

@@ -1,7 +1,5 @@
 package se.perfektum.econostats.domain;
 
-import javafx.scene.Parent;
-
 import java.util.Objects;
 
 public class PayeeFilter {
