@@ -23,10 +23,10 @@ public class JsonUtils {
         JsonParser parser = new JsonParser();
         JsonObject transactions = (JsonObject) parser.parse(json);
 
-        Type lolType = TypeToken.getParameterized(ArrayList.class, clazz).getType();
+        Type listType = TypeToken.getParameterized(ArrayList.class, clazz).getType();
 
         String elementName = Character.toLowerCase(clazz.getSimpleName().charAt(0)) + clazz.getSimpleName().substring(1) + "s";
-        List<T> result = new Gson().fromJson(transactions.getAsJsonArray(elementName), lolType);
+        List<T> result = new Gson().fromJson(transactions.getAsJsonArray(elementName), listType);
 
         return result;
     }

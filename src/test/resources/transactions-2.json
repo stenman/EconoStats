@@ -1,0 +1,388 @@
+{
+  "payeeFilters": [
+    {
+      "payeeName": "Autogiro FRISKTANDV",
+      "alias": "Frisktandvården",
+      "group": " ",
+      "varying": false
+    },
+    {
+      "payeeName": "Betalning BG 170-3453 Inteleon AB",
+      "alias": "Parkering",
+      "group": " ",
+      "varying": true
+    }
+  ],
+  "accountTransactions": [
+    {
+      "date": {
+        "year": 2018,
+        "month": 8,
+        "day": 28
+      },
+      "name": "Autogiro FRISKTANDV",
+      "category": "",
+      "amount": -6700,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 8,
+        "day": 31
+      },
+      "name": "Autogiro FOLKSAM",
+      "category": "Household",
+      "amount": -100000,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 9,
+        "day": 30
+      },
+      "name": "Autogiro FOLKSAM",
+      "category": "",
+      "amount": -100000,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 7,
+        "day": 11
+      },
+      "name": "Betalning BG 170-3453 Inteleon AB",
+      "category": "",
+      "amount": -800,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 8,
+        "day": 11
+      },
+      "name": "Betalning BG 170-3453 Inteleon AB",
+      "category": "",
+      "amount": -5800,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 9,
+        "day": 11
+      },
+      "name": "Betalning BG 170-3453 Inteleon AB",
+      "category": "",
+      "amount": -23800,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 9,
+        "day": 29
+      },
+      "name": "Omsättning lån 3998 77 77771",
+      "category": "",
+      "amount": -23100,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 9,
+        "day": 27
+      },
+      "name": "Omsättning lån 3998 77 77771",
+      "category": "",
+      "amount": -100800,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 9,
+        "day": 27
+      },
+      "name": "Omsättning lån 3998 77 77772",
+      "category": "",
+      "amount": -57800,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 9,
+        "day": 27
+      },
+      "name": "Omsättning lån 3998 77 77773",
+      "category": "",
+      "amount": -239500,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    }
+  ]
+}

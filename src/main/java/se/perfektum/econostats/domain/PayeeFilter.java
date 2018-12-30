@@ -1,5 +1,9 @@
 package se.perfektum.econostats.domain;
 
+import javafx.scene.Parent;
+
+import java.util.Objects;
+
 public class PayeeFilter {
     private String payeeName;
     private String alias;
@@ -37,5 +41,24 @@ public class PayeeFilter {
 
     public void setVarying(boolean varying) {
         this.varying = varying;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPayeeName(),
+                getAlias(),
+                getGroup(),
+                isVarying());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof PayeeFilter)) return false;
+        PayeeFilter that = (PayeeFilter) obj;
+        return Objects.equals(getPayeeName(), that.getPayeeName())
+                && Objects.equals(getAlias(), that.getAlias())
+                && Objects.equals(getGroup(), that.getGroup())
+                && Objects.equals(isVarying(), that.isVarying());
     }
 }

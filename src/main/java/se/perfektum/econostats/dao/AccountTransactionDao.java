@@ -13,6 +13,8 @@ public interface AccountTransactionDao {
 
     String createFile(String content, List<String> parents) throws IOException, GeneralSecurityException;
 
+    String createFile(List<String> parents) throws IOException, GeneralSecurityException;
+
     void updateFile(String fileId) throws IOException, GeneralSecurityException;
 
     List<String> searchForFile(String name, String mimeType) throws IOException, GeneralSecurityException;

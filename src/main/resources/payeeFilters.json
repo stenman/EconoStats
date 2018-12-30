@@ -1,0 +1,16 @@
+{
+  "payeeFilters": [
+    {
+      "payeeName": "Autogiro FRISKTANDV",
+      "alias": "Frisktandvården",
+      "group": " ",
+      "varying": false
+    },
+    {
+      "payeeName": "Autogiro CSN",
+      "alias": "CSN",
+      "group": " ",
+      "varying": false
+    }
+  ]
+}

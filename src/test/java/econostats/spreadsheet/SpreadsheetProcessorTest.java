@@ -17,27 +17,16 @@ import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 
 public class SpreadsheetProcessorTest {
-
-    private AccountTransactionDao accountTransactionDao = Mockito.mock(AccountTransactionDao.class);
-
-    private OdfToolkitSpreadsheetProcessor spreadsheetProcessor = new OdfToolkitSpreadsheetProcessor(accountTransactionDao);
+    private OdfToolkitSpreadsheetProcessor spreadsheetProcessor = new OdfToolkitSpreadsheetProcessor();
 
     private static final int ROW_COUNT = 15;
     private static final int COLUMN_OFFSET = 1;
-
-    @Before
-    public void before() throws IOException, GeneralSecurityException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        String file = IOUtils.toString(classLoader.getResourceAsStream("transactions-1.json"), "UTF-8");
-        Mockito.when(accountTransactionDao.getFile(anyString())).thenReturn(file);
-    }
 
     @Test
     public void singlePayee_oneColumn() throws Exception {

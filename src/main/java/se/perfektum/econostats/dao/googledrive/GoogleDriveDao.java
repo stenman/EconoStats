@@ -91,10 +91,25 @@ public class GoogleDriveDao implements AccountTransactionDao {
         fileMetadata.setParents(parents);
         fileMetadata.setMimeType(APPLICATION_VND_GOOGLE_APPS_FILE);
 
-        FileUtils.writeStringToFile(new java.io.File("transactions.json"), content, "UTF-8");
-        java.io.File filePath = new java.io.File("transactions.json");
+        FileUtils.writeStringToFile(new java.io.File("/files/transactions.json"), content, "UTF-8");
+        java.io.File filePath = new java.io.File("/files/transactions.json");
         FileContent mediaContent = new FileContent("application/json", filePath);
 
+        File file = getService().files().create(fileMetadata, mediaContent)
+                .setFields("id")
+                .execute();
+        return file.getId();
+    }
+
+    @Override
+    public String createFile(List<String> parents) throws IOException, GeneralSecurityException {
+        File fileMetadata = new File();
+        fileMetadata.setName("recurringTransactions.ods");
+        fileMetadata.setParents(parents);
+        fileMetadata.setMimeType("application/vnd.google-apps.spreadsheet");
+
+        java.io.File filePath = new java.io.File("files/recurringTransactions.ods");
+        FileContent mediaContent = new FileContent("text/ods", filePath);
         File file = getService().files().create(fileMetadata, mediaContent)
                 .setFields("id")
                 .execute();
@@ -114,6 +129,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
 
         getService().files().update(fileId, fileMetadata, mediaContent).execute();
     }
+
 
     @Override
     public List<String> searchForFile(String name, String mimeType) throws IOException, GeneralSecurityException {

@@ -17,13 +17,6 @@ import java.util.Locale;
  * Creates a spreadsheet on monthly payments
  */
 public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
-
-    private AccountTransactionDao accountTransactionDao;
-
-    public OdfToolkitSpreadsheetProcessor(AccountTransactionDao accountTransactionDao) {
-        this.accountTransactionDao = accountTransactionDao;
-    }
-
     private static final int ROW_COUNT = 14;
     private static final int COLUMN_OFFSET = 1;
     private static final String MONTH = "Month";
