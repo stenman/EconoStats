@@ -1,8 +1,5 @@
 package se.perfektum.econostats.spreadsheet;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import se.perfektum.econostats.common.JsonUtils;
 import se.perfektum.econostats.dao.AccountTransactionDao;
@@ -10,8 +7,6 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -44,18 +39,12 @@ public class OdfToolkitSpreadsheetManager implements SpreadsheetManager {
     }
 
     @Override
-    public List<PayeeFilter> syncPayeeFilters(List<PayeeFilter> localPayeeFilters, String transactions) throws IOException {
-
+    public List<AccountTransaction> mergeAccountTransactions(List<AccountTransaction> importedAccountTransactions, String transactions) {
         //Get PayeeFilter from datastore
-        List<PayeeFilter> dataStorePayeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, transactions);
+        List<AccountTransaction> dataStoreAccountTransactions = JsonUtils.getJsonElement(AccountTransaction.class, transactions);
 
-        List<PayeeFilter> result = Stream.concat(localPayeeFilters.stream(), dataStorePayeeFilters.stream()).distinct().collect(Collectors.toList());
+        List<AccountTransaction> result = Stream.concat(importedAccountTransactions.stream(), dataStoreAccountTransactions.stream()).distinct().collect(Collectors.toList());
 
         return result;
-    }
-
-    @Override
-    public List<AccountTransaction> mergeAccountTransactions(List<AccountTransaction> importedAccountTransactions, String transactions) throws IOException {
-        return null;
     }
 }

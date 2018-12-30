@@ -52,13 +52,13 @@ public class PayeeFilter {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof PayeeFilter)) return false;
-        PayeeFilter that = (PayeeFilter) obj;
-        return Objects.equals(getPayeeName(), that.getPayeeName())
-                && Objects.equals(getAlias(), that.getAlias())
-                && Objects.equals(getGroup(), that.getGroup())
-                && Objects.equals(isVarying(), that.isVarying());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PayeeFilter)) return false;
+        PayeeFilter pf = (PayeeFilter) o;
+        return Objects.equals(getPayeeName(), pf.getPayeeName())
+                && Objects.equals(getAlias(), pf.getAlias())
+                && Objects.equals(getGroup(), pf.getGroup())
+                && Objects.equals(isVarying(), pf.isVarying());
     }
 }

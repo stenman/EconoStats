@@ -144,11 +144,23 @@ public class AccountTransaction {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(getAmount(),
+                getDate(),
+                getName(),
+                getBalance(),
+                getCategory(),
+                getStampChanged(),
+                getStampInserted());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountTransaction at = (AccountTransaction) o;
-        return Objects.equals(name, at.name) &&
+        return Objects.equals(date, at.date) &&
+                Objects.equals(name, at.name) &&
                 Objects.equals(category, at.category) &&
                 amount == at.amount &&
                 balance == at.balance &&

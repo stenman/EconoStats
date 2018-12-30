@@ -5,12 +5,6 @@
       "alias": "Frisktandvården",
       "group": " ",
       "varying": false
-    },
-    {
-      "payeeName": "Betalning BG 170-3453 Inteleon AB",
-      "alias": "Parkering",
-      "group": " ",
-      "varying": true
     }
   ],
   "accountTransactions": [
@@ -354,6 +348,43 @@
         "day": 27
       },
       "name": "Omsättning lån 3998 77 77773",
+      "category": "",
+      "amount": -239500,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
+        "year": 2018,
+        "month": 9,
+        "day": 28
+      },
+      "name": "New transaction!",
       "category": "",
       "amount": -239500,
       "balance": 0,
