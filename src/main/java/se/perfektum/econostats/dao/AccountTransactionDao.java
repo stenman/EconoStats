@@ -1,9 +1,5 @@
 package se.perfektum.econostats.dao;
 
-import com.google.api.services.drive.model.File;
-import se.perfektum.econostats.domain.AccountTransaction;
-import se.perfektum.econostats.domain.PayeeFilter;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
@@ -15,7 +11,7 @@ import java.util.List;
 public interface AccountTransactionDao {
     String createFolder(String name) throws IOException, GeneralSecurityException;
 
-    String createFile(List<String> parents) throws IOException, GeneralSecurityException;
+    String createFile(String content, List<String> parents) throws IOException, GeneralSecurityException;
 
     void updateFile(String fileId) throws IOException, GeneralSecurityException;
 

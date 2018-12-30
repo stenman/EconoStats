@@ -15,6 +15,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import org.apache.commons.io.FileUtils;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.PayeeFilter;
 
@@ -84,13 +85,14 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
-    public String createFile(List<String> parents) throws IOException, GeneralSecurityException {
+    public String createFile(String content, List<String> parents) throws IOException, GeneralSecurityException {
         File fileMetadata = new File();
         fileMetadata.setName("transactions.json");
         fileMetadata.setParents(parents);
         fileMetadata.setMimeType(APPLICATION_VND_GOOGLE_APPS_FILE);
 
-        java.io.File filePath = new java.io.File("GoogleDriveSandbox/src/main/resources/transactions.json");
+        FileUtils.writeStringToFile(new java.io.File("transactions.json"), content, "UTF-8");
+        java.io.File filePath = new java.io.File("transactions.json");
         FileContent mediaContent = new FileContent("application/json", filePath);
 
         File file = getService().files().create(fileMetadata, mediaContent)
@@ -107,7 +109,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
         fileMetadata.setParents(existingFile.getParents());
         fileMetadata.setMimeType(existingFile.getMimeType());
 
-        java.io.File filePath = new java.io.File("GoogleDriveSandbox/src/main/resources/transactions.json");
+        java.io.File filePath = new java.io.File("transactions.json");
         FileContent mediaContent = new FileContent("application/json", filePath);
 
         getService().files().update(fileId, fileMetadata, mediaContent).execute();

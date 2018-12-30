@@ -1,19 +1,13 @@
 package se.perfektum.econostats.spreadsheet;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
-import java.lang.reflect.Type;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,23 +28,9 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final int COLUMN_OFFSET = 1;
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
-    private static final String ACCOUNT_TRANSACTIONS = "accountTransactions";
-    private static final String PAYEE_FILTERS = "payeeFilters";
 
     @Override
-    public SpreadsheetDocument createSpreadsheet(List<PayeeFilter> payeesConfigs) throws Exception {
-        String downloadedTransactions = accountTransactionDao.getFile("some-id");
-
-        JsonParser parser = new JsonParser();
-        JsonObject transactions = (JsonObject) parser.parse(downloadedTransactions);
-
-        // @formatter:off
-        Type listTypeAccountTransaction = new TypeToken<ArrayList<AccountTransaction>>() {}.getType();
-        Type listTypePayeeFilter = new TypeToken<ArrayList<PayeeFilter>>() {}.getType();
-        // @formatter:on
-        List<AccountTransaction> accountTransactions = new Gson().fromJson(transactions.getAsJsonArray(ACCOUNT_TRANSACTIONS), listTypeAccountTransaction);
-        List<PayeeFilter> payeeFilters = new Gson().fromJson(transactions.getAsJsonArray(PAYEE_FILTERS), listTypePayeeFilter);
-
+    public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
 

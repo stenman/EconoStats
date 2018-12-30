@@ -9,19 +9,15 @@ import org.mockito.Mockito;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Table;
+import se.perfektum.econostats.common.JsonUtils;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -45,18 +41,15 @@ public class SpreadsheetProcessorTest {
 
     @Test
     public void singlePayee_oneColumn() throws Exception {
-        List<PayeeFilter> payeeFilters = new ArrayList<>();
-        PayeeFilter pf = new PayeeFilter();
-        pf.setPayeeName("Autogiro FRISKTANDV");
-        pf.setAlias("Frisktandvården");
-        pf.setGroup(Character.MIN_VALUE);
-        pf.setVarying(false);
-        payeeFilters.add(pf);
+        ClassLoader classLoader = getClass().getClassLoader();
+        String file = IOUtils.toString(classLoader.getResourceAsStream("transactions-1.json"), "UTF-8");
+        List<AccountTransaction> accountTransactions = JsonUtils.getJsonElement(AccountTransaction.class, file);
+        List<PayeeFilter> payeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, file);
 
         Gson gson = new GsonBuilder().create();
         String[][] sheetTestData = gson.fromJson(getSheetTestData(), String[][].class);
 
-        SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(payeeFilters);
+        SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(accountTransactions, payeeFilters);
         Table sheet = sd.getSheetByIndex(0);
 
         assertMonths(sheet);

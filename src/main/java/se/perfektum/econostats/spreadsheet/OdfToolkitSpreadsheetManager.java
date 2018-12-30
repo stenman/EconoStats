@@ -1,6 +1,7 @@
 package se.perfektum.econostats.spreadsheet;
 
 import org.odftoolkit.simple.SpreadsheetDocument;
+import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
 import java.io.File;
@@ -23,10 +24,14 @@ public class OdfToolkitSpreadsheetManager implements SpreadsheetManager {
     @Override
     public void createSpreadsheet() throws Exception {
 
-        //TODO: Create and get the config
-        List<PayeeFilter> payeesConfigs = new ArrayList<>();
+        //TODO: Get, and handle PayeeFilters
+        //TODO: Merge
+        List<AccountTransaction> accountTransactions = new ArrayList<>();
+        List<PayeeFilter> payeeFilters = new ArrayList<>();
 
-        SpreadsheetDocument doc = spreadsheetProcessor.createSpreadsheet(payeesConfigs);
+        // *** NOTE: exclude from odf: all objects that do not exist in premade configuration list of names ***
+
+        SpreadsheetDocument doc = spreadsheetProcessor.createSpreadsheet(accountTransactions, payeeFilters);
 
         //TODO: path should be configurable!
         final File file = new File("c:/temp/testdata/simpleodf.ods");
