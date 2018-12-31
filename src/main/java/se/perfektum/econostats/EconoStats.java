@@ -30,10 +30,11 @@ public class EconoStats {
     final Logger LOGGER = LoggerFactory.getLogger(EconoStats.class);
 
     private static final String LOCAL_FILES_FOLDER_NAME = "files/";
-    private static final String TRANSACTIONS_PATH = LOCAL_FILES_FOLDER_NAME + "transactions.json";
-    private static final String RECURRING_TRANSACTIONS_PATH = LOCAL_FILES_FOLDER_NAME + "recurringTransactions.ods";
-    private static final String GOOGLE_DRIVE_FOLDER_NAME = "EconoStats";
     private static final String TRANSACTIONS_JSON = "transactions.json";
+    private static final String SPREADSHEET = "recurringTransactions.ods";
+    private static final String TRANSACTIONS_PATH = LOCAL_FILES_FOLDER_NAME + TRANSACTIONS_JSON;
+    private static final String RECURRING_TRANSACTIONS_PATH = LOCAL_FILES_FOLDER_NAME + SPREADSHEET;
+    private static final String GOOGLE_DRIVE_FOLDER_NAME = "EconoStats";
 
     private SpreadsheetManager spreadsheetManager;
     private CsvReader csvReader;
@@ -47,7 +48,7 @@ public class EconoStats {
 
     public void start() throws Exception {
         //TODO: Put in config
-        final String CSV_FILE = "c:/temp/testdata/export-0.csv";
+        final String CSV_FILE = "c:/temp/testdata/export-1.csv";
         List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
         List<PayeeFilter> localPayeeFilters = getLocalPayeeFilters();
 
@@ -64,9 +65,10 @@ public class EconoStats {
             folderId = accountTransactionDao.createFolder(GOOGLE_DRIVE_FOLDER_NAME);
         }
 
-        String fileId = searchFile(TRANSACTIONS_JSON, MimeTypes.APPLICATION_JSON.toString());
+        String transactionFileId = searchFile(TRANSACTIONS_JSON, MimeTypes.APPLICATION_JSON.toString());
+        String spreadsheetFileId = searchFile(SPREADSHEET, MimeTypes.GOOGLE_API_SPREADSHEET.toString());
 
-        if (fileId == null) {
+        if (transactionFileId == null) {
             LOGGER.debug("File " + TRANSACTIONS_JSON + " did not exist, no merge needed.");
 
             // save imported transactions locally
@@ -79,11 +81,15 @@ public class EconoStats {
             // create spreadsheet
             File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(RECURRING_TRANSACTIONS_PATH, importedAccountTransactions, localPayeeFilters);
 
-            // save spreadsheet to Drive
-            accountTransactionDao.createFile(filePathSpreadsheet, Arrays.asList(folderId), MimeTypes.GOOGLE_API_SPREADSHEET.toString(), MimeTypes.TEXT_ODS.toString());
+            // save/update spreadsheet to Drive
+            if (spreadsheetFileId == null) {
+                accountTransactionDao.createFile(filePathSpreadsheet, Arrays.asList(folderId), MimeTypes.GOOGLE_API_SPREADSHEET.toString(), MimeTypes.TEXT_ODS.toString());
+            } else {
+                accountTransactionDao.updateFile(spreadsheetFileId, new File(RECURRING_TRANSACTIONS_PATH), MimeTypes.TEXT_ODS.toString());
+            }
         } else {
             // get transactions from Drive
-            String transactions = accountTransactionDao.getFile(fileId);
+            String transactions = accountTransactionDao.getFile(transactionFileId);
 
             // merge transactions with imported transactions
             List<AccountTransaction> mergedAccountTransactions = spreadsheetManager.mergeAccountTransactions(importedAccountTransactions, transactions);
@@ -93,13 +99,17 @@ public class EconoStats {
             FileUtils.writeStringToFile(new java.io.File(TRANSACTIONS_PATH), convertedTransactions, "UTF-8");
 
             // overwrite transaction file on Drive
-            accountTransactionDao.updateFile(fileId, new File(TRANSACTIONS_PATH), MimeTypes.APPLICATION_JSON.toString());
+            accountTransactionDao.updateFile(transactionFileId, new File(TRANSACTIONS_PATH), MimeTypes.APPLICATION_JSON.toString());
 
             // create spreadsheet
-            spreadsheetManager.createNewSpreadsheet(RECURRING_TRANSACTIONS_PATH, mergedAccountTransactions, localPayeeFilters);
+            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(RECURRING_TRANSACTIONS_PATH, mergedAccountTransactions, localPayeeFilters);
 
-            // overwrite spreadsheet on Drive
-            accountTransactionDao.updateFile(fileId, new File(RECURRING_TRANSACTIONS_PATH), MimeTypes.TEXT_ODS.toString());
+            // save/update spreadsheet to Drive
+            if (spreadsheetFileId == null) {
+                accountTransactionDao.createFile(filePathSpreadsheet, Arrays.asList(folderId), MimeTypes.GOOGLE_API_SPREADSHEET.toString(), MimeTypes.TEXT_ODS.toString());
+            } else {
+                accountTransactionDao.updateFile(spreadsheetFileId, new File(RECURRING_TRANSACTIONS_PATH), MimeTypes.TEXT_ODS.toString());
+            }
         }
     }
 

@@ -149,9 +149,7 @@ public class AccountTransaction {
                 getDate(),
                 getName(),
                 getBalance(),
-                getCategory(),
-                getStampChanged(),
-                getStampInserted());
+                getCategory());
     }
 
     @Override
