@@ -163,8 +163,6 @@ public class AccountTransaction {
                 Objects.equals(name, at.name) &&
                 Objects.equals(category, at.category) &&
                 amount == at.amount &&
-                balance == at.balance &&
-                Objects.equals(stampInserted, at.stampInserted) &&
-                Objects.equals(stampChanged, at.stampChanged);
+                balance == at.balance;
     }
 }

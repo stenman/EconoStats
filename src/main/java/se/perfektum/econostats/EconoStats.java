@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION_VND_GOOGLE_APPS_FOLDER;
 
@@ -45,7 +47,7 @@ public class EconoStats {
 
     public void start() throws Exception {
         //TODO: Put in config
-        final String CSV_FILE = "c:/temp/testdata/export.csv";
+        final String CSV_FILE = "c:/temp/testdata/export-0.csv";
         List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
         List<PayeeFilter> localPayeeFilters = getLocalPayeeFilters();
 
@@ -68,8 +70,8 @@ public class EconoStats {
             LOGGER.debug("File " + TRANSACTIONS_JSON + " did not exist, no merge needed.");
 
             // save imported transactions locally
-            String importedTransactions = new Gson().toJson(importedAccountTransactions);
-            File filePathTransactions = saveFileLocally(TRANSACTIONS_PATH, importedTransactions);
+            String convertedTransactions = convertTransactionsToJson(importedAccountTransactions);
+            File filePathTransactions = saveFileLocally(TRANSACTIONS_PATH, convertedTransactions);
 
             // save imported transactions to Drive
             accountTransactionDao.createFile(filePathTransactions, Arrays.asList(folderId), MimeTypes.APPLICATION_JSON.toString(), MimeTypes.APPLICATION_JSON.toString());
@@ -84,21 +86,27 @@ public class EconoStats {
             String transactions = accountTransactionDao.getFile(fileId);
 
             // merge transactions with imported transactions
-            List<AccountTransaction> mergeAccountTransactions = spreadsheetManager.mergeAccountTransactions(importedAccountTransactions, transactions);
+            List<AccountTransaction> mergedAccountTransactions = spreadsheetManager.mergeAccountTransactions(importedAccountTransactions, transactions);
 
             // save merged transactions locally
-            String mergedTransactions = new Gson().toJson(mergeAccountTransactions);
-            FileUtils.writeStringToFile(new java.io.File(TRANSACTIONS_PATH), mergedTransactions, "UTF-8");
+            String convertedTransactions = convertTransactionsToJson(mergedAccountTransactions);
+            FileUtils.writeStringToFile(new java.io.File(TRANSACTIONS_PATH), convertedTransactions, "UTF-8");
 
             // overwrite transaction file on Drive
             accountTransactionDao.updateFile(fileId, new File(TRANSACTIONS_PATH), MimeTypes.APPLICATION_JSON.toString());
 
             // create spreadsheet
-            spreadsheetManager.createNewSpreadsheet(RECURRING_TRANSACTIONS_PATH, mergeAccountTransactions, localPayeeFilters);
+            spreadsheetManager.createNewSpreadsheet(RECURRING_TRANSACTIONS_PATH, mergedAccountTransactions, localPayeeFilters);
 
             // overwrite spreadsheet on Drive
             accountTransactionDao.updateFile(fileId, new File(RECURRING_TRANSACTIONS_PATH), MimeTypes.TEXT_ODS.toString());
         }
+    }
+
+    private String convertTransactionsToJson(List<AccountTransaction> transactions) {
+        Map m = new TreeMap<>();
+        m.put("accountTransactions", transactions);
+        return new Gson().toJson(m);
     }
 
     private File saveFileLocally(String filePath, String content) throws IOException {

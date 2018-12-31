@@ -6,7 +6,7 @@
     <!--Main-->
     <bean id="econoStatsMain" class="se.perfektum.econostats.EconostatsMain"/>
     <bean id="econoStats" class="se.perfektum.econostats.EconoStats">
-        <constructor-arg index="0" name="spreadSheetManager" ref="odfToolkitSpreadsheetManager"/>
+        <constructor-arg index="0" name="spreadsheetManager" ref="odfToolkitSpreadsheetManager"/>
         <constructor-arg index="1" name="csvReader" ref="nordeaCsvReader"/>
         <constructor-arg index="2" name="accountTransactionDao" ref="googleDriveDao"/>
     </bean>
