@@ -1,4 +1,4 @@
-package econostats.bank.nordea;
+package se.perfektum.econostats.bank.nordea;
 
 import org.junit.Test;
 import se.perfektum.econostats.bank.CsvReader;

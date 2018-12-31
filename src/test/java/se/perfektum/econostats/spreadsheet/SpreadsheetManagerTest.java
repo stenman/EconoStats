@@ -1,4 +1,4 @@
-package econostats.spreadsheet;
+package se.perfektum.econostats.spreadsheet;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;

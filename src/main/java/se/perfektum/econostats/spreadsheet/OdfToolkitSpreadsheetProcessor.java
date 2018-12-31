@@ -1,5 +1,6 @@
 package se.perfektum.econostats.spreadsheet;
 
+import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.domain.AccountTransaction;
@@ -20,6 +21,8 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final int COLUMN_OFFSET = 1;
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
+    private static final String AVERAGE = "Average";
+    private static final String GRAND_TOTAL = "Grand Total";
 
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
@@ -28,6 +31,9 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
 
         sheet.getCellByPosition(0, 0).setStringValue(MONTH);
         sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0).setStringValue(TOTAL);
+        sheet.getCellByPosition(0, ROW_COUNT - 1).setStringValue(AVERAGE);
+        sheet.getCellByPosition(0, ROW_COUNT - 1).setCellBackgroundColor(new Color(40, 40, 140));
+        sheet.getCellByPosition(0, ROW_COUNT).setStringValue(GRAND_TOTAL);
         createMonthColumn(sheet);
 
         //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.

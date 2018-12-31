@@ -1,27 +1,24 @@
-package econostats.spreadsheet;
+package se.perfektum.econostats.spreadsheet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.common.JsonUtils;
-import se.perfektum.econostats.dao.AccountTransactionDao;
+import se.perfektum.econostats.dev.TestUtilities;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
-import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
 
+import static com.sun.deploy.cache.Cache.exists;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 
 public class SpreadsheetProcessorTest {
     private OdfToolkitSpreadsheetProcessor spreadsheetProcessor = new OdfToolkitSpreadsheetProcessor();
@@ -42,6 +39,10 @@ public class SpreadsheetProcessorTest {
         SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(accountTransactions, payeeFilters);
 
         Table sheet = sd.getSheetByIndex(0);
+
+        // TEMP DEV
+//        TestUtilities.openOds(sd, new File("c:/temp/testdata/"), "simpleodf.ods");
+        // TEMP DEV
 
         assertMonths(sheet);
         assertSheetData(sheet, sheetTestData);
