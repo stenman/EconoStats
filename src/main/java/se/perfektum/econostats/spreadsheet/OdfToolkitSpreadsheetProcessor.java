@@ -24,10 +24,12 @@ import static org.odftoolkit.odfdom.dom.style.props.OdfTextProperties.FontStyle;
 public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final int ROW_COUNT = 14;
     private static final int COLUMN_OFFSET = 1;
+    private static final int ROUNDING = 2;
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
     private static final String AVERAGE = "Average";
     private static final String GRAND_TOTAL = "Grand Total";
+    private static final Color GREY = new Color(200, 200, 200);
     private static final Color PASTEL_PEACH = new Color(255, 225, 200);
     private static final Color PASTEL_PINK = new Color(250, 210, 255);
     private static final Color PASTEL_PURPLE = new Color(220, 210, 255);
@@ -58,28 +60,28 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
             }
             // Calculate average per payee
             String odfColName = getColumnName(i + COLUMN_OFFSET + 1);
-            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1)
-                    .setFormula("=AVERAGE(" + odfColName + "2:" + odfColName + "13)");
+            setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1), "", true, PASTEL_PINK);
+            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1).setFormula(String.format("=ROUND(AVERAGE(%s2:%s13);%s)", odfColName, odfColName, ROUNDING));
             // Calculate totals per payee
-            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT)
-                    .setFormula("=SUM(" + odfColName + "2:" + odfColName + "13)");
+            setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT), "", true, PASTEL_PURPLE);
+            sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT).setFormula(String.format("=ROUND(SUM(%s2:%s13);%s)", odfColName, odfColName, ROUNDING));
         }
 
         // Calculate monthly totals for all payees
         calcMonthlyTotals(payeeFilters, sheet);
 
         // Calculate total average monthly
-        calcTotals(payeeFilters, sheet, 13, "=AVERAGE(");
+        calcTotals(payeeFilters, sheet, 13, "=ROUND(AVERAGE(");
 
         // Calculate grand total
-        calcTotals(payeeFilters, sheet, 14, "=SUM(");
+        calcTotals(payeeFilters, sheet, 14, "=ROUND(SUM(");
 
         return doc;
     }
 
     private void setHeaders(List<PayeeFilter> payeeFilters, Table sheet) {
         setCellValues(sheet.getCellByPosition(0, 0), MONTH, true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0), TOTAL, false);
+        setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0), TOTAL, true, GREY);
         setCellValues(sheet.getCellByPosition(0, ROW_COUNT - 1), AVERAGE, true, PASTEL_PINK);
         setCellValues(sheet.getCellByPosition(0, ROW_COUNT), GRAND_TOTAL, true, PASTEL_PURPLE);
         createMonthColumn(sheet);
@@ -98,14 +100,14 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
     private void calcTotals(List<PayeeFilter> payeeFilters, Table sheet, int rowIndex, String function) {
-        sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex)
-                .setFormula(function + getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1) + "13)");
+        setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex), "", true, GREY);
+        sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex).setFormula(String.format(function + "%s2:%s13);2)", getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1), getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1)));
     }
 
     private void calcMonthlyTotals(List<PayeeFilter> payeeFilters, Table sheet) {
         for (int i = 2; i < ROW_COUNT; i++) {
-            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1)
-                    .setFormula("=SUM(B" + i + ":" + getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i + ")");
+            setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1), "", true);
+            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1).setFormula(String.format("=ROUND(SUM(B%s:%s);2)", i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i));
         }
     }
 
@@ -127,7 +129,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     //TODO: Should be a static class in a Spreadsheet utility class!
     private String getColumnName(int index) {
         String[] result = new String[index];
-        String colName = "";
+        String colName;
         for (int i = 0; i < index; i++) {
             char c = (char) ('A' + (i % 26));
             colName = c + "";

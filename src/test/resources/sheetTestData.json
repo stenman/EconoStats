@@ -13,24 +13,24 @@
     "",
     "",
     "",
-    "=AVERAGE(B2:B13)",
-    "=SUM(B2:B13)"
+    "=ROUND(AVERAGE(B2:B13);2)",
+    "=ROUND(SUM(B2:B13);2)"
   ],
   [
     "Total",
-    "=SUM(B2:B2)",
-    "=SUM(B3:B3)",
-    "=SUM(B4:B4)",
-    "=SUM(B5:B5)",
-    "=SUM(B6:B6)",
-    "=SUM(B7:B7)",
-    "=SUM(B8:B8)",
-    "=SUM(B9:B9)",
-    "=SUM(B10:B10)",
-    "=SUM(B11:B11)",
-    "=SUM(B12:B12)",
-    "=SUM(B13:B13)",
-    "=AVERAGE(C2:C13)",
-    "=SUM(C2:C13)"
+    "=ROUND(SUM(B2:B2);2)",
+    "=ROUND(SUM(B3:B3);2)",
+    "=ROUND(SUM(B4:B4);2)",
+    "=ROUND(SUM(B5:B5);2)",
+    "=ROUND(SUM(B6:B6);2)",
+    "=ROUND(SUM(B7:B7);2)",
+    "=ROUND(SUM(B8:B8);2)",
+    "=ROUND(SUM(B9:B9);2)",
+    "=ROUND(SUM(B10:B10);2)",
+    "=ROUND(SUM(B11:B11);2)",
+    "=ROUND(SUM(B12:B12);2)",
+    "=ROUND(SUM(B13:B13);2)",
+    "=ROUND(AVERAGE(C2:C13);2)",
+    "=ROUND(SUM(C2:C13);2)"
   ]
 ]
