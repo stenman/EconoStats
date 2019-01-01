@@ -40,11 +40,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         setHeaders(payeeFilters, sheet);
 
         //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
-        //TODO: Set widths accordingly
-        //TODO: Set background colors accordingly
-        //TODO: Set font styles (Bold etc) accordingly
-        //TODO: Logging
-        //TODO: I18N
+        //TODO: Fix widths (calculation of this is pretty bad as it is)
         // Set payee headers
         // Calculate payee invoices
         for (int i = 0; i < payeeFilters.size(); i++) {

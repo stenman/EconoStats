@@ -48,7 +48,7 @@ public class EconoStats {
 
     public void start() throws Exception {
         //TODO: Put in config
-        final String CSV_FILE = "c:/temp/testdata/export-1.csv";
+        final String CSV_FILE = "c:/temp/testdata/export.csv";
         List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
         List<PayeeFilter> localPayeeFilters = getLocalPayeeFilters();
 
@@ -135,13 +135,11 @@ public class EconoStats {
         List<String> items = accountTransactionDao.searchForFile(name, mimeType);
 
         if (items.isEmpty()) {
-            System.out.println("No match!");
+            LOGGER.debug(String.format("Could not find file '%s' on Google Drive", name));
             return null;
         } else if (items.size() > 1) {
-            //TODO: Log this properly
-            //TODO: Throw a sensible exception here!
-            System.out.println("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
-            throw new IOException();
+            LOGGER.error("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
+            throw new IOException("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
         }
         return items.get(0);
     }

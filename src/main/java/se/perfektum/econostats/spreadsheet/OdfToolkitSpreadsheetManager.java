@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//TODO: This class needs to be refactored (and renamed)!
-
 /**
  * A wrapper class that simply manages spreadsheet creation and saving the produced spreadsheet file.
  */
@@ -30,10 +28,8 @@ public class OdfToolkitSpreadsheetManager implements SpreadsheetManager {
     public File createNewSpreadsheet(String filePath, List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
         SpreadsheetDocument doc = spreadsheetProcessor.createSpreadsheet(accountTransactions, payeeFilters);
 
-        //TODO: path should be configurable!
         final File file = new File(filePath);
         doc.save(file);
-//        OOUtils.open(file); //TODO: find another way of opening odf files locally
         return file;
     }
 
