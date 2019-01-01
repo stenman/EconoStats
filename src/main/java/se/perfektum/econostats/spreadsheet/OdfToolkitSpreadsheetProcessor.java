@@ -14,8 +14,6 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
-import static org.odftoolkit.odfdom.dom.style.props.OdfTextProperties.FontStyle;
-
 /**
  * Gets AccountTransactions from storage
  * Performs various calculations on transaction values
@@ -24,7 +22,7 @@ import static org.odftoolkit.odfdom.dom.style.props.OdfTextProperties.FontStyle;
 public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final int ROW_COUNT = 14;
     private static final int COLUMN_OFFSET = 1;
-    private static final int ROUNDING = 2;
+    private static final int ROUNDING = 0;
     private static final String MONTH = "Month";
     private static final String TOTAL = "Total";
     private static final String AVERAGE = "Average";
@@ -109,13 +107,13 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
 
     private void calcTotals(List<PayeeFilter> payeeFilters, Table sheet, int rowIndex, String function) {
         setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex), "", true, GREY);
-        sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex).setFormula(String.format(function + "%s2:%s13);2)", getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1), getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1)));
+        sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex).setFormula(String.format(function + "%s2:%s13);%s)", getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1), getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1), ROUNDING));
     }
 
     private void calcMonthlyTotals(List<PayeeFilter> payeeFilters, Table sheet) {
         for (int i = 2; i < ROW_COUNT; i++) {
             setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1), "", true);
-            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1).setFormula(String.format("=ROUND(SUM(B%s:%s);2)", i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i));
+            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1).setFormula(String.format("=IF(COUNTBLANK(B%s:%s)=%d;;ROUND(SUM(B%s:%s);%d))", i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, payeeFilters.size(), i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, ROUNDING));
         }
     }
 
