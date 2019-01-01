@@ -8,16 +8,12 @@ import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.common.JsonUtils;
-import se.perfektum.econostats.dev.TestUtilities;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.sun.deploy.cache.Cache.exists;
 import static org.junit.Assert.assertEquals;
 
 public class SpreadsheetProcessorTest {

@@ -7,6 +7,12 @@
       "varying": false
     },
     {
+      "payeeName": "Inteleon AB",
+      "alias": "Parkering",
+      "group": " ",
+      "varying": false
+    },
+    {
       "payeeName": "Autogiro CSN",
       "alias": "CSN",
       "group": " ",

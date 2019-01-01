@@ -2,6 +2,9 @@ package se.perfektum.econostats.spreadsheet;
 
 import org.odftoolkit.odfdom.type.Color;
 import org.odftoolkit.simple.SpreadsheetDocument;
+import org.odftoolkit.simple.style.Font;
+import org.odftoolkit.simple.style.StyleTypeDefinitions;
+import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
@@ -10,6 +13,8 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+
+import static org.odftoolkit.odfdom.dom.style.props.OdfTextProperties.FontStyle;
 
 /**
  * Gets AccountTransactions from storage
@@ -23,18 +28,16 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final String TOTAL = "Total";
     private static final String AVERAGE = "Average";
     private static final String GRAND_TOTAL = "Grand Total";
+    private static final Color PASTEL_PEACH = new Color(255, 225, 200);
+    private static final Color PASTEL_PINK = new Color(250, 210, 255);
+    private static final Color PASTEL_PURPLE = new Color(220, 210, 255);
 
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
         Table sheet = doc.getSheetByIndex(0);
 
-        sheet.getCellByPosition(0, 0).setStringValue(MONTH);
-        sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0).setStringValue(TOTAL);
-        sheet.getCellByPosition(0, ROW_COUNT - 1).setStringValue(AVERAGE);
-        sheet.getCellByPosition(0, ROW_COUNT - 1).setCellBackgroundColor(new Color(40, 40, 140));
-        sheet.getCellByPosition(0, ROW_COUNT).setStringValue(GRAND_TOTAL);
-        createMonthColumn(sheet);
+        setHeaders(payeeFilters, sheet);
 
         //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
         //TODO: Set widths accordingly
@@ -42,13 +45,13 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         //TODO: Set font styles (Bold etc) accordingly
         //TODO: Logging
         //TODO: I18N
+        // Set payee headers
         // Calculate payee invoices
         for (int i = 0; i < payeeFilters.size(); i++) {
             for (AccountTransaction transaction : accountTransactions) {
                 if (transaction.getName().contains(payeeFilters.get(i).getPayeeName())) {
                     //TODO: This is possibly set multiple times, see if there's a way to fix that...
-                    sheet.getCellByPosition(i + COLUMN_OFFSET, 0)
-                            .setStringValue(payeeFilters.get(i).getAlias());
+                    setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, 0), payeeFilters.get(i).getAlias(), true, PASTEL_PEACH);
                     sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue())
                             .setDoubleValue((double) Math.abs(transaction.getAmount() / 100));
                 }
@@ -74,6 +77,26 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         return doc;
     }
 
+    private void setHeaders(List<PayeeFilter> payeeFilters, Table sheet) {
+        setCellValues(sheet.getCellByPosition(0, 0), MONTH, true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0), TOTAL, false);
+        setCellValues(sheet.getCellByPosition(0, ROW_COUNT - 1), AVERAGE, true, PASTEL_PINK);
+        setCellValues(sheet.getCellByPosition(0, ROW_COUNT), GRAND_TOTAL, true, PASTEL_PURPLE);
+        createMonthColumn(sheet);
+    }
+
+    private void setCellValues(Cell cell, String value, boolean bold) {
+        setCellValues(cell, value, bold, null);
+    }
+
+    private void setCellValues(Cell cell, String value, boolean bold, Color color) {
+        cell.setStringValue(value);
+        cell.setCellBackgroundColor(color);
+        if (bold) {
+            cell.setFont(new Font("", StyleTypeDefinitions.FontStyle.BOLD, 10));
+        }
+    }
+
     private void calcTotals(List<PayeeFilter> payeeFilters, Table sheet, int rowIndex, String function) {
         sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, rowIndex)
                 .setFormula(function + getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1) + "2:" + getColumnName(payeeFilters.size() + COLUMN_OFFSET + 1) + "13)");
@@ -87,18 +110,18 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
     private void createMonthColumn(Table sheet) {
-        sheet.getCellByPosition(0, 1).setStringValue(Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 2).setStringValue(Month.FEBRUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 3).setStringValue(Month.MARCH.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 4).setStringValue(Month.APRIL.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 5).setStringValue(Month.MAY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 6).setStringValue(Month.JUNE.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 7).setStringValue(Month.JULY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 8).setStringValue(Month.AUGUST.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 9).setStringValue(Month.SEPTEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 10).setStringValue(Month.OCTOBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 11).setStringValue(Month.NOVEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-        sheet.getCellByPosition(0, 12).setStringValue(Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        setCellValues(sheet.getCellByPosition(0, 1), Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 2), Month.FEBRUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 3), Month.MARCH.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 4), Month.APRIL.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 5), Month.MAY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 6), Month.JUNE.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 7), Month.JULY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 8), Month.AUGUST.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 9), Month.SEPTEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 10), Month.OCTOBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 11), Month.NOVEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 12), Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
     }
 
     //TODO: Should be a static class in a Spreadsheet utility class!
