@@ -53,11 +53,12 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
             for (AccountTransaction transaction : accountTransactions) {
                 if (transaction.getName().contains(payeeFilters.get(i).getPayeeName())) {
                     //TODO: This is possibly set multiple times, see if there's a way to fix that...
-                    setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, 0), payeeFilters.get(i).getAlias(), true, PASTEL_PEACH);
+                    setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, 0), payeeFilters.get(i).getAlias(), true, PASTEL_PEACH, payeeFilters.get(i).getAlias());
                     sheet.getCellByPosition(i + COLUMN_OFFSET, transaction.getDate().getMonthValue())
                             .setDoubleValue((double) Math.abs(transaction.getAmount() / 100));
                 }
             }
+
             // Calculate average per payee
             String odfColName = getColumnName(i + COLUMN_OFFSET + 1);
             setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT - 1), "", true, PASTEL_PINK);
@@ -92,6 +93,13 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
     private void setCellValues(Cell cell, String value, boolean bold, Color color) {
+        setCellValues(cell, value, bold, color, null);
+    }
+
+    private void setCellValues(Cell cell, String value, boolean bold, Color color, String columnAlias) {
+        if (columnAlias != null) {
+            cell.getTableColumn().setWidth(columnAlias.length() + 15);
+        }
         cell.setStringValue(value);
         cell.setCellBackgroundColor(color);
         if (bold) {
