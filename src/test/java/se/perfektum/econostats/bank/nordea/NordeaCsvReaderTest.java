@@ -34,8 +34,6 @@ public class NordeaCsvReaderTest {
 
         assertThat(actual, hasItems(
                 new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
                         .date(LocalDate.parse("2018-10-04", DateTimeFormatter.ISO_LOCAL_DATE))
                         .name("Reservation Kortköp ICA Matkasse")
                         .category("")
@@ -45,8 +43,6 @@ public class NordeaCsvReaderTest {
                         .stampChanged(now)
                         .build(),
                 new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
                         .date(LocalDate.parse("2018-10-03", DateTimeFormatter.ISO_LOCAL_DATE))
                         .name("Kortköp 181666 ICA MATKASSE")
                         .category("Household")
@@ -56,8 +52,6 @@ public class NordeaCsvReaderTest {
                         .stampChanged(now)
                         .build(),
                 new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
                         .date(LocalDate.parse("2018-10-03", DateTimeFormatter.ISO_LOCAL_DATE))
                         .name("John DOE,JOHN")
                         .category("")
@@ -67,8 +61,6 @@ public class NordeaCsvReaderTest {
                         .stampChanged(now)
                         .build(),
                 new AccountTransaction.Builder()
-                        .userId(1)
-                        .accountId(1)
                         .date(LocalDate.parse("2018-09-25", DateTimeFormatter.ISO_LOCAL_DATE))
                         .name("Lön")
                         .category("")

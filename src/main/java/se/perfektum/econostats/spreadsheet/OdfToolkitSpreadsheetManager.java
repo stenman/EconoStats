@@ -41,6 +41,7 @@ public class OdfToolkitSpreadsheetManager implements SpreadsheetManager {
         // Eg. If we have three new transactions, where two are identical (1. deposit 10, 2. withdraw 10, 3. deposit 10), one of the deposits
         // will disappear due to distinction. For now I'm just throwing out a warning.
         // Not sure how to solve this, as there are no IDs on transactions. This scenario is likely, and the two deposits are exactly the same.
+        // TODO: Should probably show a warning message (Continue Yes/No) here when GUI is implemented
         if (importedAccountTransactions.size() != importedAccountTransactions.stream().distinct().collect(Collectors.toList()).size()) {
             LOGGER.warn("Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)!" +
                     "This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day." +

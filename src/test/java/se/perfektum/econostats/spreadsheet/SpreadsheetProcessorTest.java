@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
+import org.odftoolkit.simple.table.Column;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.common.JsonUtils;
 import se.perfektum.econostats.dev.TestUtilities;
@@ -33,34 +34,46 @@ public class SpreadsheetProcessorTest {
         List<AccountTransaction> accountTransactions = JsonUtils.getJsonElement(AccountTransaction.class, transactions);
 
         Gson gson = new GsonBuilder().create();
-        String[][] sheetTestData = gson.fromJson(getSheetTestData(), String[][].class);
+        String[][] sheetTestData2017 = gson.fromJson(getSheetTestData("sheetTestData-2017.json"), String[][].class);
+        String[][] sheetTestData2018 = gson.fromJson(getSheetTestData("sheetTestData-2018.json"), String[][].class);
 
         SpreadsheetDocument sd = spreadsheetProcessor.createSpreadsheet(accountTransactions, payeeFilters);
 
-        Table sheet = sd.getSheetByIndex(0);
-
         // TEMP DEV
-        TestUtilities.openOds(sd, new File("c:/temp/testdata/"), "simpleodf.ods");
+//        TestUtilities.openOds(sd, new File("c:/temp/testdata/"), "simpleodf.ods");
         // TEMP DEV
 
-//        assertMonths(sheet);
-//        assertSheetData(sheet, sheetTestData);
-//        assertEquals(3, sheet.getColumnCount());
-//        assertEquals(15, sheet.getRowCount());
+//        for (Table table : sd.getTableList()) {
+//            for (Column column : table.getColumnList()) {
+//                System.out.println(column.getCellByIndex(0).getStringValue());
+//            }
+//        }
+
+        Table sheet2017 = sd.getSheetByIndex(0);
+        Table sheet2018 = sd.getSheetByIndex(1);
+
+        assertMonths(sheet2017);
+        assertSheetData(sheetTestData2017, sheet2017);
+        assertEquals(5, sheet2017.getColumnCount());
+        assertEquals(15, sheet2017.getRowCount());
+        assertMonths(sheet2018);
+        assertSheetData(sheetTestData2018, sheet2018);
+        assertEquals(5, sheet2018.getColumnCount());
+        assertEquals(15, sheet2018.getRowCount());
     }
 
-    private String getSheetTestData() {
+    private String getSheetTestData(String name) {
         String result = "";
         ClassLoader classLoader = getClass().getClassLoader();
         try {
-            result = IOUtils.toString(classLoader.getResourceAsStream("sheetTestData.json"), "UTF-8");
+            result = IOUtils.toString(classLoader.getResourceAsStream(name), "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    private void assertSheetData(Table sheet, String[][] expectedSheetData) {
+    private void assertSheetData(String[][] expectedSheetData, Table sheet) {
         for (int i = 0; i < expectedSheetData.length; i++) {
             for (int j = 0; j < ROW_COUNT; j++) {
                 Cell cell = sheet.getCellByPosition(i + COLUMN_OFFSET, j);

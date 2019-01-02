@@ -83,8 +83,6 @@ public class AccountTransaction {
     }
 
     public static class Builder {
-        private int userId;
-        private int accountId;
         private LocalDate date;
         private String name;
         private String category;
@@ -92,16 +90,6 @@ public class AccountTransaction {
         private int balance;
         private LocalDateTime stampInserted;
         private LocalDateTime stampChanged;
-
-        public Builder userId(int userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Builder accountId(int accountId) {
-            this.accountId = accountId;
-            return this;
-        }
 
         public Builder date(LocalDate date) {
             this.date = date;

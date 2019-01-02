@@ -5,6 +5,7 @@ import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.style.Font;
 import org.odftoolkit.simple.style.StyleTypeDefinitions;
 import org.odftoolkit.simple.table.Cell;
+import org.odftoolkit.simple.table.Column;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
@@ -36,17 +37,20 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
 
     //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
     //TODO: Fix widths (calculation of this is pretty bad as it is)
+    //TODO: For some reason, appending a new sheet creates 5 columns from the start... can this be fixed?
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
         Map<Year, List<AccountTransaction>> transactionsByYear = accountTransactions.stream().collect(Collectors.groupingBy(d -> Year.of(d.getDate().getYear()), TreeMap::new, Collectors.toList()));
 
         int i = 0;
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
+        doc.removeSheet(0);
         for (Year year : transactionsByYear.keySet()) {
             List<PayeeFilter> adaptedFilters = adaptPayeeFilters(transactionsByYear.get(year), payeeFilters);
             if (adaptedFilters.size() > 0) {
+
                 doc.appendSheet(year.toString());
-                Table sheet = doc.getSheetByIndex(i + 1);
+                Table sheet = doc.getSheetByIndex(i);
 
                 Collections.sort(adaptedFilters, Comparator.comparing(PayeeFilter::getAlias));
 
@@ -65,7 +69,6 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
                 i++;
             }
         }
-        doc.removeSheet(0);
         return doc;
     }
 

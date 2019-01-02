@@ -13,6 +13,18 @@
       ]
     },
     {
+      "alias": "Bahnhof",
+      "payees": [
+        "Autogiro BAHNHOF"
+      ]
+    },
+    {
+      "alias": "Handels",
+      "payees": [
+        "Autogiro HANDELS"
+      ]
+    },
+    {
       "alias": "CSN",
       "payees": [
         "Autogiro CSN"
