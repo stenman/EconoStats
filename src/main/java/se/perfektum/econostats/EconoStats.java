@@ -48,7 +48,7 @@ public class EconoStats {
 
     public void start() throws Exception {
         //TODO: Put in config
-        final String CSV_FILE = "c:/temp/testdata/export.csv";
+        final String CSV_FILE = "c:/temp/testdata/export-1.csv";
         List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
         List<PayeeFilter> localPayeeFilters = getLocalPayeeFilters();
 

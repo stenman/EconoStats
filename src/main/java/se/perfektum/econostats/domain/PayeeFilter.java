@@ -1,20 +1,21 @@
 package se.perfektum.econostats.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PayeeFilter {
-    private String payeeName;
+    private List<String> payees;
     private String alias;
     private char group;
     private boolean varying;
 
-    public String getPayeeName() {
-        return payeeName;
+    public List<String> getPayees() {
+        return payees;
     }
 
-    public void setPayeeName(String payeeName) {
+    public void setPayees(List<String> payees) {
 
-        this.payeeName = payeeName;
+        this.payees = payees;
     }
 
     public String getAlias() {
@@ -43,7 +44,7 @@ public class PayeeFilter {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPayeeName(),
+        return Objects.hash(getPayees(),
                 getAlias(),
                 getGroup(),
                 isVarying());
@@ -54,7 +55,7 @@ public class PayeeFilter {
         if (this == o) return true;
         if (!(o instanceof PayeeFilter)) return false;
         PayeeFilter pf = (PayeeFilter) o;
-        return Objects.equals(getPayeeName(), pf.getPayeeName())
+        return Objects.equals(getPayees(), pf.getPayees())
                 && Objects.equals(getAlias(), pf.getAlias())
                 && Objects.equals(getGroup(), pf.getGroup())
                 && Objects.equals(isVarying(), pf.isVarying());

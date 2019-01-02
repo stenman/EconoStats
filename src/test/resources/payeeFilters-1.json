@@ -1,0 +1,10 @@
+{
+  "payeeFilters": [
+    {
+      "alias": "Frisktandvården",
+      "payees": [
+        "Autogiro FRISKTANDV"
+      ]
+    }
+  ]
+}

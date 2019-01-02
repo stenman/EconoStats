@@ -25,9 +25,10 @@ public class SpreadsheetProcessorTest {
     @Test
     public void singlePayee_oneColumn() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
-        String file = IOUtils.toString(classLoader.getResourceAsStream("transactions-1.json"), "UTF-8");
-        List<AccountTransaction> accountTransactions = JsonUtils.getJsonElement(AccountTransaction.class, file);
-        List<PayeeFilter> payeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, file);
+        String payees = IOUtils.toString(classLoader.getResourceAsStream("payeeFilters-1.json"), "UTF-8");
+        String transactions = IOUtils.toString(classLoader.getResourceAsStream("transactions-1.json"), "UTF-8");
+        List<PayeeFilter> payeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, payees);
+        List<AccountTransaction> accountTransactions = JsonUtils.getJsonElement(AccountTransaction.class, transactions);
 
         Gson gson = new GsonBuilder().create();
         String[][] sheetTestData = gson.fromJson(getSheetTestData(), String[][].class);

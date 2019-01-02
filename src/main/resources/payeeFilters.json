@@ -1,22 +1,31 @@
 {
   "payeeFilters": [
     {
-      "payeeName": "Autogiro FRISKTANDV",
       "alias": "Frisktandvården",
-      "group": " ",
-      "varying": false
+      "payees": [
+        "Autogiro FRISKTANDV"
+      ]
     },
     {
-      "payeeName": "Inteleon AB",
       "alias": "Parkering",
-      "group": " ",
-      "varying": false
+      "payees": [
+        "Inteleon AB"
+      ]
     },
     {
-      "payeeName": "Autogiro CSN",
       "alias": "CSN",
-      "group": " ",
-      "varying": false
+      "payees": [
+        "Autogiro CSN"
+      ]
+    },
+    {
+      "alias": "Huslån",
+      "payees": [
+        "Omsättning lån 3998 14 82137",
+        "Omsättning lån 3998 14 82145",
+        "Omsättning lån 3991 53 85323",
+        "Omsättning lån 3991 77 79442"
+      ]
     }
   ]
 }
