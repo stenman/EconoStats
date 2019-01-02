@@ -43,12 +43,6 @@ public class SpreadsheetProcessorTest {
 //        TestUtilities.openOds(sd, new File("c:/temp/testdata/"), "simpleodf.ods");
         // TEMP DEV
 
-//        for (Table table : sd.getTableList()) {
-//            for (Column column : table.getColumnList()) {
-//                System.out.println(column.getCellByIndex(0).getStringValue());
-//            }
-//        }
-
         Table sheet2017 = sd.getSheetByIndex(0);
         Table sheet2018 = sd.getSheetByIndex(1);
 

@@ -1,6 +1,7 @@
 package se.perfektum.econostats.bank.nordea;
 
 import com.opencsv.CSVReaderHeaderAware;
+import org.apache.commons.lang3.StringUtils;
 import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.domain.AccountTransaction;
 
@@ -24,7 +25,7 @@ public class NordeaCsvReader implements CsvReader {
      * @param csvSplitBy the value which each value is separated by
      * @return list of lines without headers
      */
-    public List<AccountTransaction> parseCsv(String csvFile, String csvSplitBy, char[] charsToEscape) throws Exception {
+    public List<AccountTransaction> parseCsv(String csvFile, String csvSplitBy, char[] charsToEscape) throws NumberFormatException {
         FileReader fr = null;
         try {
             fr = new FileReader(csvFile);
@@ -47,7 +48,20 @@ public class NordeaCsvReader implements CsvReader {
                     String amount = nextLine[3];
                     String balance = nextLine[4];
                     if (amount != null && !amount.equals("")) {
-                        at.setAmount(Integer.parseInt(amount.replaceAll(",", "").replaceAll("\\.", "")));
+                        try {
+                            // For some reason Nordea sometimes throws in (or lets through)
+                            // an arithmetic operator minus sign instead of a regular hyphen-minus.
+                            amount = amount.replace("\u2212", "\u002D");
+                            // For some reason Nordea uses different notions of presenting the amount
+                            // This is a cheap fix that might not be 100% water proof
+                            if (amount.contains(",")) {
+                                at.setAmount(Integer.parseInt(amount.replaceAll(",", "").replaceAll("\\.", "").trim()));
+                            } else {
+                                at.setAmount(Integer.parseInt(amount + "00"));
+                            }
+                        } catch (NumberFormatException nfe) {
+                            throw new NumberFormatException(String.format("Failed to parse the following: '%s'\\n %s", amount, nfe));
+                        }
                     }
                     if (balance != null && !balance.equals("")) {
                         at.setBalance(Integer.parseInt(balance.replaceAll(",", "").replaceAll("\\.", "")));

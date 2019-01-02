@@ -5,8 +5,9 @@ import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.style.Font;
 import org.odftoolkit.simple.style.StyleTypeDefinitions;
 import org.odftoolkit.simple.table.Cell;
-import org.odftoolkit.simple.table.Column;
 import org.odftoolkit.simple.table.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  * Creates a spreadsheet on monthly payments
  */
 public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
+    final Logger LOGGER = LoggerFactory.getLogger(OdfToolkitSpreadsheetProcessor.class);
     private static final int ROW_COUNT = 14;
     private static final int COLUMN_OFFSET = 1;
     private static final int ROUNDING = 0;
@@ -35,12 +37,16 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final Color PASTEL_PINK = new Color(250, 210, 255);
     private static final Color PASTEL_PURPLE = new Color(220, 210, 255);
 
+    //TODO: Refactor out all parts that processes AccountTransacitons and PayeeFilters, as these don't really qualify as OdfToolkit specifics
     //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
     //TODO: Fix widths (calculation of this is pretty bad as it is)
     //TODO: For some reason, appending a new sheet creates 5 columns from the start... can this be fixed?
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
-        Map<Year, List<AccountTransaction>> transactionsByYear = accountTransactions.stream().collect(Collectors.groupingBy(d -> Year.of(d.getDate().getYear()), TreeMap::new, Collectors.toList()));
+
+        List<AccountTransaction> excludedPayees = excludePayees(accountTransactions, payeeFilters);
+
+        Map<Year, List<AccountTransaction>> transactionsByYear = excludedPayees.stream().collect(Collectors.groupingBy(d -> Year.of(d.getDate().getYear()), TreeMap::new, Collectors.toList()));
 
         int i = 0;
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
@@ -70,6 +76,18 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
             }
         }
         return doc;
+    }
+
+    private List<AccountTransaction> excludePayees(List<AccountTransaction> transactions, List<PayeeFilter> filters) {
+        for (PayeeFilter filter : filters) {
+            if (filter.getExcludePayees() != null) {
+                for (String exclude : filter.getExcludePayees()) {
+                    transactions.removeIf(t -> t.getName().equals(exclude));
+                    LOGGER.info(String.format("Removing transaction '%s' before creating spreadsheet", exclude));
+                }
+            }
+        }
+        return transactions;
     }
 
     private List<PayeeFilter> adaptPayeeFilters(List<AccountTransaction> transactions, List<PayeeFilter> filters) {

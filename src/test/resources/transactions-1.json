@@ -76,6 +76,43 @@
     },
     {
       "date": {
+        "year": 2017,
+        "month": 7,
+        "day": 7
+      },
+      "name": "Autogiro FOLKSAM ÅTER",
+      "category": "Household",
+      "amount": 25000,
+      "balance": 0,
+      "stampInserted": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 30
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      },
+      "stampChanged": {
+        "date": {
+          "year": 2018,
+          "month": 12,
+          "day": 29
+        },
+        "time": {
+          "hour": 21,
+          "minute": 7,
+          "second": 49,
+          "nano": 101000000
+        }
+      }
+    },
+    {
+      "date": {
         "year": 2016,
         "month": 6,
         "day": 6

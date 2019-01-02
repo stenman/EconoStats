@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class PayeeFilter {
     private List<String> payees;
+    private List<String> excludePayees;
     private String alias;
     private char group;
     private boolean varying;
@@ -14,8 +15,15 @@ public class PayeeFilter {
     }
 
     public void setPayees(List<String> payees) {
-
         this.payees = payees;
+    }
+
+    public List<String> getExcludePayees() {
+        return excludePayees;
+    }
+
+    public void setExcludePayees(List<String> excludePayees) {
+        this.excludePayees = excludePayees;
     }
 
     public String getAlias() {
