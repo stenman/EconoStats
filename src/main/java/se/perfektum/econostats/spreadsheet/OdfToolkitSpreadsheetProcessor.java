@@ -10,9 +10,11 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
 import java.time.Month;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Gets AccountTransactions from storage
@@ -36,22 +38,46 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     //TODO: Fix widths (calculation of this is pretty bad as it is)
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
+        Map<Year, List<AccountTransaction>> transactionsByYear = accountTransactions.stream().collect(Collectors.groupingBy(d -> Year.of(d.getDate().getYear()), TreeMap::new, Collectors.toList()));
+
+        int i = 0;
         SpreadsheetDocument doc = SpreadsheetDocument.newSpreadsheetDocument();
-        Table sheet = doc.getSheetByIndex(0);
+        for (Year year : transactionsByYear.keySet()) {
+            List<PayeeFilter> adaptedFilters = adaptPayeeFilters(transactionsByYear.get(year), payeeFilters);
+            if (adaptedFilters.size() > 0) {
+                doc.appendSheet(year.toString());
+                Table sheet = doc.getSheetByIndex(i + 1);
 
-        setHeaders(payeeFilters, sheet);
+                Collections.sort(adaptedFilters, Comparator.comparing(PayeeFilter::getAlias));
 
-        processPayees(accountTransactions, payeeFilters, sheet);
+                setHeaders(adaptedFilters, sheet);
 
-        calcMonthlyTotals(payeeFilters, sheet);
+                processPayees(transactionsByYear.get(year), adaptedFilters, sheet);
 
-        // Calculate total average monthly
-        calcTotalsPerPayee(payeeFilters, sheet, 13, "=ROUND(AVERAGE(");
+                calcMonthlyTotals(adaptedFilters, sheet);
 
-        // Calculate grand total
-        calcTotalsPerPayee(payeeFilters, sheet, 14, "=ROUND(SUM(");
+                // Calculate total average monthly
+                calcTotalsPerPayee(adaptedFilters, sheet, 13, "=ROUND(AVERAGE(");
 
+                // Calculate grand total
+                calcTotalsPerPayee(adaptedFilters, sheet, 14, "=ROUND(SUM(");
+
+                i++;
+            }
+        }
+        doc.removeSheet(0);
         return doc;
+    }
+
+    private List<PayeeFilter> adaptPayeeFilters(List<AccountTransaction> transactions, List<PayeeFilter> filters) {
+
+        Set<String> trans = transactions.stream().map(AccountTransaction::getName).collect(Collectors.toSet());
+
+        Set<PayeeFilter> adaptedFilters = new HashSet<>();
+        for (String name : trans) {
+            adaptedFilters.addAll(filters.stream().filter(t -> t.getPayees().contains(name)).collect(Collectors.toSet()));
+        }
+        return new ArrayList<>(adaptedFilters);
     }
 
     private void processPayees(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters, Table sheet) {
@@ -120,7 +146,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private void calcMonthlyTotals(List<PayeeFilter> payeeFilters, Table sheet) {
         for (int i = 2; i < ROW_COUNT; i++) {
             setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1), "", true);
-            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1).setFormula(String.format("=IF(COUNTBLANK(B%s:%s)=%d;;ROUND(SUM(B%s:%s);%d))", i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, payeeFilters.size(), i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, ROUNDING));
+            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1).setFormula(String.format("=IF(COUNTBLANK(B%s:%s)=%d;\"\";ROUND(SUM(B%s:%s);%d))", i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, payeeFilters.size(), i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, ROUNDING));
         }
     }
 

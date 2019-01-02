@@ -5,6 +5,20 @@
       "payees": [
         "Autogiro FRISKTANDV"
       ]
+    },
+    {
+      "alias": "Folksam",
+      "payees": [
+        "Autogiro FOLKSAM"
+      ]
+    },
+    {
+      "alias": "Huslån",
+      "payees": [
+        "Omsättning lån 3998 77 77771",
+        "Omsättning lån 3998 77 77772",
+        "Omsättning lån 3998 77 77773"
+      ]
     }
   ]
 }
