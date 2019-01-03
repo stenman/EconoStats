@@ -6,14 +6,11 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
-import org.odftoolkit.simple.table.Column;
 import org.odftoolkit.simple.table.Table;
 import se.perfektum.econostats.common.JsonUtils;
-import se.perfektum.econostats.dev.TestUtilities;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package se.perfektum.econostats.bank.nordea;
 
 import com.opencsv.CSVReaderHeaderAware;
-import org.apache.commons.lang3.StringUtils;
 import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.domain.AccountTransaction;
 

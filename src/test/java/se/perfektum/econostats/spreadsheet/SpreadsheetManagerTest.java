@@ -9,10 +9,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.common.JsonUtils;
-import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.domain.AccountTransaction;
-import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetManager;
-import se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor;
 
 import java.io.IOException;
 import java.util.List;

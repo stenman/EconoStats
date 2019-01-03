@@ -2,7 +2,6 @@ package se.perfektum.econostats.bank.nordea;
 
 import org.junit.Test;
 import se.perfektum.econostats.bank.CsvReader;
-import se.perfektum.econostats.bank.nordea.NordeaCsvReader;
 import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.time.LocalDate;
