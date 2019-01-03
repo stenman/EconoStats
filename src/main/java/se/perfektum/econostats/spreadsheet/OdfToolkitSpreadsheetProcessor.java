@@ -95,8 +95,13 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         Set<String> trans = transactions.stream().map(AccountTransaction::getName).collect(Collectors.toSet());
 
         Set<PayeeFilter> adaptedFilters = new HashSet<>();
-        for (String name : trans) {
-            adaptedFilters.addAll(filters.stream().filter(t -> t.getPayees().contains(name)).collect(Collectors.toSet()));
+        for (PayeeFilter filter : filters) {
+            for (String payee : filter.getPayees()) {
+                if (trans.stream().anyMatch(t -> t.contains(payee))) {
+                    adaptedFilters.add(filter);
+                    break;
+                }
+            }
         }
         return new ArrayList<>(adaptedFilters);
     }

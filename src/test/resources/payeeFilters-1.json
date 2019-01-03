@@ -3,7 +3,7 @@
     {
       "alias": "Frisktandvården",
       "payees": [
-        "Autogiro FRISKTANDV"
+        "FRISKTANDV"
       ],
       "excludePayees": []
     },
