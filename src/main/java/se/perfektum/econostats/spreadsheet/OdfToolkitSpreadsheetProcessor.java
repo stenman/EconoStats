@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
  */
 public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     final Logger LOGGER = LoggerFactory.getLogger(OdfToolkitSpreadsheetProcessor.class);
+    private static final int HEADER_DEFAULT_SIZE = 9;
+    private static final int COLUMN_WIDTH_MODIFIER = 12;
     private static final int ROW_COUNT = 14;
     private static final int COLUMN_OFFSET = 1;
     private static final int ROUNDING = 0;
@@ -122,7 +124,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
             // Calculate payee invoices
             for (Map.Entry<YearMonth, Integer> entry : amounts.entrySet()) {
                 String alias = payeeFilters.get(i).getAlias();
-                setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, 0), alias, true, PASTEL_PEACH, alias);
+                setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, 0), alias, true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, alias, StyleTypeDefinitions.HorizontalAlignmentType.DEFAULT);
                 sheet.getCellByPosition(i + COLUMN_OFFSET, entry.getKey().getMonth().getValue())
                         .setDoubleValue((double) Math.abs(entry.getValue().intValue()));
             }
@@ -138,10 +140,10 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
     private void setHeaders(List<PayeeFilter> payeeFilters, Table sheet) {
-        setCellValues(sheet.getCellByPosition(0, 0), MONTH, true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0), TOTAL, true, GREY);
-        setCellValues(sheet.getCellByPosition(0, ROW_COUNT - 1), AVERAGE, true, PASTEL_PINK);
-        setCellValues(sheet.getCellByPosition(0, ROW_COUNT), GRAND_TOTAL, true, PASTEL_PURPLE);
+        setCellValues(sheet.getCellByPosition(0, 0), MONTH, true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.CENTER);
+        setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, 0), TOTAL, true, GREY, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, ROW_COUNT - 1), AVERAGE, true, PASTEL_PINK, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, ROW_COUNT), GRAND_TOTAL, true, PASTEL_PURPLE, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
         createMonthColumn(sheet);
     }
 
@@ -150,17 +152,23 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
     private void setCellValues(Cell cell, String value, boolean bold, Color color) {
-        setCellValues(cell, value, bold, color, null);
+        setCellValues(cell, value, bold, color, 10, StyleTypeDefinitions.HorizontalAlignmentType.DEFAULT);
     }
 
-    private void setCellValues(Cell cell, String value, boolean bold, Color color, String columnAlias) {
+    private void setCellValues(Cell cell, String value, boolean bold, Color color, int fontSize, StyleTypeDefinitions.HorizontalAlignmentType alignmentType) {
+        setCellValues(cell, value, bold, color, fontSize, null, alignmentType);
+    }
+
+    private void setCellValues(Cell cell, String value, boolean bold, Color color, int fontSize, String columnAlias, StyleTypeDefinitions.HorizontalAlignmentType alignmentType) {
         if (columnAlias != null) {
-            cell.getTableColumn().setWidth(columnAlias.length() + 15);
+            List<String> parts = Arrays.asList(columnAlias.split("\\n"));
+            cell.getTableColumn().setWidth(parts.stream().max(Comparator.comparingInt(String::length)).get().length() + COLUMN_WIDTH_MODIFIER);
         }
+        cell.setHorizontalAlignment(alignmentType);
         cell.setStringValue(value);
         cell.setCellBackgroundColor(color);
         if (bold) {
-            cell.setFont(new Font("", StyleTypeDefinitions.FontStyle.BOLD, 10));
+            cell.setFont(new Font("", StyleTypeDefinitions.FontStyle.BOLD, fontSize));
         }
     }
 
@@ -177,18 +185,18 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
     private void createMonthColumn(Table sheet) {
-        setCellValues(sheet.getCellByPosition(0, 1), Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 2), Month.FEBRUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 3), Month.MARCH.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 4), Month.APRIL.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 5), Month.MAY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 6), Month.JUNE.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 7), Month.JULY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 8), Month.AUGUST.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 9), Month.SEPTEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 10), Month.OCTOBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 11), Month.NOVEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
-        setCellValues(sheet.getCellByPosition(0, 12), Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH);
+        setCellValues(sheet.getCellByPosition(0, 1), Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 2), Month.FEBRUARY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 3), Month.MARCH.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 4), Month.APRIL.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 5), Month.MAY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 6), Month.JUNE.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 7), Month.JULY.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 8), Month.AUGUST.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 9), Month.SEPTEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 10), Month.OCTOBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 11), Month.NOVEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
+        setCellValues(sheet.getCellByPosition(0, 12), Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
     }
 
     //TODO: Should be a static class in a Spreadsheet utility class!
