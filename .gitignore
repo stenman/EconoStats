@@ -5,6 +5,7 @@
 .idea/
 *.iml
 .classpath
+payeeFilters.json
 
 *.log
 credentials.json
