@@ -5,9 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.domain.AccountTransaction;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,9 +24,14 @@ public class NordeaCsvReader implements CsvReader {
      * @return list of lines without headers
      */
     public List<AccountTransaction> parseCsv(String csvFile, String csvSplitBy, char[] charsToEscape) throws NumberFormatException {
-        FileReader fr = null;
+
+        BufferedReader br = null;
         try {
-            fr = new FileReader(csvFile);
+            File file = new File(csvFile);
+            br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(file), "UTF8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -37,7 +40,7 @@ public class NordeaCsvReader implements CsvReader {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         CSVReaderHeaderAware reader;
         try {
-            reader = new CSVReaderHeaderAware(fr);
+            reader = new CSVReaderHeaderAware(br);
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 if (!nextLine[0].isEmpty()) {
