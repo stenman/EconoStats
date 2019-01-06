@@ -47,6 +47,7 @@ public class EconoStats {
     }
 
     public void start() throws Exception {
+        LOGGER.debug(String.format("Parsing file '%s'"));
         //TODO: Put in config
         final String CSV_FILE = "c:/temp/testdata/nordeaGemensamt.csv";
         List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
@@ -56,12 +57,12 @@ public class EconoStats {
 
         File directory = new File(LOCAL_FILES_FOLDER_NAME);
         if (!directory.exists()) {
-            LOGGER.debug("Local folder " + LOCAL_FILES_FOLDER_NAME + " did not exist, creating folder.");
+            LOGGER.debug(String.format("Local folder '%s' did not exist, creating folder.", LOCAL_FILES_FOLDER_NAME));
             directory.mkdir();
         }
 
         if (folderId == null) {
-            LOGGER.debug("Google Drive folder " + GOOGLE_DRIVE_FOLDER_NAME + " did not exist, creating folder.");
+            LOGGER.debug(String.format("Google Drive folder '%s' did not exist, creating folder.", GOOGLE_DRIVE_FOLDER_NAME));
             folderId = accountTransactionDao.createFolder(GOOGLE_DRIVE_FOLDER_NAME);
         }
 
@@ -69,9 +70,10 @@ public class EconoStats {
         String spreadsheetFileId = searchFile(SPREADSHEET, MimeTypes.GOOGLE_API_SPREADSHEET.toString());
 
         if (transactionFileId == null) {
-            LOGGER.debug("File " + TRANSACTIONS_JSON + " did not exist, no merge needed.");
+            LOGGER.debug(String.format("File '%s' did not exist, no merge needed.", TRANSACTIONS_JSON));
 
             // save imported transactions locally
+            LOGGER.debug(String.format("Storing file '%s' to local disk.", TRANSACTIONS_PATH));
             String convertedTransactions = convertTransactionsToJson(importedAccountTransactions);
             File filePathTransactions = saveFileLocally(TRANSACTIONS_PATH, convertedTransactions);
 
