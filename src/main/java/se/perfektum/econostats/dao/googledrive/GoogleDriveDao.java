@@ -115,7 +115,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
 
     @Override
     public void updateFile(String fileId, java.io.File filePath, String fileContentMimeType) throws IOException, GeneralSecurityException {
-        LOGGER.debug(String.format("Fetching file from Google Drive - fileId:'%s'", fileId));
+        LOGGER.debug(String.format("Fetching file from Google Drive - fileId:[%s]", fileId));
         File existingFile = getService().files().get(fileId).execute();
         File fileMetadata = new File();
         fileMetadata.setName(existingFile.getName());

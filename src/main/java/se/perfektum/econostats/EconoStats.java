@@ -47,9 +47,9 @@ public class EconoStats {
     }
 
     public void start() throws Exception {
-        LOGGER.debug(String.format("Parsing file '%s'"));
         //TODO: Put in config
         final String CSV_FILE = "c:/temp/testdata/nordeaGemensamt.csv";
+        LOGGER.debug(String.format("Parsing file '%s'", CSV_FILE));
         List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
         List<PayeeFilter> localPayeeFilters = getLocalPayeeFilters();
 
