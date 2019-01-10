@@ -2,6 +2,7 @@
 
 A simple tool for creating spreadsheet reports of bank transactions.
 
+* TODO: Add notes to each entry that contains transaction date
 * TODO: Log stuff
 * TODO: Add I18N
 * TODO: Fix file encoding problems
