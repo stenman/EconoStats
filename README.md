@@ -1,16 +1,18 @@
 # EconoStats
 
+### IMPORTANT!
+### DISCLAIMER: I take NO RESPONSIBILITY for anything that might happen (eg. data loss, corruption of data etc.) to any part 
+### of the system and/or software this application is executed upon, or has any communication with (such as Google Drive).
+### That being said, it should work fine.
+
 A simple tool for creating spreadsheet reports of bank transactions.
 Early alpha version, so don't expect too much.
 
-##IMPORTANT!
-##DISCLAIMER: I take NO RESPONSIBILITY for anything that might happen (eg. data loss, corruption of data etc.) to any part 
-##of the system and/or software this application is executed upon, or has any communication with (such as Google Drive).
-##That being said, it should work fine for anyone using it =)
-
 ### HOW TO INSTALL
-Right now there is no install. Currently you have to compile it and run it from IDE/CLI.
-Very primitive. I will address this as soon as time permits...
+Right now there is no install. 
+Currently you have to compile it and run it from IDE/CLI.
+I will address this as soon as time permits...
+It's very primitive, but not too hard if you know what you're doing...
 
 0. All file paths and filenames (bank csv file and filters) are configurable in application.properties 
 1. Add filters by creating payeeFilters.json (path in application.properties)
