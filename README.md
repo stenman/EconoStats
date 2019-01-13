@@ -1,8 +1,7 @@
 # EconoStats
 
-### IMPORTANT!
-### DISCLAIMER: I take NO RESPONSIBILITY for anything that might happen (eg. data loss, corruption of data etc.) to any part 
-### of the system and/or software this application is executed upon, or has any communication with (such as Google Drive).
+### IMPORTANT! 
+### DISCLAIMER: I take NO RESPONSIBILITY for anything that might happen (eg. data loss, corruption of data etc.) to any part of the system and/or software this application is executed upon, or has any communication with (such as Google Drive).
 ### That being said, it should work fine.
 
 A simple tool for creating spreadsheet reports of bank transactions.
