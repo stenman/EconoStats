@@ -2,7 +2,6 @@ package se.perfektum.econostats;
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.bank.CsvReader;
@@ -14,8 +13,9 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +40,7 @@ public class EconoStats {
     private String googleDriveFolderName;
     private String transactionsPath;
     private String recurringTransactionsPath;
+    private String payeeFiltersFilePath;
 
     public EconoStats(SpreadsheetManager spreadsheetManager, CsvReader csvReader, AccountTransactionDao accountTransactionDao, AppProperties appProperties) {
         this.spreadsheetManager = spreadsheetManager;
@@ -122,6 +123,7 @@ public class EconoStats {
         googleDriveFolderName = appProperties.getGoogleDriveFolderName();
         transactionsPath = appProperties.getTransactionsPath();
         recurringTransactionsPath = appProperties.getRecurringTransactionsPath();
+        payeeFiltersFilePath = appProperties.getPayeeFiltersFilePath();
     }
 
     private String convertTransactionsToJson(List<AccountTransaction> transactions) {
@@ -136,8 +138,7 @@ public class EconoStats {
     }
 
     private List<PayeeFilter> getLocalPayeeFilters() throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        String pFilters = IOUtils.toString(classLoader.getResourceAsStream("payeeFilters.json"), "UTF-8");
+        String pFilters = new String(Files.readAllBytes(Paths.get(payeeFiltersFilePath)));
         return JsonUtils.getJsonElement(PayeeFilter.class, pFilters);
     }
 

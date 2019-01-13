@@ -12,6 +12,7 @@ public class AppProperties {
     private String googleDriveFolderName;
     private String transactionsPath;
     private String recurringTransactionsPath;
+    private String payeeFiltersFilePath;
 
     public String getLocalFilesPath() {
         return localFilesPath;
@@ -60,4 +61,13 @@ public class AppProperties {
     public void setRecurringTransactionsPath(String recurringTransactionsPath) {
         this.recurringTransactionsPath = recurringTransactionsPath;
     }
+
+    public String getPayeeFiltersFilePath() {
+        return payeeFiltersFilePath;
+    }
+
+    public void setPayeeFiltersFilePath(String payeeFiltersFilePath) {
+        this.payeeFiltersFilePath = payeeFiltersFilePath;
+    }
+
 }
