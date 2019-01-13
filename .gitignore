@@ -1,5 +1,5 @@
 /target
-/files
+/output
 */target/**
 /bin/
 .idea/

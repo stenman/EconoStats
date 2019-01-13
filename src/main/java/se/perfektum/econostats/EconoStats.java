@@ -117,7 +117,7 @@ public class EconoStats {
     }
 
     private void initProperties(AppProperties appProperties) {
-        localFilesPath = appProperties.getLocalFilesPath();
+        localFilesPath = appProperties.getOutputFilesPath();
         transactionsFilename = appProperties.getTransactionsFilename();
         spreadsheetFilename = appProperties.getSpreadsheetFilename();
         googleDriveFolderName = appProperties.getGoogleDriveFolderName();

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("app")
 public class AppProperties {
-    private String localFilesPath;
+    private String outputFilesPath;
     private String transactionsFilename;
     private String spreadsheetFilename;
     private String googleDriveFolderName;
@@ -14,12 +14,12 @@ public class AppProperties {
     private String recurringTransactionsPath;
     private String payeeFiltersFilePath;
 
-    public String getLocalFilesPath() {
-        return localFilesPath;
+    public String getOutputFilesPath() {
+        return outputFilesPath;
     }
 
-    public void setLocalFilesPath(String localFilesPath) {
-        this.localFilesPath = localFilesPath;
+    public void setOutputFilesPath(String outputFilesPath) {
+        this.outputFilesPath = outputFilesPath;
     }
 
     public String getTransactionsFilename() {
