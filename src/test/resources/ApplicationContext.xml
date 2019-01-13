@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--Configuration-->
+    <context:component-scan base-package="se.perfektum.econostats"/>
+    <context:property-placeholder location="classpath:/application.properties"/>
 
     <!--Main-->
     <bean id="econoStatsMain" class="se.perfektum.econostats.EconostatsMain"/>
@@ -9,10 +14,8 @@
         <constructor-arg index="0" name="spreadsheetManager" ref="odfToolkitSpreadsheetManager"/>
         <constructor-arg index="1" name="csvReader" ref="nordeaCsvReader"/>
         <constructor-arg index="2" name="accountTransactionDao" ref="googleDriveDao"/>
+        <constructor-arg index="3" name="appProperties" ref="appProperties"/>
     </bean>
-
-    <!--Csv Reader-->
-    <bean id="nordeaCsvReader" class="se.perfektum.econostats.bank.nordea.NordeaCsvReader"/>
 
     <!--Dao-->
     <bean id="googleDriveDao" class="se.perfektum.econostats.dao.googledrive.GoogleDriveDao"/>

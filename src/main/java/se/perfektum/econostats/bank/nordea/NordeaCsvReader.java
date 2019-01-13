@@ -1,7 +1,12 @@
 package se.perfektum.econostats.bank.nordea;
 
 import com.opencsv.CSVReaderHeaderAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import se.perfektum.econostats.bank.CsvReader;
+import se.perfektum.econostats.configuration.NordeaProperties;
 import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.io.*;
@@ -14,16 +19,23 @@ import java.util.List;
 /**
  * Parses a CSV file.
  */
+@Component
 public class NordeaCsvReader implements CsvReader {
+
+    final Logger LOGGER = LoggerFactory.getLogger(NordeaCsvReader.class);
+
+    @Autowired
+    private NordeaProperties nordeaProperties;
+
     /**
      * Reads each line of provided csv file and strips the header if existing.
      *
-     * @param csvFile    the file to parse
-     * @param csvSplitBy the value which each value is separated by
      * @return list of lines without headers
      */
-    public List<AccountTransaction> parseCsv(String csvFile, String csvSplitBy, char[] charsToEscape) throws NumberFormatException {
-
+    //TODO: Actually USE the parameters passed in here!
+    public List<AccountTransaction> parseCsv() throws NumberFormatException {
+        String csvFile = nordeaProperties.getCsvFilePath();
+        LOGGER.debug(String.format("Parsing file '%s'", csvFile));
         BufferedReader br = null;
         try {
             File file = new File(csvFile);

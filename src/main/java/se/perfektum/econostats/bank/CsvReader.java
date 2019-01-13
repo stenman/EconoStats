@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface CsvReader {
 
-    List<AccountTransaction> parseCsv(String csvFile, String csvSplitBy, char[] charsToEscape) throws Exception;
+    List<AccountTransaction> parseCsv() throws Exception;
 }

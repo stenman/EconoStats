@@ -17,7 +17,6 @@ import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.perfektum.econostats.EconoStats;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 
 import java.io.*;

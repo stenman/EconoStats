@@ -1,7 +1,11 @@
 package se.perfektum.econostats.bank.nordea;
 
+import org.junit.Before;
 import org.junit.Test;
-import se.perfektum.econostats.bank.CsvReader;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import se.perfektum.econostats.configuration.NordeaProperties;
 import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.time.LocalDate;
@@ -11,16 +15,28 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 public class NordeaCsvReaderTest {
 
+    @InjectMocks
+    NordeaCsvReader csvReader;
+
+    @Mock
+    NordeaProperties nordeaProperties;
+
+    @Before
+    public void before() {
+        MockitoAnnotations.initMocks(this);
+        when(nordeaProperties.getCsvFilePath()).thenReturn("src/test/resources/test1.csv");
+    }
+
     @Test
     public void readCsvShouldReturnAllLines() {
-        CsvReader csvReader = new NordeaCsvReader();
         LocalDateTime now = LocalDateTime.now();
         List<AccountTransaction> actual = null;
         try {
-            actual = csvReader.parseCsv("src/test/resources/test1.csv", ",", new char[]{'"'});
+            actual = csvReader.parseCsv();
         } catch (Exception e) {
             e.printStackTrace();
         }

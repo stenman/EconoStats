@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.common.JsonUtils;
+import se.perfektum.econostats.configuration.AppProperties;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.dao.googledrive.MimeTypes;
 import se.perfektum.econostats.domain.AccountTransaction;
@@ -29,65 +30,64 @@ import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION
 public class EconoStats {
     final Logger LOGGER = LoggerFactory.getLogger(EconoStats.class);
 
-    private static final String LOCAL_FILES_FOLDER_NAME = "files/";
-    private static final String TRANSACTIONS_JSON = "transactions.json";
-    private static final String SPREADSHEET = "recurringTransactions.ods";
-    private static final String TRANSACTIONS_PATH = LOCAL_FILES_FOLDER_NAME + TRANSACTIONS_JSON;
-    private static final String RECURRING_TRANSACTIONS_PATH = LOCAL_FILES_FOLDER_NAME + SPREADSHEET;
-    private static final String GOOGLE_DRIVE_FOLDER_NAME = "EconoStats";
-
     private SpreadsheetManager spreadsheetManager;
     private CsvReader csvReader;
     private AccountTransactionDao accountTransactionDao;
 
-    public EconoStats(SpreadsheetManager spreadsheetManager, CsvReader csvReader, AccountTransactionDao accountTransactionDao) {
+    private String localFilesPath;
+    private String transactionsFilename;
+    private String spreadsheetFilename;
+    private String googleDriveFolderName;
+    private String transactionsPath;
+    private String recurringTransactionsPath;
+
+    public EconoStats(SpreadsheetManager spreadsheetManager, CsvReader csvReader, AccountTransactionDao accountTransactionDao, AppProperties appProperties) {
         this.spreadsheetManager = spreadsheetManager;
         this.csvReader = csvReader;
         this.accountTransactionDao = accountTransactionDao;
+
+        initProperties(appProperties);
     }
 
     public void start() throws Exception {
-        //TODO: Put in config
-        final String CSV_FILE = "c:/temp/testdata/nordeaGemensamt.csv";
-        LOGGER.debug(String.format("Parsing file '%s'", CSV_FILE));
-        List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv(CSV_FILE, ",", new char[]{'"'});
+        List<AccountTransaction> importedAccountTransactions = csvReader.parseCsv();
         List<PayeeFilter> localPayeeFilters = getLocalPayeeFilters();
 
-        String folderId = searchFile(GOOGLE_DRIVE_FOLDER_NAME, APPLICATION_VND_GOOGLE_APPS_FOLDER);
+        String folderId = searchFile(googleDriveFolderName, APPLICATION_VND_GOOGLE_APPS_FOLDER);
 
-        File directory = new File(LOCAL_FILES_FOLDER_NAME);
+        File directory = new File(localFilesPath);
         if (!directory.exists()) {
-            LOGGER.debug(String.format("Local folder '%s' did not exist, creating folder.", LOCAL_FILES_FOLDER_NAME));
+            LOGGER.debug(String.format("Local folder '%s' did not exist, creating folder.", localFilesPath));
             directory.mkdir();
         }
 
         if (folderId == null) {
-            LOGGER.debug(String.format("Google Drive folder '%s' did not exist, creating folder.", GOOGLE_DRIVE_FOLDER_NAME));
-            folderId = accountTransactionDao.createFolder(GOOGLE_DRIVE_FOLDER_NAME);
+            LOGGER.debug(String.format("Google Drive folder '%s' did not exist, creating folder.", googleDriveFolderName));
+            folderId = accountTransactionDao.createFolder(googleDriveFolderName);
         }
 
-        String transactionFileId = searchFile(TRANSACTIONS_JSON, MimeTypes.APPLICATION_JSON.toString());
-        String spreadsheetFileId = searchFile(SPREADSHEET, MimeTypes.GOOGLE_API_SPREADSHEET.toString());
+        String transactionFileId = searchFile(transactionsFilename, MimeTypes.APPLICATION_JSON.toString());
+        String spreadsheetFileId = searchFile(spreadsheetFilename, MimeTypes.GOOGLE_API_SPREADSHEET.toString());
 
         if (transactionFileId == null) {
-            LOGGER.debug(String.format("File '%s' did not exist, no merge needed.", TRANSACTIONS_JSON));
+            LOGGER.debug(String.format("File '%s' did not exist, no merge needed.", transactionsFilename));
 
             // save imported transactions locally
-            LOGGER.debug(String.format("Storing file '%s' to local disk.", TRANSACTIONS_PATH));
+            LOGGER.debug(String.format("Storing file '%s' to local disk.", transactionsPath));
             String convertedTransactions = convertTransactionsToJson(importedAccountTransactions);
-            File filePathTransactions = saveFileLocally(TRANSACTIONS_PATH, convertedTransactions);
+            File filePathTransactions = saveFileLocally(transactionsPath, convertedTransactions);
 
             // save imported transactions to Drive
             accountTransactionDao.createFile(filePathTransactions, Arrays.asList(folderId), MimeTypes.APPLICATION_JSON.toString(), MimeTypes.APPLICATION_JSON.toString());
 
             // create spreadsheet
-            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(RECURRING_TRANSACTIONS_PATH, importedAccountTransactions, localPayeeFilters);
+            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(recurringTransactionsPath, importedAccountTransactions, localPayeeFilters);
 
             // save/update spreadsheet to Drive
             if (spreadsheetFileId == null) {
                 accountTransactionDao.createFile(filePathSpreadsheet, Arrays.asList(folderId), MimeTypes.GOOGLE_API_SPREADSHEET.toString(), MimeTypes.TEXT_ODS.toString());
             } else {
-                accountTransactionDao.updateFile(spreadsheetFileId, new File(RECURRING_TRANSACTIONS_PATH), MimeTypes.TEXT_ODS.toString());
+                accountTransactionDao.updateFile(spreadsheetFileId, new File(recurringTransactionsPath), MimeTypes.TEXT_ODS.toString());
             }
         } else {
             // get transactions from Drive
@@ -98,21 +98,30 @@ public class EconoStats {
 
             // save merged transactions locally
             String convertedTransactions = convertTransactionsToJson(mergedAccountTransactions);
-            FileUtils.writeStringToFile(new java.io.File(TRANSACTIONS_PATH), convertedTransactions, "UTF-8");
+            FileUtils.writeStringToFile(new java.io.File(transactionsPath), convertedTransactions, "UTF-8");
 
             // overwrite transaction file on Drive
-            accountTransactionDao.updateFile(transactionFileId, new File(TRANSACTIONS_PATH), MimeTypes.APPLICATION_JSON.toString());
+            accountTransactionDao.updateFile(transactionFileId, new File(transactionsPath), MimeTypes.APPLICATION_JSON.toString());
 
             // create spreadsheet
-            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(RECURRING_TRANSACTIONS_PATH, mergedAccountTransactions, localPayeeFilters);
+            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(recurringTransactionsPath, mergedAccountTransactions, localPayeeFilters);
 
             // save/update spreadsheet to Drive
             if (spreadsheetFileId == null) {
                 accountTransactionDao.createFile(filePathSpreadsheet, Arrays.asList(folderId), MimeTypes.GOOGLE_API_SPREADSHEET.toString(), MimeTypes.TEXT_ODS.toString());
             } else {
-                accountTransactionDao.updateFile(spreadsheetFileId, new File(RECURRING_TRANSACTIONS_PATH), MimeTypes.TEXT_ODS.toString());
+                accountTransactionDao.updateFile(spreadsheetFileId, new File(recurringTransactionsPath), MimeTypes.TEXT_ODS.toString());
             }
         }
+    }
+
+    private void initProperties(AppProperties appProperties) {
+        localFilesPath = appProperties.getLocalFilesPath();
+        transactionsFilename = appProperties.getTransactionsFilename();
+        spreadsheetFilename = appProperties.getSpreadsheetFilename();
+        googleDriveFolderName = appProperties.getGoogleDriveFolderName();
+        transactionsPath = appProperties.getTransactionsPath();
+        recurringTransactionsPath = appProperties.getRecurringTransactionsPath();
     }
 
     private String convertTransactionsToJson(List<AccountTransaction> transactions) {
