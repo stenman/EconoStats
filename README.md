@@ -35,7 +35,6 @@ See https://developers.google.com/drive/api/v3/quickstart/java
     Note: This should not be configurable, so for now you need to register the app yourself...
 
 ### TODOs
-* TODO: Save config file in "EconoStats" folder
 * TODO: Create GUI
 * TODO: Add notes to each entry that contains transaction date
 * TODO: Use Google Spreadsheet API instead of OdfToolkit (https://developers.google.com/sheets/api/quickstart/java)
