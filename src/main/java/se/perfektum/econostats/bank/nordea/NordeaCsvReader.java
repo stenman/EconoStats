@@ -28,14 +28,20 @@ public class NordeaCsvReader implements CsvReader {
     private NordeaProperties nordeaProperties;
 
     /**
-     * Reads each line of provided csv file and strips the header if existing.
+     * Reads a csv file from disk and parses it.
      *
      * @return list of lines without headers
      */
-    //TODO: Actually USE the parameters passed in here!
-    public List<AccountTransaction> parseCsv() throws NumberFormatException {
+    public List<AccountTransaction> getAccountTransactionsFromFile() throws NumberFormatException {
         String csvFile = nordeaProperties.getCsvFilePath();
         LOGGER.debug(String.format("Parsing file '%s'", csvFile));
+        return parseCsv(csvFile);
+    }
+
+    /**
+     * Reads each line of provided csv file and strips the header if existing.
+     */
+    private List<AccountTransaction> parseCsv(String csvFile) {
         BufferedReader br = null;
         try {
             File file = new File(csvFile);

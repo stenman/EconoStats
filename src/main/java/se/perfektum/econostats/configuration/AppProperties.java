@@ -9,10 +9,10 @@ public class AppProperties {
     private String outputFilesPath;
     private String transactionsFilename;
     private String spreadsheetFilename;
-    private String googleDriveFolderName;
+    private String storagePath;
     private String transactionsPath;
     private String recurringTransactionsPath;
-    private String payeeFiltersFilePath;
+    private String payeeFiltersFileName;
 
     public String getOutputFilesPath() {
         return outputFilesPath;
@@ -38,12 +38,12 @@ public class AppProperties {
         this.spreadsheetFilename = spreadsheetFilename;
     }
 
-    public String getGoogleDriveFolderName() {
-        return googleDriveFolderName;
+    public String getStoragePath() {
+        return storagePath;
     }
 
-    public void setGoogleDriveFolderName(String googleDriveFolderName) {
-        this.googleDriveFolderName = googleDriveFolderName;
+    public void setStoragePath(String storagePath) {
+        this.storagePath = storagePath;
     }
 
     public String getTransactionsPath() {
@@ -62,12 +62,12 @@ public class AppProperties {
         this.recurringTransactionsPath = recurringTransactionsPath;
     }
 
-    public String getPayeeFiltersFilePath() {
-        return payeeFiltersFilePath;
+    public String getPayeeFiltersFileName() {
+        return payeeFiltersFileName;
     }
 
-    public void setPayeeFiltersFilePath(String payeeFiltersFilePath) {
-        this.payeeFiltersFilePath = payeeFiltersFilePath;
+    public void setPayeeFiltersFileName(String payeeFiltersFileName) {
+        this.payeeFiltersFileName = payeeFiltersFileName;
     }
 
 }

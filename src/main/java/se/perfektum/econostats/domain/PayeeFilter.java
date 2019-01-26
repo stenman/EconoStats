@@ -7,8 +7,6 @@ public class PayeeFilter {
     private List<String> payees;
     private List<String> excludePayees;
     private String alias;
-    private char group;
-    private boolean varying;
 
     public List<String> getPayees() {
         return payees;
@@ -34,28 +32,11 @@ public class PayeeFilter {
         this.alias = alias;
     }
 
-    public char getGroup() {
-        return group;
-    }
-
-    public void setGroup(char group) {
-        this.group = group;
-    }
-
-    public boolean isVarying() {
-        return varying;
-    }
-
-    public void setVarying(boolean varying) {
-        this.varying = varying;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(getPayees(),
-                getAlias(),
-                getGroup(),
-                isVarying());
+                getExcludePayees(),
+                getAlias());
     }
 
     @Override
@@ -64,8 +45,7 @@ public class PayeeFilter {
         if (!(o instanceof PayeeFilter)) return false;
         PayeeFilter pf = (PayeeFilter) o;
         return Objects.equals(getPayees(), pf.getPayees())
-                && Objects.equals(getAlias(), pf.getAlias())
-                && Objects.equals(getGroup(), pf.getGroup())
-                && Objects.equals(isVarying(), pf.isVarying());
+                && Objects.equals(getExcludePayees(), pf.getExcludePayees())
+                && Objects.equals(getAlias(), pf.getAlias());
     }
 }
