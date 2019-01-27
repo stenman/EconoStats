@@ -1,68 +1,73 @@
 package se.perfektum.econostats.gui.model;
 
-public class PayeeFilter {
-//    private final List<String> payees;
-//    private final List<String> excludePayees;
-//    private final String alias;
-//    private final char group;
-//    private final boolean varying;
-//
-//    /**
-//     * Default constructor.
-//     */
-//    public PayeeFilter() {
-//        this(null, null, null, null, null);
-//    }
-//
-//    public PayeeFilter(List<String> payees, List<String> excludePayees, String alias, char) {
-//        this.firstName = new SimpleStringProperty(firstName);
-//        this.lastName = new SimpleStringProperty(lastName);
-//
-//        // Some initial dummy data, just for convenient testing.
-//        this.street = new SimpleStringProperty("some street");
-//        this.postalCode = new SimpleIntegerProperty(1234);
-//        this.city = new SimpleStringProperty("some city");
-//        this.birthday = new SimpleObjectProperty<LocalDate>(LocalDate.of(1999, 2, 21));
-//    }
-//
-//    public List<String> getPayees() {
-//        return payees;
-//    }
-//
-//    public void setPayees(List<String> payees) {
-//        this.payees = payees;
-//    }
-//
-//    public List<String> getExcludePayees() {
-//        return excludePayees;
-//    }
-//
-//    public void setExcludePayees(List<String> excludePayees) {
-//        this.excludePayees = excludePayees;
-//    }
-//
-//    public String getAlias() {
-//        return alias;
-//    }
-//
-//    public void setAlias(String alias) {
-//        this.alias = alias;
-//    }
-//
-//    public char getGroup() {
-//        return group;
-//    }
-//
-//    public void setGroup(char group) {
-//        this.group = group;
-//    }
-//
-//    public boolean isVarying() {
-//        return varying;
-//    }
-//
-//    public void setVarying(boolean varying) {
-//        this.varying = varying;
-//    }
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
+import java.util.Collections;
+import java.util.List;
+
+public class PayeeFilter {
+    private ListProperty<String> payees;
+    private ListProperty<String> excludedPayees;
+    private StringProperty alias;
+
+    public PayeeFilter() {
+        this(null, null, null);
+    }
+
+    public PayeeFilter(List<String> payees, List<String> excludedPayees, String alias) {
+        payees = payees == null ? Collections.emptyList() : payees;
+        excludedPayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
+
+        ObservableList<String> observablePayees = FXCollections.observableArrayList(payees);
+        this.payees = new SimpleListProperty<>(observablePayees);
+
+        ObservableList<String> observableExcludedPayees = FXCollections.observableArrayList(excludedPayees);
+        this.excludedPayees = new SimpleListProperty<>(observableExcludedPayees);
+        this.alias = new SimpleStringProperty(alias);
+    }
+
+    public List<String> getPayees() {
+        return payees;
+    }
+
+    public void setPayees(List<String> payees) {
+        payees = payees == null ? Collections.emptyList() : payees;
+        ObservableList<String> observablePayees = FXCollections.observableArrayList(payees);
+        this.payees = new SimpleListProperty<>(observablePayees);
+    }
+
+    public ListProperty<String> payeesProperty() {
+        return this.payees;
+    }
+
+    public List<String> getExcludePayees() {
+        return this.excludedPayees;
+    }
+
+    public void setExcludePayees(List<String> excludedPayees) {
+        excludedPayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
+        ObservableList<String> observableExcludedPayees = FXCollections.observableArrayList(excludedPayees);
+        this.excludedPayees = new SimpleListProperty<>(observableExcludedPayees);
+    }
+
+    public ListProperty<String> excludePayeesProperty() {
+        return this.excludedPayees;
+    }
+
+    public String getAlias() {
+        return alias.get();
+    }
+
+    public void setAlias(String alias) {
+        this.alias = new SimpleStringProperty(alias);
+    }
+
+    public StringProperty aliasProperty() {
+        return alias;
+    }
 }
