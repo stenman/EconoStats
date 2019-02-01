@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -17,6 +18,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.perfektum.econostats.EconoStats;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.gui.model.PayeeFilter;
+import se.perfektum.econostats.gui.view.PayeeFilterEditDialogController;
 import se.perfektum.econostats.gui.view.PayeeFilterOverviewController;
 
 import java.io.IOException;
@@ -28,7 +30,7 @@ import java.util.List;
 public class EconoStatsMain extends Application {
 
     private static EconoStats econoStats;
-    private Stage primaryStage;
+    private static Stage primaryStage;
     private BorderPane rootLayout;
 
     private static ObservableList<PayeeFilter> payeeFilters = FXCollections.observableArrayList();
@@ -71,7 +73,7 @@ public class EconoStatsMain extends Application {
     }
 
     /**
-     * Shows the person overview inside the root layout.
+     * Shows the PayeeFilter overview inside the root layout.
      */
     public void showPayeeFilterOverview() {
         try {
@@ -92,12 +94,59 @@ public class EconoStatsMain extends Application {
     }
 
     /**
-     * Returns the data as an observable list of Persons.
+     * Opens a dialog to edit details for the specified PayeeFilter. If the user
+     * clicks Save, the changes are saved into the provided payeeFilter object and true
+     * is returned.
+     *
+     * @param payeeFilter the PayeeFilter object to be edited
+     * @return true if the user clicked Save, false otherwise.
+     */
+    public static boolean showPayeeFilterEditDialog(PayeeFilter payeeFilter) {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(EconoStatsMain.class.getResource("view/PayeeFilterEditDialog.fxml"));
+            AnchorPane page = loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Payee Filter");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the payeeFilter into the controller.
+            PayeeFilterEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setPayeeFilter(payeeFilter);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isSaveClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Returns the data as an observable list of PayeeFilters.
      *
      * @return
      */
-    public ObservableList<PayeeFilter> getPayeeFilters() {
+    public static ObservableList<PayeeFilter> getPayeeFilters() {
         return payeeFilters;
+    }
+
+    /**
+     * Returns the main stage.
+     *
+     * @return
+     */
+    public Stage getPrimaryStage() {
+        return primaryStage;
     }
 
     //Unused until GUI is ready

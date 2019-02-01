@@ -2,14 +2,9 @@ package se.perfektum.econostats.gui.view;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import se.perfektum.econostats.gui.EconoStatsMain;
 import se.perfektum.econostats.gui.model.PayeeFilter;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class PayeeFilterOverviewController {
     @FXML
@@ -17,9 +12,9 @@ public class PayeeFilterOverviewController {
     @FXML
     private TableColumn<PayeeFilter, String> aliasColumn;
     @FXML
-    private ListView<String> payeeColumn;
+    private ListView<String> payees;
     @FXML
-    private ListView<String> excludedPayeeColumn;
+    private ListView<String> excludedPayees;
 
     @FXML
     private Label aliasLabel;
@@ -51,6 +46,44 @@ public class PayeeFilterOverviewController {
     }
 
     /**
+     * Called when the user clicks the new button. Opens a dialog to edit
+     * details for a new PayeeFilter.
+     */
+    @FXML
+    private void handleNewPayeeFilter() {
+        PayeeFilter tempPayeeFilter = new PayeeFilter();
+        boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
+        if (okClicked) {
+            EconoStatsMain.getPayeeFilters().add(tempPayeeFilter);
+        }
+    }
+
+    /**
+     * Called when the user clicks the edit button. Opens a dialog to edit
+     * details for the selected PayeeFilter.
+     */
+    @FXML
+    private void handleEditPayeeFilter() {
+        PayeeFilter selectedPayeeFilter = payeeFilterTable.getSelectionModel().getSelectedItem();
+        if (selectedPayeeFilter != null) {
+            boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
+            if (okClicked) {
+                showPayeeFilterDetails(selectedPayeeFilter);
+            }
+
+        } else {
+            // Nothing selected.
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.initOwner(econoStatsMain.getPrimaryStage());
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No Payee Filter Selected");
+            alert.setContentText("Please select a Payee Filter in the table.");
+
+            alert.showAndWait();
+        }
+    }
+
+    /**
      * Is called by the main application to give a reference back to itself.
      *
      * @param econoStatsMain
@@ -66,13 +99,13 @@ public class PayeeFilterOverviewController {
         if (payeeFilter != null) {
             // Fill the labels with info from the payeeFilter object.
             aliasLabel.setText(payeeFilter.getAlias());
-            payeeColumn.setItems(payeeFilter.payeesProperty());
-            excludedPayeeColumn.setItems(payeeFilter.excludedPayeesProperty());
+            payees.setItems(payeeFilter.payeesProperty());
+            excludedPayees.setItems(payeeFilter.excludedPayeesProperty());
         } else {
             // payeeFilter is null, remove all the text.
             aliasLabel.setText("");
-            payeeColumn.setItems(FXCollections.observableArrayList());
-            excludedPayeeColumn.setItems(FXCollections.observableArrayList());
+            payees.setItems(FXCollections.observableArrayList());
+            excludedPayees.setItems(FXCollections.observableArrayList());
         }
     }
 

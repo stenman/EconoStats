@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterOverviewController">
+<AnchorPane prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterOverviewController">
     <children>
         <SplitPane dividerPositions="0.29797979797979796" prefHeight="300.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -36,11 +36,11 @@
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
-                              <ListView fx:id="payeeColumn" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <ListView fx:id="payees" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children></AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="238.0">
                            <children>
-                              <ListView fx:id="excludedPayeeColumn" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <ListView fx:id="excludedPayees" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children></AnchorPane>
                             </items>
                         </SplitPane>
@@ -48,8 +48,8 @@
                         <Label layoutX="212.0" layoutY="43.0" text="Excluded" />
                         <ButtonBar layoutX="203.0" layoutY="244.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">
                             <buttons>
-                                <Button mnemonicParsing="false" text="New..." />
-                                <Button mnemonicParsing="false" text="Edit..." />
+                                <Button mnemonicParsing="false" onAction="#handleNewPayeeFilter" text="New..." />
+                                <Button mnemonicParsing="false" onAction="#handleEditPayeeFilter" text="Edit..." />
                                 <Button mnemonicParsing="false" onAction="#handleDeletePayeeFilter" text="Delete" />
                             </buttons>
                         </ButtonBar>
