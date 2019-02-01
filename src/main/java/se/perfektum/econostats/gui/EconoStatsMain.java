@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EnableConfigurationProperties
 public class EconoStatsMain extends Application {
@@ -34,6 +35,8 @@ public class EconoStatsMain extends Application {
     private BorderPane rootLayout;
 
     private static ObservableList<PayeeFilter> payeeFilters = FXCollections.observableArrayList();
+    private static ObservableList<AccountTransaction> accountTransactions = FXCollections.observableArrayList();
+
 
     public static void main(String args[]) {
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
@@ -120,6 +123,8 @@ public class EconoStatsMain extends Application {
             PayeeFilterEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setPayeeFilter(payeeFilter);
+            ObservableList<String> transactionNames = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).collect(Collectors.toList()));
+            controller.setTransactionNames(transactionNames);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
@@ -132,12 +137,21 @@ public class EconoStatsMain extends Application {
     }
 
     /**
-     * Returns the data as an observable list of PayeeFilters.
+     * Access method for PayeeFilters.
      *
-     * @return
+     * @return an observable list of PayeeFilters
      */
     public static ObservableList<PayeeFilter> getPayeeFilters() {
         return payeeFilters;
+    }
+
+    /**
+     * Access method for AccountTransactions.
+     *
+     * @return an observable list of AccountTransactions
+     */
+    public static ObservableList<AccountTransaction> getAccountTransactions() {
+        return accountTransactions;
     }
 
     /**
@@ -198,6 +212,12 @@ public class EconoStatsMain extends Application {
         excludedPayees2.addAll(Arrays.asList("excludedPayee D", "excludedPayee E", "excludedPayee f"));
         PayeeFilter pf2 = new PayeeFilter(payees2, excludedPayees2, "Some Alias 2");
         payeeFilters.addAll(Arrays.asList(pf1, pf2));
+
+        AccountTransaction t1 = new AccountTransaction.Builder().name("Transaction 1").build();
+        AccountTransaction t2 = new AccountTransaction.Builder().name("Transaction 2").build();
+        AccountTransaction t3 = new AccountTransaction.Builder().name("Transaction 1 REFUND").build();
+        AccountTransaction t4 = new AccountTransaction.Builder().name("Transaction 4").build();
+        accountTransactions.addAll(Arrays.asList(t1, t2, t3, t4));
     }
 
 }

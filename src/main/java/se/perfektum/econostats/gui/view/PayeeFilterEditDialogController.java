@@ -1,19 +1,19 @@
 package se.perfektum.econostats.gui.view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 
+import java.util.List;
+
 public class PayeeFilterEditDialogController {
 
     @FXML
-    private ListView<String> accountTransactions;
+    private ListView<String> transactionNames;
     @FXML
     private ListView<String> payees;
     @FXML
@@ -22,13 +22,6 @@ public class PayeeFilterEditDialogController {
     private TextField alias;
     @FXML
     private TextField customEntry;
-
-    @FXML
-    private Label accountTransationsLabel;
-    @FXML
-    private Label payeesLabel;
-    @FXML
-    private Label excludedPayeesLabel;
 
     private PayeeFilter payeeFilter;
 
@@ -53,7 +46,16 @@ public class PayeeFilterEditDialogController {
     }
 
     /**
-     * Sets the payeeFilter to be edited in the dialog.
+     * Sets the transactionNames to be edited in the dialog.
+     *
+     * @param transactionNames
+     */
+    public void setTransactionNames(List<String> transactionNames) {
+        this.transactionNames.setItems(FXCollections.observableArrayList(transactionNames));
+    }
+
+    /**
+     * Sets the payeeFilters to be edited in the dialog.
      *
      * @param payeeFilter
      */
@@ -102,7 +104,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleAddPayee() {
-        payees.setItems(accountTransactions.getSelectionModel().getSelectedItems());
+        payees.setItems(transactionNames.getSelectionModel().getSelectedItems());
     }
 
     /**
