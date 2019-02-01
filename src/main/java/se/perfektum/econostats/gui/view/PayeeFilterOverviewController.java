@@ -79,12 +79,8 @@ public class PayeeFilterOverviewController {
     @FXML
     private void handleDeletePayeeFilter() {
         int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
-        try {
+        if (selectedIndex >= 0) {
             payeeFilterTable.getItems().remove(selectedIndex);
-        } catch (Exception e) {
-            if (e instanceof InvocationTargetException) {
-                return;
-            }
         }
     }
 }
