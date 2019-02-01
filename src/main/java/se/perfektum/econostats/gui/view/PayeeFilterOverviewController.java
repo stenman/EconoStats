@@ -9,6 +9,8 @@ import javafx.scene.control.TableView;
 import se.perfektum.econostats.gui.EconoStatsMain;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class PayeeFilterOverviewController {
     @FXML
     private TableView<PayeeFilter> payeeFilterTable;
@@ -71,6 +73,18 @@ public class PayeeFilterOverviewController {
             aliasLabel.setText("");
             payeeColumn.setItems(FXCollections.observableArrayList());
             excludedPayeeColumn.setItems(FXCollections.observableArrayList());
+        }
+    }
+
+    @FXML
+    private void handleDeletePayeeFilter() {
+        int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
+        try {
+            payeeFilterTable.getItems().remove(selectedIndex);
+        } catch (Exception e) {
+            if (e instanceof InvocationTargetException) {
+                return;
+            }
         }
     }
 }
