@@ -53,10 +53,6 @@ public class EconoStatsMain extends Application {
         showPayeeFilterOverview();
     }
 
-    public ObservableList<PayeeFilter> getPayeeFilter() {
-        return payeeFilters;
-    }
-
     /**
      * Initializes the root layout.
      */

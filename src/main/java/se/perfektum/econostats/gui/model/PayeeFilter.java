@@ -55,7 +55,7 @@ public class PayeeFilter {
         this.excludedPayees = new SimpleListProperty<>(observableExcludedPayees);
     }
 
-    public ListProperty<String> excludePayeesProperty() {
+    public ListProperty<String> excludedPayeesProperty() {
         return this.excludedPayees;
     }
 
