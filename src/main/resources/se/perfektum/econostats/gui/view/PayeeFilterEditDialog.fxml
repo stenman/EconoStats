@@ -3,29 +3,42 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterEditDialogController">
+<AnchorPane prefHeight="478.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterEditDialogController">
    <children>
-      <Label layoutX="5.0" layoutY="5.0" prefHeight="20.0" prefWidth="179.0" text="Account Transactions" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-      <AnchorPane layoutX="14.0" layoutY="37.0" prefHeight="372.0" prefWidth="248.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="23.0">
+      <AnchorPane layoutX="14.0" layoutY="-4.0" prefHeight="365.0" prefWidth="248.0" AnchorPane.bottomAnchor="117.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
-            <ListView fx:id="accountTransactions" layoutX="7.0" prefHeight="372.0" prefWidth="248.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label layoutX="5.0" prefHeight="20.0" prefWidth="179.0" text="Account Transactions" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0" />
+            <ListView fx:id="accountTransactions" layoutY="-24.0" prefHeight="365.0" prefWidth="248.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="329.0" layoutY="6.0" prefHeight="355.0" prefWidth="266.0">
+      <AnchorPane layoutX="329.0" layoutY="1.0" prefHeight="365.0" prefWidth="266.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ListView fx:id="payees" layoutY="22.0" prefHeight="156.0" prefWidth="266.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="22.0" />
-            <ListView fx:id="excludedPayees" layoutY="209.0" prefHeight="150.0" prefWidth="266.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-            <Label layoutX="5.0" layoutY="5.0" text="Payees" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-            <Label layoutX="5.0" layoutY="187.0" text="Payees to be excluded" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="187.0" />
+            <ListView fx:id="payees" layoutY="25.0" prefHeight="156.0" prefWidth="266.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+            <ListView fx:id="excludedPayees" layoutY="213.0" prefHeight="156.0" prefWidth="266.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <Label layoutX="5.0" layoutY="5.0" text="Payees" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
+            <Label layoutY="189.0" text="Payees to be excluded" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="189.0" />
          </children>
       </AnchorPane>
-      <Button layoutX="262.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleAddPayee" prefHeight="25.0" prefWidth="59.0" text="Add" />
-      <Button layoutX="262.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleRemovePayee" text="Remove" />
-      <Button layoutX="262.0" layoutY="251.0" mnemonicParsing="false" onAction="#handleAddExcludePayee" prefHeight="25.0" prefWidth="59.0" text="Add" />
-      <Button layoutX="262.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleRemoveExcludePayee" text="Remove" />
-      <Button layoutX="539.0" layoutY="369.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
-      <Button layoutX="480.0" layoutY="369.0" mnemonicParsing="false" onAction="#handleSave" prefHeight="25.0" prefWidth="52.0" text="Save" />
+      <AnchorPane layoutX="14.0" layoutY="367.0" prefHeight="99.0" prefWidth="248.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0">
+         <children>
+            <TextField fx:id="customEntry" layoutX="11.0" layoutY="28.0" prefHeight="25.0" prefWidth="229.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <Label layoutX="5.0" layoutY="8.0" text="Custom Entry" AnchorPane.leftAnchor="5.0" />
+            <Button layoutX="14.0" layoutY="61.0" mnemonicParsing="false" onAction="#handleAddAsPayee" text="Add as Payee" AnchorPane.leftAnchor="0.0" />
+            <Button layoutX="95.0" layoutY="61.0" mnemonicParsing="false" onAction="#handleAddAsExclusion" text="Add as Exclusion" />
+         </children></AnchorPane>
+      <AnchorPane layoutX="329.0" layoutY="372.0" prefHeight="71.0" prefWidth="266.0">
+         <children>
+            <Label layoutY="10.0" text="Alias" AnchorPane.leftAnchor="0.0" />
+            <TextField fx:id="alias" layoutY="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+         </children></AnchorPane>
+      <Button layoutX="262.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleAddPayee" prefHeight="25.0" prefWidth="59.0" text="Add" />
+      <Button layoutX="262.0" layoutY="106.0" mnemonicParsing="false" onAction="#handleRemovePayee" text="Remove" />
+      <Button layoutX="262.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleAddExcludePayee" prefHeight="25.0" prefWidth="59.0" text="Add" />
+      <Button layoutX="262.0" layoutY="282.0" mnemonicParsing="false" onAction="#handleRemoveExcludePayee" text="Remove" />
+      <Button layoutX="540.0" layoutY="446.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+      <Button layoutX="483.0" layoutY="448.0" mnemonicParsing="false" onAction="#handleSave" prefHeight="25.0" prefWidth="52.0" text="Save" AnchorPane.bottomAnchor="5.0" />
    </children>
 </AnchorPane>

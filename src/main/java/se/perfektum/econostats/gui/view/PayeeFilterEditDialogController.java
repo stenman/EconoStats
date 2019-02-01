@@ -20,6 +20,8 @@ public class PayeeFilterEditDialogController {
     private ListView<String> excludedPayees;
     @FXML
     private TextField alias;
+    @FXML
+    private TextField customEntry;
 
     @FXML
     private Label accountTransationsLabel;
@@ -124,6 +126,22 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleRemoveExcludePayee() {
+        dialogStage.close();
+    }
+
+    /**
+     * Called when the user clicks Add as Payee.
+     */
+    @FXML
+    private void handleAddAsPayee() {
+        dialogStage.close();
+    }
+
+    /**
+     * Called when the user clicks Add as Exclusion.
+     */
+    @FXML
+    private void handleAddAsExclusion() {
         dialogStage.close();
     }
 
