@@ -3,10 +3,15 @@ package se.perfektum.econostats.gui.view;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.gui.EconoStatsMain;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 
 public class PayeeFilterOverviewController {
+
+    final Logger LOGGER = LoggerFactory.getLogger(PayeeFilterOverviewController.class);
+
     @FXML
     private TableView<PayeeFilter> payeeFilterTable;
     @FXML
@@ -52,8 +57,9 @@ public class PayeeFilterOverviewController {
     @FXML
     private void handleNewPayeeFilter() {
         PayeeFilter tempPayeeFilter = new PayeeFilter();
-        boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
-        if (okClicked) {
+        boolean saveClicked = EconoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
+        if (saveClicked) {
+            LOGGER.debug(String.format("Saving new PayeeFilter: %s", tempPayeeFilter.toString()));
             EconoStatsMain.getPayeeFilters().add(tempPayeeFilter);
         }
     }
@@ -66,13 +72,13 @@ public class PayeeFilterOverviewController {
     private void handleEditPayeeFilter() {
         PayeeFilter selectedPayeeFilter = payeeFilterTable.getSelectionModel().getSelectedItem();
         if (selectedPayeeFilter != null) {
-            boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
-            if (okClicked) {
+            boolean saveClicked = EconoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
+            if (saveClicked) {
+                LOGGER.debug(String.format("Saving edited PayeeFilter: %s", selectedPayeeFilter.toString()));
                 showPayeeFilterDetails(selectedPayeeFilter);
             }
 
         } else {
-            // Nothing selected.
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.initOwner(econoStatsMain.getPrimaryStage());
             alert.setTitle("No Selection");
@@ -89,19 +95,23 @@ public class PayeeFilterOverviewController {
      * @param econoStatsMain
      */
     public void setEconoStatsMain(EconoStatsMain econoStatsMain) {
+        LOGGER.debug("Setting main reference");
         this.econoStatsMain = econoStatsMain;
 
+        LOGGER.debug("Adding observable list data to payeeFilterTable");
         // Add observable list data to the table
         payeeFilterTable.setItems(econoStatsMain.getPayeeFilters());
     }
 
     private void showPayeeFilterDetails(PayeeFilter payeeFilter) {
         if (payeeFilter != null) {
-            // Fill the labels with info from the payeeFilter object.
+            LOGGER.debug("Populating list of payeeFilters");
+            // Fill payeeFilter list  with info from the payeeFilter object.
             aliasLabel.setText(payeeFilter.getAlias());
             payees.setItems(payeeFilter.payeesProperty());
             excludedPayees.setItems(payeeFilter.excludedPayeesProperty());
         } else {
+            LOGGER.debug("Resetting list of payeeFilters");
             // payeeFilter is null, remove all the text.
             aliasLabel.setText("");
             payees.setItems(FXCollections.observableArrayList());
@@ -113,6 +123,7 @@ public class PayeeFilterOverviewController {
     private void handleDeletePayeeFilter() {
         int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
+            LOGGER.debug(String.format("Removing [%s] from payeeFilterTable", payeeFilterTable.getItems().get(selectedIndex).getAlias()));
             payeeFilterTable.getItems().remove(selectedIndex);
         }
     }

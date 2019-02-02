@@ -12,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 
 @EnableConfigurationProperties
 public class EconoStatsMain extends Application {
+
+    static final Logger LOGGER = LoggerFactory.getLogger(EconoStatsMain.class);
 
     private static EconoStats econoStats;
     private static Stage primaryStage;
@@ -63,12 +67,14 @@ public class EconoStatsMain extends Application {
      */
     public void initRootLayout() {
         try {
+            LOGGER.debug("Initiating root layout");
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(EconoStatsMain.class.getResource("view/RootLayout.fxml"));
             rootLayout = loader.load();
 
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+            LOGGER.debug("Root layout initiated, showing primary stage");
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,6 +86,7 @@ public class EconoStatsMain extends Application {
      */
     public void showPayeeFilterOverview() {
         try {
+            LOGGER.debug("Initiating PayeeFilterOverview");
             // Load payeeFilter overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(EconoStats.class.getResource("gui/view/PayeeFilterOverview.fxml"));
@@ -106,6 +113,7 @@ public class EconoStatsMain extends Application {
      */
     public static boolean showPayeeFilterEditDialog(PayeeFilter payeeFilter) {
         try {
+            LOGGER.debug("Initiating PayeeFilterEditDialog");
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(EconoStatsMain.class.getResource("view/PayeeFilterEditDialog.fxml"));
@@ -123,9 +131,11 @@ public class EconoStatsMain extends Application {
             PayeeFilterEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setPayeeFilter(payeeFilter);
-            ObservableList<String> transactionNames = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).collect(Collectors.toList()));
+            LOGGER.debug("Generating distinct set of Account Transaction Names");
+            ObservableList<String> transactionNames = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).distinct().collect(Collectors.toList()));
             controller.setTransactionNames(transactionNames);
 
+            LOGGER.debug("PayeeFilterEditDialog initiated, showing dialog");
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
@@ -216,8 +226,9 @@ public class EconoStatsMain extends Application {
         AccountTransaction t1 = new AccountTransaction.Builder().name("Transaction 1").build();
         AccountTransaction t2 = new AccountTransaction.Builder().name("Transaction 2").build();
         AccountTransaction t3 = new AccountTransaction.Builder().name("Transaction 1 REFUND").build();
-        AccountTransaction t4 = new AccountTransaction.Builder().name("Transaction 4").build();
-        accountTransactions.addAll(Arrays.asList(t1, t2, t3, t4));
+        AccountTransaction t4 = new AccountTransaction.Builder().name("Transaction 2").build();
+        AccountTransaction t5 = new AccountTransaction.Builder().name("Transaction 4").build();
+        accountTransactions.addAll(Arrays.asList(t1, t2, t3, t4, t5));
     }
 
 }

@@ -70,4 +70,9 @@ public class PayeeFilter {
     public StringProperty aliasProperty() {
         return alias;
     }
+
+    @Override
+    public String toString() {
+        return String.format("\nalias: %s\npayees: %s\nexcluded payees: %s", alias.getValue(), payees.getValue(), excludedPayees.getValue());
+    }
 }

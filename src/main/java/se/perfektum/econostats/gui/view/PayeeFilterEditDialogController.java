@@ -7,6 +7,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 
 import java.util.*;
@@ -16,6 +18,8 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 public class PayeeFilterEditDialogController {
+
+    final Logger LOGGER = LoggerFactory.getLogger(PayeeFilterEditDialogController.class);
 
     @FXML
     private ListView<String> transactionNames;
@@ -68,9 +72,10 @@ public class PayeeFilterEditDialogController {
     public void setPayeeFilter(PayeeFilter payeeFilter) {
         this.payeeFilter = payeeFilter;
 
+        alias.setText(payeeFilter.aliasProperty().getValue());
         payees.setItems(payeeFilter.payeesProperty());
         excludedPayees.setItems(payeeFilter.excludedPayeesProperty());
-        alias.setText(payeeFilter.aliasProperty().getValue());
+        LOGGER.debug(String.format("PayeeFilter new/edit dialog initiated. Setting filter parameters...\nalias: %s\npayees: %s\nexcluded payees: %s", alias.getText(), payees.getItems(), excludedPayees.getItems()));
     }
 
     /**
@@ -88,6 +93,7 @@ public class PayeeFilterEditDialogController {
     @FXML
     private void handleSave() {
         if (isInputValid()) {
+            LOGGER.debug("Saving PayeeFilter...");
             payeeFilter.setPayees(payees.getItems());
             payeeFilter.setExcludePayees(excludedPayees.getItems());
             payeeFilter.setAlias(alias.getText());
@@ -110,6 +116,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleAddPayee() {
+        LOGGER.debug(String.format("Adding payee(s)"));
         payees.setItems(FXCollections.observableArrayList(
                 Stream.concat(
                         payees.getItems().stream(),
@@ -124,6 +131,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleRemovePayee() {
+        LOGGER.debug(String.format("Removing payee(s)"));
         payees.getItems().remove(payees.getSelectionModel().getSelectedItem());
     }
 
@@ -132,6 +140,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleAddExcludePayee() {
+        LOGGER.debug(String.format("Adding excluded payee(s)"));
         excludedPayees.setItems(FXCollections.observableArrayList(
                 Stream.concat(
                         excludedPayees.getItems().stream(),
@@ -146,6 +155,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleRemoveExcludePayee() {
+        LOGGER.debug(String.format("Removing excluded payee(s)"));
         excludedPayees.getItems().remove(excludedPayees.getSelectionModel().getSelectedItem());
     }
 
@@ -153,16 +163,32 @@ public class PayeeFilterEditDialogController {
      * Called when the user clicks Add as Payee.
      */
     @FXML
-    private void handleAddAsPayee() {
-        dialogStage.close();
+    private void handleAddCustomPayee() {
+        LOGGER.debug(String.format("Adding custom payee"));
+        addCustomEntry(payees);
     }
 
     /**
      * Called when the user clicks Add as Exclusion.
      */
     @FXML
-    private void handleAddAsExclusion() {
-        dialogStage.close();
+    private void handleAddCustomExclusion() {
+        LOGGER.debug(String.format("Adding custom excluded payee"));
+        addCustomEntry(excludedPayees);
+    }
+
+    private void addCustomEntry(ListView<String> entry) {
+        if (!payees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))
+                && !excludedPayees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))) {
+            entry.getItems().add(customEntry.getText());
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(dialogStage);
+            alert.setTitle("Duplicate Entry Error");
+            alert.setHeaderText("The payee you are trying to add\nalready exists in the list of payees or excluded payees!");
+
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -171,6 +197,7 @@ public class PayeeFilterEditDialogController {
      * @return true if the input is valid
      */
     private boolean isInputValid() {
+        LOGGER.debug("Validating user input");
         String errorMessage = "";
 
         if (alias.getText() == null || alias.getText().length() == 0) {
