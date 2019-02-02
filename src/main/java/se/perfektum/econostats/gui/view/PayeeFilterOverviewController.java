@@ -110,6 +110,8 @@ public class PayeeFilterOverviewController {
             aliasLabel.setText(payeeFilter.getAlias());
             payees.setItems(payeeFilter.payeesProperty());
             excludedPayees.setItems(payeeFilter.excludedPayeesProperty());
+            // Save edited values to table
+            payeeFilterTable.refresh();
         } else {
             LOGGER.debug("Resetting list of payeeFilters");
             // payeeFilter is null, remove all the text.
@@ -123,8 +125,13 @@ public class PayeeFilterOverviewController {
     private void handleDeletePayeeFilter() {
         int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            LOGGER.debug(String.format("Removing [%s] from payeeFilterTable", payeeFilterTable.getItems().get(selectedIndex).getAlias()));
-            payeeFilterTable.getItems().remove(selectedIndex);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + payeeFilterTable.getItems().get(selectedIndex).getAlias() + " ?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.YES) {
+                LOGGER.debug(String.format("Removing [%s] from payeeFilterTable", payeeFilterTable.getItems().get(selectedIndex).getAlias()));
+                payeeFilterTable.getItems().remove(selectedIndex);
+            }
         }
     }
 }
