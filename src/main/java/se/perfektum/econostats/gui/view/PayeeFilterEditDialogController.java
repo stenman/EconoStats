@@ -116,14 +116,18 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleAddPayee() {
-        LOGGER.debug(String.format("Adding payee(s)"));
-        payees.setItems(FXCollections.observableArrayList(
-                Stream.concat(
-                        payees.getItems().stream(),
-                        transactionNames.getSelectionModel().getSelectedItems().stream()
-                )
-                        .distinct()
-                        .collect(Collectors.toList())));
+        if (Collections.disjoint(excludedPayees.getItems(), transactionNames.getSelectionModel().getSelectedItems())) {
+            LOGGER.debug(String.format("Adding payee(s)"));
+            payees.setItems(FXCollections.observableArrayList(
+                    Stream.concat(
+                            payees.getItems().stream(),
+                            transactionNames.getSelectionModel().getSelectedItems().stream()
+                    )
+                            .distinct()
+                            .collect(Collectors.toList())));
+        } else {
+            showDuplicateItemError();
+        }
     }
 
     /**
@@ -140,14 +144,18 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleAddExcludePayee() {
-        LOGGER.debug(String.format("Adding excluded payee(s)"));
-        excludedPayees.setItems(FXCollections.observableArrayList(
-                Stream.concat(
-                        excludedPayees.getItems().stream(),
-                        transactionNames.getSelectionModel().getSelectedItems().stream()
-                )
-                        .distinct()
-                        .collect(Collectors.toList())));
+        if (Collections.disjoint(payees.getItems(), transactionNames.getSelectionModel().getSelectedItems())) {
+            LOGGER.debug(String.format("Adding excluded payee(s)"));
+            excludedPayees.setItems(FXCollections.observableArrayList(
+                    Stream.concat(
+                            excludedPayees.getItems().stream(),
+                            transactionNames.getSelectionModel().getSelectedItems().stream()
+                    )
+                            .distinct()
+                            .collect(Collectors.toList())));
+        } else {
+            showDuplicateItemError();
+        }
     }
 
     /**
@@ -182,13 +190,17 @@ public class PayeeFilterEditDialogController {
                 && !excludedPayees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))) {
             entry.getItems().add(customEntry.getText());
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.initOwner(dialogStage);
-            alert.setTitle("Duplicate Entry Error");
-            alert.setHeaderText("The payee you are trying to add\nalready exists in the list of payees or excluded payees!");
-
-            alert.showAndWait();
+            showDuplicateItemError();
         }
+    }
+
+    private void showDuplicateItemError() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initOwner(dialogStage);
+        alert.setTitle("Duplicate Entry Error");
+        alert.setHeaderText("The item you are trying to add\nalready exists in the list of payees or excluded payees!");
+
+        alert.showAndWait();
     }
 
     /**
