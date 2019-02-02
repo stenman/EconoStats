@@ -4,11 +4,16 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class PayeeFilterEditDialogController {
 
@@ -34,6 +39,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void initialize() {
+        transactionNames.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     /**
@@ -104,7 +110,13 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleAddPayee() {
-        payees.setItems(transactionNames.getSelectionModel().getSelectedItems());
+        payees.setItems(FXCollections.observableArrayList(
+                Stream.concat(
+                        payees.getItems().stream(),
+                        transactionNames.getSelectionModel().getSelectedItems().stream()
+                )
+                        .distinct()
+                        .collect(Collectors.toList())));
     }
 
     /**
@@ -112,7 +124,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleRemovePayee() {
-        payees.setItems(FXCollections.observableArrayList());
+        payees.getItems().remove(payees.getSelectionModel().getSelectedItem());
     }
 
     /**
@@ -120,7 +132,13 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleAddExcludePayee() {
-        dialogStage.close();
+        excludedPayees.setItems(FXCollections.observableArrayList(
+                Stream.concat(
+                        excludedPayees.getItems().stream(),
+                        transactionNames.getSelectionModel().getSelectedItems().stream()
+                )
+                        .distinct()
+                        .collect(Collectors.toList())));
     }
 
     /**
@@ -128,7 +146,7 @@ public class PayeeFilterEditDialogController {
      */
     @FXML
     private void handleRemoveExcludePayee() {
-        dialogStage.close();
+        excludedPayees.getItems().remove(excludedPayees.getSelectionModel().getSelectedItem());
     }
 
     /**
