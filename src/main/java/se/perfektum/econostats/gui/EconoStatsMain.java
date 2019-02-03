@@ -8,8 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -20,6 +20,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.perfektum.econostats.EconoStats;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.gui.model.PayeeFilter;
+import se.perfektum.econostats.gui.view.EconoStatsOverviewController;
 import se.perfektum.econostats.gui.view.PayeeFilterEditDialogController;
 import se.perfektum.econostats.gui.view.PayeeFilterOverviewController;
 
@@ -36,7 +37,7 @@ public class EconoStatsMain extends Application {
 
     private static EconoStats econoStats;
     private static Stage primaryStage;
-    private BorderPane rootLayout;
+    private TabPane rootLayout;
 
     private static ObservableList<PayeeFilter> payeeFilters = FXCollections.observableArrayList();
     private static ObservableList<AccountTransaction> accountTransactions = FXCollections.observableArrayList();
@@ -55,10 +56,11 @@ public class EconoStatsMain extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("EconoStats - Choose Payee Filters");
+    public void start(Stage primaryStage) {
+        EconoStatsMain.primaryStage = primaryStage;
+        EconoStatsMain.primaryStage.setTitle("EconoStats - Choose Payee Filters");
         initRootLayout();
+        showEconoStatsOverview();
         showPayeeFilterOverview();
     }
 
@@ -84,16 +86,40 @@ public class EconoStatsMain extends Application {
     /**
      * Shows the PayeeFilter overview inside the root layout.
      */
+    public void showEconoStatsOverview() {
+        try {
+            LOGGER.debug("Initiating EconoStatsOverview");
+            // Load EconoStats overview.
+            FXMLLoader loader = new FXMLLoader();
+
+            loader.setLocation(EconoStatsMain.class.getResource("view/EconoStatsOverview.fxml"));
+            AnchorPane econoStatsOverview = loader.load();
+
+            // Set EconoStats overview into the root layout.
+            rootLayout.getTabs().get(0).setContent(econoStatsOverview);
+
+            // Give the controller access to the main app.
+            EconoStatsOverviewController controller = loader.getController();
+            controller.setEconoStatsMain(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Shows the PayeeFilter overview inside the root layout.
+     */
     public void showPayeeFilterOverview() {
         try {
             LOGGER.debug("Initiating PayeeFilterOverview");
             // Load payeeFilter overview.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(EconoStats.class.getResource("gui/view/PayeeFilterOverview.fxml"));
+
+            loader.setLocation(EconoStatsMain.class.getResource("view/PayeeFilterOverview.fxml"));
             AnchorPane payeeFilterOverview = loader.load();
 
-            // Set payeeFilter overview into the center of root layout.
-            rootLayout.setCenter(payeeFilterOverview);
+            // Set payeeFilter overview into the root layout.
+            rootLayout.getTabs().get(1).setContent(payeeFilterOverview);
 
             // Give the controller access to the main app.
             PayeeFilterOverviewController controller = loader.getController();
