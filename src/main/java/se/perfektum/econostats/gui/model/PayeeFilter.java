@@ -1,9 +1,6 @@
 package se.perfektum.econostats.gui.model;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -14,12 +11,13 @@ public class PayeeFilter {
     private ListProperty<String> payees;
     private ListProperty<String> excludedPayees;
     private StringProperty alias;
+    private BooleanProperty active;
 
     public PayeeFilter() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
-    public PayeeFilter(List<String> payees, List<String> excludedPayees, String alias) {
+    public PayeeFilter(List<String> payees, List<String> excludedPayees, String alias, Boolean active) {
         payees = payees == null ? Collections.emptyList() : payees;
         excludedPayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
 
@@ -29,6 +27,7 @@ public class PayeeFilter {
         ObservableList<String> observableExcludedPayees = FXCollections.observableArrayList(excludedPayees);
         this.excludedPayees = new SimpleListProperty<>(observableExcludedPayees);
         this.alias = new SimpleStringProperty(alias);
+        this.active = new SimpleBooleanProperty(active);
     }
 
     public List<String> getPayees() {
@@ -71,8 +70,20 @@ public class PayeeFilter {
         return alias;
     }
 
+    public Boolean isActive() {
+        return active.get();
+    }
+
+    public void setActive(Boolean active) {
+        this.active = new SimpleBooleanProperty(active);
+    }
+
+    public BooleanProperty activeProperty() {
+        return active;
+    }
+
     @Override
     public String toString() {
-        return String.format("\nalias: %s\npayees: %s\nexcluded payees: %s", alias.getValue(), payees.getValue(), excludedPayees.getValue());
+        return String.format("\nalias: %s\npayees: %s\nexcluded payees: %s\nisActive: %s", alias.getValue(), payees.getValue(), excludedPayees.getValue(), active.getValue());
     }
 }

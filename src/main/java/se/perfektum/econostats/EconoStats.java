@@ -62,7 +62,7 @@ public class EconoStats {
     public List<PayeeFilter> getPayeeFilters() {
         try {
             String fileId = getFileId(payeeFiltersFileName, MimeTypes.APPLICATION_JSON.toString());
-            String filters = accountTransactionDao.getFile(fileId);
+            String filters = fileId == null ? null : accountTransactionDao.getFile(fileId);
             return filters == null ? null : JsonUtils.getJsonElement(PayeeFilter.class, filters);
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
@@ -197,6 +197,10 @@ public class EconoStats {
         try {
             String fileId = getFileId("payeeFilters.json", MimeTypes.APPLICATION_JSON.toString());
             String folderId = getFileId(storagePath, APPLICATION_VND_GOOGLE_APPS_FOLDER);
+
+            if (folderId == null) {
+                folderId = accountTransactionDao.createFolder(storagePath);
+            }
 
             if (fileId == null) {
                 accountTransactionDao.createFile(filePathTransactions, Arrays.asList(folderId), MimeTypes.APPLICATION_JSON.toString(), MimeTypes.APPLICATION_JSON.toString());

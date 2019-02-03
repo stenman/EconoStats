@@ -48,9 +48,16 @@ public class EconoStatsMain extends Application {
         econoStats = (EconoStats) context.getBean("econoStats");
 
 //        Use this to save local payeeFilters to Drive, until GUI works properly
-//                econoStats.tempSavePayeeFiltersToDrive();
+//        To reset everything: delete EconoStats folder on drive and run tempSavePayeeFiltersToDrive + generateRecurringTransactions
+//        econoStats.tempSavePayeeFiltersToDrive();
+//        generateRecurringTransactions();
 
-        setupPayeeFiltersMockdata();
+        List<se.perfektum.econostats.domain.PayeeFilter> pfs = econoStats.getPayeeFilters();
+
+        // TODO: 1. convert PF to PF gui
+        // TODO: 2. add "active" field to both PFs
+
+        setupMockdata();
 
         launch(args);
     }
@@ -222,7 +229,7 @@ public class EconoStatsMain extends Application {
     }
 
     //Unused until GUI is ready
-    private void generateRecurringTransactions() {
+    private static void generateRecurringTransactions() {
         List<se.perfektum.econostats.domain.PayeeFilter> payeeFilters = econoStats.getPayeeFilters();
         List<AccountTransaction> accountTransactions = econoStats.getAccountTransactions();
         try {
@@ -236,17 +243,17 @@ public class EconoStatsMain extends Application {
 //        List<Button> buttons = setButtons(primaryStage, payeeFilters, accountTransactions);
     }
 
-    private static void setupPayeeFiltersMockdata() {
+    private static void setupMockdata() {
         List<String> payees1 = new ArrayList<>();
         payees1.addAll(Arrays.asList("Payee A", "Payee B", "Payee C"));
         List<String> excludedPayees1 = new ArrayList<>();
         excludedPayees1.addAll(Arrays.asList("excludedPayee A", "excludedPayee B", "excludedPayee C"));
-        PayeeFilter pf1 = new PayeeFilter(payees1, excludedPayees1, "Some Alias 1");
+        PayeeFilter pf1 = new PayeeFilter(payees1, excludedPayees1, "Some Alias 1", true);
         List<String> payees2 = new ArrayList<>();
         payees2.addAll(Arrays.asList("Payee D", "Payee E", "Payee F"));
         List<String> excludedPayees2 = new ArrayList<>();
         excludedPayees2.addAll(Arrays.asList("excludedPayee D", "excludedPayee E", "excludedPayee f"));
-        PayeeFilter pf2 = new PayeeFilter(payees2, excludedPayees2, "Some Alias 2");
+        PayeeFilter pf2 = new PayeeFilter(payees2, excludedPayees2, "Some Alias 2", false);
         payeeFilters.addAll(Arrays.asList(pf1, pf2));
 
         AccountTransaction t1 = new AccountTransaction.Builder().name("Transaction 1").build();

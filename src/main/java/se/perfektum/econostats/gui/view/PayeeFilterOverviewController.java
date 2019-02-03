@@ -3,6 +3,7 @@ package se.perfektum.econostats.gui.view;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.gui.EconoStatsMain;
@@ -16,6 +17,8 @@ public class PayeeFilterOverviewController {
     private TableView<PayeeFilter> payeeFilterTable;
     @FXML
     private TableColumn<PayeeFilter, String> aliasColumn;
+    @FXML
+    private TableColumn<PayeeFilter, Boolean> activeColumn;
     @FXML
     private ListView<String> payees;
     @FXML
@@ -40,7 +43,11 @@ public class PayeeFilterOverviewController {
      */
     @FXML
     private void initialize() {
+        payeeFilterTable.setEditable(true);
+
         aliasColumn.setCellValueFactory(cellData -> cellData.getValue().aliasProperty());
+        activeColumn.setCellValueFactory(p -> p.getValue().activeProperty());
+        activeColumn.setCellFactory(p -> new CheckBoxTableCell<>());
 
         // Clear payeeFilter details.
         showPayeeFilterDetails(null);
