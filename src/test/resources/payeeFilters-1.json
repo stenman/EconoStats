@@ -2,6 +2,7 @@
   "payeeFilters": [
     {
       "alias": "Frisktandvården",
+      "active": true,
       "payees": [
         "FRISKTANDV"
       ],
@@ -9,6 +10,7 @@
     },
     {
       "alias": "Folksam",
+      "active": true,
       "payees": [
         "Autogiro FOLKSAM"
       ],
@@ -18,6 +20,7 @@
     },
     {
       "alias": "Huslån",
+      "active": true,
       "payees": [
         "Omsättning lån 3998 77 77771",
         "Omsättning lån 3998 77 77772",

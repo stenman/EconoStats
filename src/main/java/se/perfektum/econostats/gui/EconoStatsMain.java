@@ -53,6 +53,8 @@ public class EconoStatsMain extends Application {
 //        generateRecurringTransactions();
 
         List<se.perfektum.econostats.domain.PayeeFilter> pfs = econoStats.getPayeeFilters();
+        payeeFilters.addAll(FXCollections.observableArrayList(PayeeFilter.convertFromDomain(pfs)));
+
 
         // TODO: 1. convert PF to PF gui
         // TODO: 2. add "active" field to both PFs

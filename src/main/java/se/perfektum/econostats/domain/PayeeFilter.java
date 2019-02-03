@@ -7,6 +7,7 @@ public class PayeeFilter {
     private List<String> payees;
     private List<String> excludePayees;
     private String alias;
+    private Boolean active;
 
     public List<String> getPayees() {
         return payees;
@@ -32,11 +33,20 @@ public class PayeeFilter {
         this.alias = alias;
     }
 
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(getPayees(),
                 getExcludePayees(),
-                getAlias());
+                getAlias(),
+                isActive());
     }
 
     @Override
@@ -46,6 +56,7 @@ public class PayeeFilter {
         PayeeFilter pf = (PayeeFilter) o;
         return Objects.equals(getPayees(), pf.getPayees())
                 && Objects.equals(getExcludePayees(), pf.getExcludePayees())
-                && Objects.equals(getAlias(), pf.getAlias());
+                && Objects.equals(getAlias(), pf.getAlias())
+                && Objects.equals(isActive(), pf.isActive());
     }
 }

@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PayeeFilter {
     private ListProperty<String> payees;
@@ -80,6 +82,33 @@ public class PayeeFilter {
 
     public BooleanProperty activeProperty() {
         return active;
+    }
+
+    public static List<PayeeFilter> convertFromDomain(List<se.perfektum.econostats.domain.PayeeFilter> dpfs) {
+        return dpfs.stream().map(dpf -> convertFromDomain(dpf)).collect(Collectors.toList());
+    }
+
+    public static PayeeFilter convertFromDomain(se.perfektum.econostats.domain.PayeeFilter dpf) {
+        return new PayeeFilter(dpf.getPayees(), dpf.getExcludePayees(), dpf.getAlias(), dpf.isActive());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPayees(),
+                getExcludePayees(),
+                getAlias(),
+                isActive());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PayeeFilter)) return false;
+        PayeeFilter pf = (PayeeFilter) o;
+        return Objects.equals(getPayees(), pf.getPayees())
+                && Objects.equals(getExcludePayees(), pf.getExcludePayees())
+                && Objects.equals(getAlias(), pf.getAlias())
+                && Objects.equals(isActive(), pf.isActive());
     }
 
     @Override

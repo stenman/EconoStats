@@ -39,10 +39,11 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final Color PASTEL_PINK = new Color(250, 210, 255);
     private static final Color PASTEL_PURPLE = new Color(220, 210, 255);
 
-    //TODO: Refactor out all parts that processes AccountTransacitons and PayeeFilters, as these don't really qualify as OdfToolkit specifics
+    //TODO: Refactor out all parts that processes AccountTransactions and PayeeFilters, as these don't really qualify as OdfToolkit specifics
     //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
     //TODO: Fix widths (calculation of this is pretty bad as it is)
     //TODO: For some reason, appending a new sheet creates 5 columns from the start... can this be fixed?
+    //TODO: When opening the spreadsheet in drive, the active sheet is the earliest year. Can this be changed (to the latest year)?
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
 
