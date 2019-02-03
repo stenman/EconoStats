@@ -2,20 +2,16 @@ package se.perfektum.econostats.gui.view;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 public class PayeeFilterEditDialogController {
 
@@ -28,9 +24,11 @@ public class PayeeFilterEditDialogController {
     @FXML
     private ListView<String> excludedPayees;
     @FXML
-    private TextField alias;
+    private TextArea alias;
     @FXML
     private TextField customEntry;
+    @FXML
+    private CheckBox active;
 
     private PayeeFilter payeeFilter;
 
@@ -73,9 +71,10 @@ public class PayeeFilterEditDialogController {
         this.payeeFilter = payeeFilter;
 
         alias.setText(payeeFilter.aliasProperty().getValue());
+        active.setSelected(payeeFilter.activeProperty().getValue());
         payees.setItems(payeeFilter.payeesProperty());
         excludedPayees.setItems(payeeFilter.excludedPayeesProperty());
-        LOGGER.debug(String.format("PayeeFilter new/edit dialog initiated. Setting filter parameters...\nalias: %s\npayees: %s\nexcluded payees: %s", alias.getText(), payees.getItems(), excludedPayees.getItems()));
+        LOGGER.debug(String.format("PayeeFilter new/edit dialog initiated. Setting filter parameters...\nalias: %s\npayees: %s\nexcluded payees: %s", alias.getText(), active, payees.getItems(), excludedPayees.getItems()));
     }
 
     /**
@@ -94,9 +93,10 @@ public class PayeeFilterEditDialogController {
     private void handleSave() {
         if (isInputValid()) {
             LOGGER.debug("Saving PayeeFilter...");
+            payeeFilter.setAlias(alias.getText());
+            payeeFilter.setActive(active.isSelected());
             payeeFilter.setPayees(payees.getItems());
             payeeFilter.setExcludePayees(excludedPayees.getItems());
-            payeeFilter.setAlias(alias.getText());
 
             saveClicked = true;
             dialogStage.close();

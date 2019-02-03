@@ -118,7 +118,7 @@ public class PayeeFilterOverviewController {
             excludedPayees.setMouseTransparent(true);
             excludedPayees.setFocusTraversable(false);
             // Fill payeeFilter list  with info from the payeeFilter object.
-            aliasLabel.setText(payeeFilter.getAlias());
+            aliasLabel.setText(payeeFilter.getAlias().replace("\n", " "));
             payees.setItems(payeeFilter.payeesProperty());
             excludedPayees.setItems(payeeFilter.excludedPayeesProperty());
             // Save edited values to table

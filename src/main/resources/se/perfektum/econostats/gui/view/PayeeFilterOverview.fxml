@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterOverviewController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterOverviewController">
     <children>
         <SplitPane dividerPositions="0.3762541806020067" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -18,8 +18,8 @@
                     <children>
                         <TableView fx:id="payeeFilterTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <columns>
-                                <TableColumn fx:id="aliasColumn" prefWidth="172.0" text="Alias" />
-                        <TableColumn fx:id="activeColumn" prefWidth="48.0" text="Active" />
+                                <TableColumn fx:id="aliasColumn" prefWidth="160.0" resizable="false" text="Alias" />
+                                <TableColumn fx:id="activeColumn" prefWidth="61.0" resizable="false" text="Active" />
                             </columns>
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -30,19 +30,22 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0">
                     <children>
                         <Label text="Details" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Label>
                         <SplitPane dividerPositions="0.49876543209876545" prefHeight="160.0" prefWidth="200.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                           <children>
-                              <ListView fx:id="payees" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children></AnchorPane>
+                                    <children>
+                                        <ListView fx:id="payees" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </children>
+                                </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="238.0">
-                           <children>
-                              <ListView fx:id="excludedPayees" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children></AnchorPane>
+                                    <children>
+                                        <ListView fx:id="excludedPayees" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </children>
+                                </AnchorPane>
                             </items>
                         </SplitPane>
                         <Label layoutX="8.0" layoutY="43.0" text="Included" />
@@ -54,8 +57,9 @@
                                 <Button mnemonicParsing="false" onAction="#handleDeletePayeeFilter" text="Delete" />
                             </buttons>
                         </ButtonBar>
-                  <Label fx:id="aliasLabel" layoutX="54.0" layoutY="5.0" prefHeight="17.0" prefWidth="331.0" />
-                    </children></AnchorPane>
+                        <Label fx:id="aliasLabel" layoutX="54.0" layoutY="5.0" prefHeight="17.0" prefWidth="331.0" />
+                    </children>
+                </AnchorPane>
             </items>
         </SplitPane>
     </children>
