@@ -29,7 +29,7 @@ public class PayeeFilter {
         ObservableList<String> observableExcludedPayees = FXCollections.observableArrayList(excludedPayees);
         this.excludedPayees = new SimpleListProperty<>(observableExcludedPayees);
         this.alias = new SimpleStringProperty(alias);
-        this.active = new SimpleBooleanProperty(active);
+        this.active = new SimpleBooleanProperty(active == null ? true : active);
     }
 
     public List<String> getPayees() {

@@ -126,7 +126,7 @@ public class PayeeFilterEditDialogController {
                             .distinct()
                             .collect(Collectors.toList())));
         } else {
-            showDuplicateItemError();
+            showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
     }
 
@@ -154,7 +154,7 @@ public class PayeeFilterEditDialogController {
                             .distinct()
                             .collect(Collectors.toList())));
         } else {
-            showDuplicateItemError();
+            showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
     }
 
@@ -186,19 +186,22 @@ public class PayeeFilterEditDialogController {
     }
 
     private void addCustomEntry(ListView<String> entry) {
+        if (customEntry.getText().isEmpty()) {
+            showError("Empty Entry Error", "Please enter a payee entry in the text field before adding!");
+        }
         if (!payees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))
                 && !excludedPayees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))) {
             entry.getItems().add(customEntry.getText());
         } else {
-            showDuplicateItemError();
+            showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
     }
 
-    private void showDuplicateItemError() {
+    private void showError(String title, String headerText) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(dialogStage);
-        alert.setTitle("Duplicate Entry Error");
-        alert.setHeaderText("The item you are trying to add\nalready exists in the list of payees or excluded payees!");
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
 
         alert.showAndWait();
     }
