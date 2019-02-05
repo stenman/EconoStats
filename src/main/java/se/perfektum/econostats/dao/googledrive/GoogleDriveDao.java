@@ -15,13 +15,18 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.dao.AccountTransactionDao;
+import se.perfektum.econostats.domain.AccountTransaction;
+import se.perfektum.econostats.domain.PayeeFilter;
+import se.perfektum.econostats.utils.JsonUtils;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +41,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
     private static final String ACCESS_TYPE = "offline";
     private static final String USER = "user";
     private static final int PORT_NUMBER = 8888;
+    private static final String storagePath = "EconoStats";
 
     public static final String APPLICATION_VND_GOOGLE_APPS_FOLDER = "application/vnd.google-apps.folder";
 
@@ -45,43 +51,6 @@ public class GoogleDriveDao implements AccountTransactionDao {
      */
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-
-    /**
-     * Creates an authorized Credential object.
-     *
-     * @param HTTP_TRANSPORT The network HTTP Transport.
-     * @return An authorized Credential object.
-     * @throws IOException If the credentials.json file cannot be found.
-     */
-    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
-        // Load client secrets.
-        LOGGER.trace(String.format("Loading local client secrets from file '%s'", CREDENTIALS_FILE_PATH));
-        InputStream in = GoogleDriveDao.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        LOGGER.trace("Loading Google client secrets");
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
-        // Build flow and trigger user authorization request.
-        LOGGER.trace(String.format("Building Google Authorization Code Flow with the following parameters - SCOPES:[%s], Tokens Directory Path:[%s], Access Type:[%s]", SCOPES, TOKENS_DIRECTORY_PATH, ACCESS_TYPE));
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType(ACCESS_TYPE)
-                .build();
-        LOGGER.trace(String.format("Building Local Server Receiver on port [%s]", PORT_NUMBER));
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT_NUMBER).build();
-        LOGGER.trace(String.format("Authorizing user '%s'", USER));
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize(USER);
-    }
-
-    private Drive getService() throws IOException, GeneralSecurityException {
-        // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        LOGGER.trace(String.format("Building authorized Drive API client server for '%s'", APPLICATION_NAME));
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-        return service;
-    }
 
     @Override
     public String createFolder(String name) throws IOException, GeneralSecurityException {
@@ -158,5 +127,95 @@ public class GoogleDriveDao implements AccountTransactionDao {
         getService().files().get(fileId)
                 .executeMediaAndDownloadTo(outputStream);
         return outputStream.toString();
+    }
+
+    @Override
+    public void saveAccountTransactionsAsJsonString(List<AccountTransaction> accountTransactions, boolean overwrite) {
+        saveJsonItemsToDrive(accountTransactions, "transactions", "accountTransactions");
+    }
+
+    @Override
+    public void savePayeeFiltersAsJsonString(List<PayeeFilter> payeeFilters, boolean overwrite) {
+        saveJsonItemsToDrive(payeeFilters, "payeeFilters", "payeeFilters");
+    }
+
+    /**
+     * Creates an authorized Credential object.
+     *
+     * @param HTTP_TRANSPORT The network HTTP Transport.
+     * @return An authorized Credential object.
+     * @throws IOException If the credentials.json file cannot be found.
+     */
+    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+        // Load client secrets.
+        LOGGER.trace(String.format("Loading local client secrets from file '%s'", CREDENTIALS_FILE_PATH));
+        InputStream in = GoogleDriveDao.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        LOGGER.trace("Loading Google client secrets");
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+
+        // Build flow and trigger user authorization request.
+        LOGGER.trace(String.format("Building Google Authorization Code Flow with the following parameters - SCOPES:[%s], Tokens Directory Path:[%s], Access Type:[%s]", SCOPES, TOKENS_DIRECTORY_PATH, ACCESS_TYPE));
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setAccessType(ACCESS_TYPE)
+                .build();
+        LOGGER.trace(String.format("Building Local Server Receiver on port [%s]", PORT_NUMBER));
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT_NUMBER).build();
+        LOGGER.trace(String.format("Authorizing user '%s'", USER));
+        return new AuthorizationCodeInstalledApp(flow, receiver).authorize(USER);
+    }
+
+    private Drive getService() throws IOException, GeneralSecurityException {
+        // Build a new authorized API client service.
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        LOGGER.trace(String.format("Building authorized Drive API client server for '%s'", APPLICATION_NAME));
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+        return service;
+    }
+
+    public void saveJsonItemsToDrive(List<?> jsonItems, String name, String rootName) {
+        String convertedJsonItems = JsonUtils.convertObjectsToJson(jsonItems, rootName);
+
+        // Save file locally first, in order to be able to upload the file to Drive
+        java.io.File filePathTransactions = null;
+        try {
+            filePathTransactions = saveFileLocally(String.format("output/%s.json", name), convertedJsonItems);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String folderId = getFileId(storagePath, APPLICATION_VND_GOOGLE_APPS_FOLDER);
+            String fileId = getFileId(String.format("%s.json", name), MimeTypes.APPLICATION_JSON.toString());
+
+            if (folderId == null) {
+                folderId = createFolder(storagePath);
+            }
+            if (fileId == null) {
+                createFile(filePathTransactions, Arrays.asList(folderId), MimeTypes.APPLICATION_JSON.toString(), MimeTypes.APPLICATION_JSON.toString());
+            } else {
+                updateFile(fileId, new java.io.File(String.format("output/%s.json", name)), MimeTypes.APPLICATION_JSON.toString());
+            }
+        } catch (IOException | GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private java.io.File saveFileLocally(String filePath, String content) throws IOException {
+        FileUtils.writeStringToFile(new java.io.File(filePath), content, "UTF-8");
+        return new java.io.File(filePath);
+    }
+
+    private String getFileId(String name, String mimeType) throws IOException, GeneralSecurityException {
+        List<String> items = searchForFile(name, mimeType);
+        if (items.isEmpty()) {
+            return null;
+        } else if (items.size() > 1) {
+            throw new IOException("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
+        }
+        return items.get(0);
     }
 }

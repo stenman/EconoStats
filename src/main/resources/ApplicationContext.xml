@@ -19,9 +19,6 @@
 
     <!--Dao-->
     <bean id="googleDriveDao" class="se.perfektum.econostats.dao.googledrive.GoogleDriveDao"/>
-    <bean id="convenientUtils" class="se.perfektum.econostats.dao.googledrive.ConvenientUtils">
-        <constructor-arg index="0" name="accountTransactionDao" ref="googleDriveDao"/>
-    </bean>
 
     <!--Spreadsheet-->
     <bean id="odfToolkitSpreadsheetProcessor"

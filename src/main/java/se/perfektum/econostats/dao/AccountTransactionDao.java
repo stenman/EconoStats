@@ -1,5 +1,8 @@
 package se.perfektum.econostats.dao;
 
+import se.perfektum.econostats.domain.AccountTransaction;
+import se.perfektum.econostats.domain.PayeeFilter;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -18,4 +21,8 @@ public interface AccountTransactionDao {
     List<String> searchForFile(String name, String mimeType) throws IOException, GeneralSecurityException;
 
     String getFile(String fileId) throws IOException, GeneralSecurityException;
+
+    void saveAccountTransactionsAsJsonString(List<AccountTransaction> accountTransactions, boolean overwrite);
+
+    void savePayeeFiltersAsJsonString(List<PayeeFilter> payeeFilters, boolean overwrite);
 }

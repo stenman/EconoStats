@@ -6,7 +6,6 @@ import se.perfektum.econostats.EconoStatsController;
 import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.bank.nordea.NordeaCsvReader;
 import se.perfektum.econostats.dao.AccountTransactionDao;
-import se.perfektum.econostats.dao.googledrive.ConvenientUtils;
 import se.perfektum.econostats.dao.googledrive.GoogleDriveDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
@@ -30,7 +29,6 @@ public class ManualDataUploadTool {
 
     static private AccountTransactionDao dao = new GoogleDriveDao();
     static private CsvReader csvReader = new NordeaCsvReader();
-    static private ConvenientUtils convenientUtils = new ConvenientUtils(dao);
 
     public static void main(String args[]) {
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
@@ -50,7 +48,7 @@ public class ManualDataUploadTool {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        convenientUtils.saveJsonItemsToDrive(transactions, "transactions", "accountTransactions");
+        dao.saveAccountTransactionsAsJsonString(transactions, true);
         return transactions;
     }
 
@@ -62,7 +60,7 @@ public class ManualDataUploadTool {
             e.printStackTrace();
         }
         List<PayeeFilter> payeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, pFilters);
-        convenientUtils.saveJsonItemsToDrive(payeeFilters, "payeeFilters", "payeeFilters");
+        dao.savePayeeFiltersAsJsonString(payeeFilters, true);
         return payeeFilters;
     }
 
