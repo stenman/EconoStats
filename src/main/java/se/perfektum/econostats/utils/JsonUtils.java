@@ -1,4 +1,4 @@
-package se.perfektum.econostats.common;
+package se.perfektum.econostats.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -8,6 +8,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class JsonUtils {
 
@@ -29,5 +31,18 @@ public class JsonUtils {
         List<T> result = new Gson().fromJson(transactions.getAsJsonArray(elementName), listType);
 
         return result;
+    }
+
+    /**
+     * Converts any json list to a String representation of a json object
+     *
+     * @param json        List of json objects
+     * @param rootElement The root element of the json object
+     * @return String representation of json object
+     */
+    public static String convertObjectsToJson(List<?> json, String rootElement) {
+        Map m = new TreeMap<>();
+        m.put(rootElement, json);
+        return new Gson().toJson(m);
     }
 }

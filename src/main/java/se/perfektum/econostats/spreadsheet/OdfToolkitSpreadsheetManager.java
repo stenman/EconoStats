@@ -3,9 +3,9 @@ package se.perfektum.econostats.spreadsheet;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.perfektum.econostats.common.JsonUtils;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
+import se.perfektum.econostats.utils.JsonUtils;
 
 import java.io.File;
 import java.util.List;
@@ -43,8 +43,8 @@ public class OdfToolkitSpreadsheetManager implements SpreadsheetManager {
         // Not sure how to solve this, as there are no IDs on transactions. This scenario is likely, and the two deposits are exactly the same.
         // TODO: Should probably show a warning message (Continue Yes/No) here when GUI is implemented
         if (importedAccountTransactions.size() != importedAccountTransactions.stream().distinct().collect(Collectors.toList()).size()) {
-            LOGGER.warn("Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)!" +
-                    "This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day." +
+            LOGGER.warn("Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)! " +
+                    "This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day. " +
                     "BE ADVISED that this might yield erroneous results! Please check your imported file!");
         }
 

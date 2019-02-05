@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
-import se.perfektum.econostats.common.JsonUtils;
+import se.perfektum.econostats.utils.JsonUtils;
 import se.perfektum.econostats.domain.AccountTransaction;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class SpreadsheetManagerTest {
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
             public boolean matches(final Object argument) {
-                return ((LoggingEvent) argument).getFormattedMessage().contains("Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)!This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day.BE ADVISED that this might yield erroneous results! Please check your imported file!");
+                return ((LoggingEvent) argument).getFormattedMessage().contains("Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)! This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day. BE ADVISED that this might yield erroneous results! Please check your imported file!");
             }
         }));
 

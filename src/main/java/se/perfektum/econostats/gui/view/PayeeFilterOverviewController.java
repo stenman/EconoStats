@@ -39,6 +39,20 @@ public class PayeeFilterOverviewController {
     }
 
     /**
+     * Is called by the main application to give a reference back to itself.
+     *
+     * @param econoStatsMain
+     */
+    public void setEconoStatsMain(EconoStatsMain econoStatsMain) {
+        LOGGER.debug("Setting main reference");
+        this.econoStatsMain = econoStatsMain;
+
+        LOGGER.debug("Adding observable list data to payeeFilterTable");
+        // Add observable list data to the table
+        payeeFilterTable.setItems(this.econoStatsMain.getPayeeFilters());
+    }
+
+    /**
      * Initializes the controller class. This method is automatically called
      * after the fxml file has been loaded.
      */
@@ -92,17 +106,30 @@ public class PayeeFilterOverviewController {
     }
 
     /**
-     * Is called by the main application to give a reference back to itself.
-     *
-     * @param econoStatsMain
+     * Called when the user clicks the delete button. Opens a dialog confirmation dialog.
      */
-    public void setEconoStatsMain(EconoStatsMain econoStatsMain) {
-        LOGGER.debug("Setting main reference");
-        this.econoStatsMain = econoStatsMain;
+    @FXML
+    private void handleDeletePayeeFilter() {
+        int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            ButtonType result = MessageHandler.showYesNoDialog("Delete " + payeeFilterTable.getItems().get(selectedIndex).getAlias().replace("\n", " ") + " ?");
 
-        LOGGER.debug("Adding observable list data to payeeFilterTable");
-        // Add observable list data to the table
-        payeeFilterTable.setItems(this.econoStatsMain.getPayeeFilters());
+            if (result == ButtonType.YES) {
+                LOGGER.debug(String.format("Removing [%s] from payeeFilterTable", payeeFilterTable.getItems().get(selectedIndex).getAlias()));
+                payeeFilterTable.getItems().remove(selectedIndex);
+            }
+        } else {
+            MessageHandler.showWarning("No Selection", "No Payee Filter Selected", "Please select a Payee Filter in the table.");
+        }
+    }
+
+    @FXML
+    private void handleSave() {
+        ButtonType result = MessageHandler.showYesNoDialog("Save Payee Filters to Google Drive?");
+        if (result == ButtonType.YES) {
+            LOGGER.debug(String.format("Saving %d Payee Filters to Google Drive", payeeFilterTable.getItems().size()));
+            //TODO: Implement saving Payee Filters to Google Drive here!
+        }
     }
 
     private void showPayeeFilterDetails(PayeeFilter payeeFilter) {
@@ -124,28 +151,6 @@ public class PayeeFilterOverviewController {
             aliasLabel.setText("");
             payees.setItems(FXCollections.observableArrayList());
             excludedPayees.setItems(FXCollections.observableArrayList());
-        }
-    }
-
-    @FXML
-    private void handleDeletePayeeFilter() {
-        int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            ButtonType result = MessageHandler.showYesNoDialog("Delete " + payeeFilterTable.getItems().get(selectedIndex).getAlias().replace("\n", " ") + " ?");
-
-            if (result == ButtonType.YES) {
-                LOGGER.debug(String.format("Removing [%s] from payeeFilterTable", payeeFilterTable.getItems().get(selectedIndex).getAlias()));
-                payeeFilterTable.getItems().remove(selectedIndex);
-            }
-        }
-    }
-
-    @FXML
-    private void handleSave() {
-        ButtonType result = MessageHandler.showYesNoDialog("Save Payee Filters to Google Drive?");
-        if (result == ButtonType.YES) {
-            LOGGER.debug(String.format("Saving %d Payee Filters to Google Drive", payeeFilterTable.getItems().size()));
-            //TODO: Implement saving Payee Filters to Google Drive here!
         }
     }
 }

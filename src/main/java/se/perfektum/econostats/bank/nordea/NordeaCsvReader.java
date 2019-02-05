@@ -28,12 +28,15 @@ public class NordeaCsvReader implements CsvReader {
     private NordeaProperties nordeaProperties;
 
     /**
-     * Reads a csv file from disk and parses it.
+     * Reads a csv file from disk and parses it to AccountTransactions.
+     * If no path is provided, the configuration file path will be used.
      *
-     * @return list of lines without headers
+     * @param csvFile Path to csv file to parse
+     * @return List of lines without headers
+     * @throws NumberFormatException
      */
-    public List<AccountTransaction> getAccountTransactionsFromFile() throws NumberFormatException {
-        String csvFile = nordeaProperties.getCsvFilePath();
+    public List<AccountTransaction> getAccountTransactionsFromFile(String csvFile) throws NumberFormatException {
+        csvFile = csvFile == null || csvFile.isEmpty() ? nordeaProperties.getCsvFilePath() : csvFile;
         LOGGER.debug(String.format("Parsing file '%s'", csvFile));
         return parseCsv(csvFile);
     }

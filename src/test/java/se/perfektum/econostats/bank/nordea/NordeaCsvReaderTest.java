@@ -36,7 +36,7 @@ public class NordeaCsvReaderTest {
         LocalDateTime now = LocalDateTime.now();
         List<AccountTransaction> actual = null;
         try {
-            actual = csvReader.getAccountTransactionsFromFile();
+            actual = csvReader.getAccountTransactionsFromFile(null);
         } catch (Exception e) {
             e.printStackTrace();
         }

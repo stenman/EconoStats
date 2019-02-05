@@ -2,7 +2,6 @@ package se.perfektum.econostats.gui.view.common;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 
 public class MessageHandler {
 

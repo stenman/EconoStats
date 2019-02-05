@@ -6,8 +6,8 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.perfektum.econostats.gui.view.common.MessageHandler;
 import se.perfektum.econostats.gui.model.PayeeFilter;
+import se.perfektum.econostats.gui.view.common.MessageHandler;
 
 import java.util.Collections;
 import java.util.List;

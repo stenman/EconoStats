@@ -8,6 +8,5 @@ import java.util.List;
  * Parses a CSV file.
  */
 public interface CsvReader {
-
-    List<AccountTransaction> getAccountTransactionsFromFile() throws Exception;
+    List<AccountTransaction> getAccountTransactionsFromFile(String filePath) throws Exception;
 }

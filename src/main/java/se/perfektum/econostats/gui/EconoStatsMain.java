@@ -5,9 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -47,10 +44,8 @@ public class EconoStatsMain extends Application {
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
         econoStats = (EconoStats) context.getBean("econoStats");
 
-//        Use this to save local payeeFilters to Drive, until GUI works properly
-//        To reset everything: delete EconoStats folder on drive and run tempSavePayeeFiltersToDrive + generateRecurringTransactions
-//        econoStats.tempSavePayeeFiltersToDrive();
-//        generateRecurringTransactions();
+        // To get aliases from accountTransactions
+//        ObservableList<String> transactionAliases = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).collect(Collectors.toList()));
 
         // Get Payee Filters from Google Drive
         List<se.perfektum.econostats.domain.PayeeFilter> pfs = econoStats.getPayeeFilters();
@@ -203,43 +198,6 @@ public class EconoStatsMain extends Application {
      */
     public Stage getPrimaryStage() {
         return primaryStage;
-    }
-
-    //Unused until GUI is ready
-    private List<Button> setButtons(Stage primaryStage, List<se.perfektum.econostats.domain.PayeeFilter> payeeFilters, List<AccountTransaction> accountTransactions) {
-        Button btn = new Button();
-        btn.setText("Create Recurring Transactions!");
-        btn.setOnAction(event -> {
-            try {
-                if (payeeFilters != null && accountTransactions != null) {
-                    econoStats.generateRecurringTransactions(payeeFilters, accountTransactions);
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Get outta town! No filters or transactions! =(", ButtonType.OK);
-                    alert.showAndWait();
-                    primaryStage.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                primaryStage.close();
-            }
-        });
-        return Arrays.asList(btn);
-    }
-
-    //Unused until GUI is ready
-    private static void generateRecurringTransactions() {
-        List<se.perfektum.econostats.domain.PayeeFilter> payeeFilters = econoStats.getPayeeFilters();
-        List<AccountTransaction> accountTransactions = econoStats.getAccountTransactions();
-        try {
-            if (payeeFilters != null && accountTransactions != null) {
-                econoStats.generateRecurringTransactions(payeeFilters, accountTransactions);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        ObservableList<String> transactionAliases = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).collect(Collectors.toList()));
-//        List<Button> buttons = setButtons(primaryStage, payeeFilters, accountTransactions);
     }
 
     private static void setupMockdata() {

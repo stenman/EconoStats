@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
 import org.odftoolkit.simple.table.Table;
-import se.perfektum.econostats.common.JsonUtils;
+import se.perfektum.econostats.utils.JsonUtils;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 

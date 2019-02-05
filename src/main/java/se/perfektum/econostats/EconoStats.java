@@ -1,24 +1,23 @@
 package se.perfektum.econostats;
 
-import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.bank.CsvReader;
-import se.perfektum.econostats.common.JsonUtils;
 import se.perfektum.econostats.configuration.AppProperties;
 import se.perfektum.econostats.dao.AccountTransactionDao;
 import se.perfektum.econostats.dao.googledrive.MimeTypes;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
+import se.perfektum.econostats.utils.JsonUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION_VND_GOOGLE_APPS_FOLDER;
 
@@ -52,7 +51,7 @@ public class EconoStats {
 
     public List<AccountTransaction> getAccountTransactions() {
         try {
-            return csvReader.getAccountTransactionsFromFile();
+            return csvReader.getAccountTransactionsFromFile(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +69,7 @@ public class EconoStats {
         return Collections.emptyList();
     }
 
-    public void generateRecurringTransactions(List<PayeeFilter> payeeFilters, List<AccountTransaction> accountTransactions) throws Exception {
+    public void generateRecurringTransactions(List<PayeeFilter> payeeFilters, List<AccountTransaction> accountTransactionsDelta) throws Exception {
         String folderId = getFileId(storagePath, APPLICATION_VND_GOOGLE_APPS_FOLDER);
 
         File directory = new File(localFilesPath);
@@ -87,19 +86,19 @@ public class EconoStats {
         String transactionFileId = getFileId(transactionsFilename, MimeTypes.APPLICATION_JSON.toString());
         String spreadsheetFileId = getFileId(spreadsheetFilename, MimeTypes.GOOGLE_API_SPREADSHEET.toString());
 
-        if (transactionFileId == null) {
+        if (transactionFileId == null && accountTransactionsDelta != null && !accountTransactionsDelta.isEmpty()) {
             LOGGER.debug(String.format("File '%s' did not exist, no merge needed.", transactionsFilename));
 
             // save imported transactions locally
             LOGGER.debug(String.format("Storing file '%s' to local disk.", transactionsPath));
-            String convertedTransactions = convertObjectsToJson(accountTransactions, ACCOUNT_TRANSACTIONS);
+            String convertedTransactions = JsonUtils.convertObjectsToJson(accountTransactionsDelta, ACCOUNT_TRANSACTIONS);
             File filePathTransactions = saveFileLocally(transactionsPath, convertedTransactions);
 
             // save imported transactions to Drive
             accountTransactionDao.createFile(filePathTransactions, Arrays.asList(folderId), MimeTypes.APPLICATION_JSON.toString(), MimeTypes.APPLICATION_JSON.toString());
 
             // create spreadsheet
-            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(recurringTransactionsPath, accountTransactions, payeeFilters);
+            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(recurringTransactionsPath, accountTransactionsDelta, payeeFilters);
 
             // save/update spreadsheet to Drive
             if (spreadsheetFileId == null) {
@@ -111,18 +110,22 @@ public class EconoStats {
             // get transactions from Drive
             String transactions = accountTransactionDao.getFile(transactionFileId);
 
+            List<AccountTransaction> accountTransactions;
             // merge transactions with imported transactions
-            List<AccountTransaction> mergedAccountTransactions = spreadsheetManager.mergeAccountTransactions(accountTransactions, transactions);
+            if (accountTransactionsDelta != null && !accountTransactionsDelta.isEmpty()) {
+                accountTransactions = spreadsheetManager.mergeAccountTransactions(accountTransactionsDelta, transactions);
+                // save merged transactions locally
+                String convertedTransactions = JsonUtils.convertObjectsToJson(accountTransactions, ACCOUNT_TRANSACTIONS);
+                FileUtils.writeStringToFile(new java.io.File(transactionsPath), convertedTransactions, "UTF-8");
 
-            // save merged transactions locally
-            String convertedTransactions = convertObjectsToJson(mergedAccountTransactions, ACCOUNT_TRANSACTIONS);
-            FileUtils.writeStringToFile(new java.io.File(transactionsPath), convertedTransactions, "UTF-8");
-
-            // overwrite transaction file on Drive
-            accountTransactionDao.updateFile(transactionFileId, new File(transactionsPath), MimeTypes.APPLICATION_JSON.toString());
+                // overwrite transaction file on Drive
+                accountTransactionDao.updateFile(transactionFileId, new File(transactionsPath), MimeTypes.APPLICATION_JSON.toString());
+            } else {
+                accountTransactions = JsonUtils.getJsonElement(AccountTransaction.class, transactions);
+            }
 
             // create spreadsheet
-            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(recurringTransactionsPath, mergedAccountTransactions, payeeFilters);
+            File filePathSpreadsheet = spreadsheetManager.createNewSpreadsheet(recurringTransactionsPath, accountTransactions, payeeFilters);
 
             // save/update spreadsheet to Drive
             if (spreadsheetFileId == null) {
@@ -141,12 +144,6 @@ public class EconoStats {
         transactionsPath = appProperties.getTransactionsPath();
         recurringTransactionsPath = appProperties.getRecurringTransactionsPath();
         payeeFiltersFileName = appProperties.getPayeeFiltersFileName();
-    }
-
-    private String convertObjectsToJson(List<?> json, String rootElement) {
-        Map m = new TreeMap<>();
-        m.put(rootElement, json);
-        return new Gson().toJson(m);
     }
 
     private File saveFileLocally(String filePath, String content) throws IOException {
@@ -171,44 +168,5 @@ public class EconoStats {
             throw new IOException("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
         }
         return items.get(0);
-    }
-
-    //TODO: Remove this when GUI filter support is implemented properly.
-    public void tempSavePayeeFiltersToDrive() {
-        String file = "c:\\EconoStats\\payeeFilters.json";
-
-        String pFilters = null;
-        try {
-            pFilters = new String(Files.readAllBytes(Paths.get(file)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<PayeeFilter> payeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, pFilters);
-
-        String convertedPayeeFilters = convertObjectsToJson(payeeFilters, "payeeFilters");
-
-        File filePathTransactions = null;
-        try {
-            filePathTransactions = saveFileLocally("output/payeeFilters.json", convertedPayeeFilters);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            String fileId = getFileId("payeeFilters.json", MimeTypes.APPLICATION_JSON.toString());
-            String folderId = getFileId(storagePath, APPLICATION_VND_GOOGLE_APPS_FOLDER);
-
-            if (folderId == null) {
-                folderId = accountTransactionDao.createFolder(storagePath);
-            }
-
-            if (fileId == null) {
-                accountTransactionDao.createFile(filePathTransactions, Arrays.asList(folderId), MimeTypes.APPLICATION_JSON.toString(), MimeTypes.APPLICATION_JSON.toString());
-            } else {
-                accountTransactionDao.updateFile(fileId, new File("output/payeeFilters.json"), MimeTypes.APPLICATION_JSON.toString());
-            }
-        } catch (IOException | GeneralSecurityException e) {
-            e.printStackTrace();
-        }
     }
 }
