@@ -1,5 +1,6 @@
 package se.perfektum.econostats.domain;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,6 +9,13 @@ public class PayeeFilter {
     private List<String> excludePayees;
     private String alias;
     private Boolean active;
+
+    public PayeeFilter(List<String> payees, List<String> excludedPayees, String alias, Boolean active) {
+        this.payees = payees == null ? Collections.emptyList() : payees;
+        this.excludePayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
+        this.alias = alias == null ? "" : alias;
+        this.active = active == null ? true : active;
+    }
 
     public List<String> getPayees() {
         return payees;

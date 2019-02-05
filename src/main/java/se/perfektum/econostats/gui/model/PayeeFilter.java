@@ -21,14 +21,14 @@ public class PayeeFilter {
 
     public PayeeFilter(List<String> payees, List<String> excludedPayees, String alias, Boolean active) {
         payees = payees == null ? Collections.emptyList() : payees;
-        excludedPayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
-
         ObservableList<String> observablePayees = FXCollections.observableArrayList(payees);
         this.payees = new SimpleListProperty<>(observablePayees);
 
+        excludedPayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
         ObservableList<String> observableExcludedPayees = FXCollections.observableArrayList(excludedPayees);
         this.excludedPayees = new SimpleListProperty<>(observableExcludedPayees);
-        this.alias = new SimpleStringProperty(alias);
+
+        this.alias = new SimpleStringProperty(alias == null ? "" : alias);
         this.active = new SimpleBooleanProperty(active == null ? true : active);
     }
 
@@ -82,6 +82,14 @@ public class PayeeFilter {
 
     public BooleanProperty activeProperty() {
         return active;
+    }
+
+    public static List<se.perfektum.econostats.domain.PayeeFilter> convertToDomain(List<PayeeFilter> gpfs) {
+        return gpfs.stream().map(gpf -> convertToDomain(gpf)).collect(Collectors.toList());
+    }
+
+    public static se.perfektum.econostats.domain.PayeeFilter convertToDomain(PayeeFilter gpf) {
+        return new se.perfektum.econostats.domain.PayeeFilter(gpf.getPayees(), gpf.getExcludePayees(), gpf.getAlias(), gpf.isActive());
     }
 
     public static List<PayeeFilter> convertFromDomain(List<se.perfektum.econostats.domain.PayeeFilter> dpfs) {

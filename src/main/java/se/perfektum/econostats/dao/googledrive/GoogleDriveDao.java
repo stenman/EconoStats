@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static se.perfektum.econostats.utils.FileUtils.saveFileLocally;
+
 public class GoogleDriveDao implements AccountTransactionDao {
 
     final Logger LOGGER = LoggerFactory.getLogger(GoogleDriveDao.class);
@@ -130,12 +132,14 @@ public class GoogleDriveDao implements AccountTransactionDao {
     }
 
     @Override
-    public void saveAccountTransactionsAsJsonString(List<AccountTransaction> accountTransactions, boolean overwrite) {
+    public void saveAccountTransactionsAsJsonString(List<AccountTransaction> accountTransactions) {
+        //TODO: These should be properties
         saveJsonItemsToDrive(accountTransactions, "transactions", "accountTransactions");
     }
 
     @Override
-    public void savePayeeFiltersAsJsonString(List<PayeeFilter> payeeFilters, boolean overwrite) {
+    public void savePayeeFiltersAsJsonString(List<PayeeFilter> payeeFilters) {
+        //TODO: These should be properties
         saveJsonItemsToDrive(payeeFilters, "payeeFilters", "payeeFilters");
     }
 
@@ -176,7 +180,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
         return service;
     }
 
-    public void saveJsonItemsToDrive(List<?> jsonItems, String name, String rootName) {
+    private void saveJsonItemsToDrive(List<?> jsonItems, String name, String rootName) {
         String convertedJsonItems = JsonUtils.convertObjectsToJson(jsonItems, rootName);
 
         // Save file locally first, in order to be able to upload the file to Drive
@@ -202,11 +206,6 @@ public class GoogleDriveDao implements AccountTransactionDao {
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
-    }
-
-    private java.io.File saveFileLocally(String filePath, String content) throws IOException {
-        FileUtils.writeStringToFile(new java.io.File(filePath), content, "UTF-8");
-        return new java.io.File(filePath);
     }
 
     private String getFileId(String name, String mimeType) throws IOException, GeneralSecurityException {

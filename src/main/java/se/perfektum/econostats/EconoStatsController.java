@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION_VND_GOOGLE_APPS_FOLDER;
+import static se.perfektum.econostats.utils.FileUtils.saveFileLocally;
 
 /**
  * The main class of this application
@@ -67,6 +68,10 @@ public class EconoStatsController {
             e.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    public void savePayeeFilters(List<PayeeFilter> payeeFilters) {
+        accountTransactionDao.savePayeeFiltersAsJsonString(payeeFilters);
     }
 
     public void generateRecurringTransactions(List<PayeeFilter> payeeFilters, List<AccountTransaction> accountTransactionsDelta) throws Exception {
@@ -136,6 +141,33 @@ public class EconoStatsController {
         }
     }
 
+    /**
+     * Searches for a file in storage.
+     */
+    //TODO: make optional
+    //TODO: This is Google Drive, not general. Make general.
+    //TODO: Logs and exceptions should probably be moved to storage area
+    public String getFileId(String name, String mimeType) {
+        try {
+            List<String> items;
+            items = accountTransactionDao.searchForFile(name, mimeType);
+
+            if (items.isEmpty()) {
+                LOGGER.debug(String.format("Could not find file '%s' in storage", name));
+                return null;
+            } else if (items.size() > 1) {
+                LOGGER.error("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
+                throw new IOException("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
+            }
+            return items.get(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void initProperties(AppProperties appProperties) {
         localFilesPath = appProperties.getOutputFilesPath();
         transactionsFilename = appProperties.getTransactionsFilename();
@@ -144,29 +176,5 @@ public class EconoStatsController {
         transactionsPath = appProperties.getTransactionsPath();
         recurringTransactionsPath = appProperties.getRecurringTransactionsPath();
         payeeFiltersFileName = appProperties.getPayeeFiltersFileName();
-    }
-
-    private File saveFileLocally(String filePath, String content) throws IOException {
-        FileUtils.writeStringToFile(new File(filePath), content, "UTF-8");
-        return new File(filePath);
-    }
-
-    /**
-     * Searches for a file in storage.
-     */
-    //TODO: make optional
-    //TODO: This is Google Drive, not general. Make general.
-    //TODO: Logs and exceptions should probably be moved to storage area
-    private String getFileId(String name, String mimeType) throws IOException, GeneralSecurityException {
-        List<String> items = accountTransactionDao.searchForFile(name, mimeType);
-
-        if (items.isEmpty()) {
-            LOGGER.debug(String.format("Could not find file '%s' in storage", name));
-            return null;
-        } else if (items.size() > 1) {
-            LOGGER.error("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
-            throw new IOException("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
-        }
-        return items.get(0);
     }
 }

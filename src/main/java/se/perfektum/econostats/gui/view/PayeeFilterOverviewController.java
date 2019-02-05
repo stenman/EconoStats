@@ -1,14 +1,21 @@
 package se.perfektum.econostats.gui.view;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.perfektum.econostats.EconoStatsController;
+import se.perfektum.econostats.configuration.AppProperties;
+import se.perfektum.econostats.dao.googledrive.MimeTypes;
 import se.perfektum.econostats.gui.EconoStatsMain;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 import se.perfektum.econostats.gui.view.common.MessageHandler;
+
+import java.util.Collections;
+import java.util.List;
 
 public class PayeeFilterOverviewController {
 
@@ -28,11 +35,14 @@ public class PayeeFilterOverviewController {
     @FXML
     private Label aliasLabel;
 
+    private static final String PAYEE_FILTERS_FILE_NAME = "payeeFilters.json";
+
     // Reference to the main application.
     private EconoStatsMain econoStatsMain;
+    private EconoStatsController econoStatsController;
 
     /**
-     * The constructor.
+     * Default constructor.
      * The constructor is called before the initialize() method.
      */
     public PayeeFilterOverviewController() {
@@ -43,9 +53,10 @@ public class PayeeFilterOverviewController {
      *
      * @param econoStatsMain
      */
-    public void setEconoStatsMain(EconoStatsMain econoStatsMain) {
-        LOGGER.debug("Setting main reference");
+    public void setReferences(EconoStatsMain econoStatsMain, EconoStatsController econoStatsController) {
+        LOGGER.debug("Setting references");
         this.econoStatsMain = econoStatsMain;
+        this.econoStatsController = econoStatsController;
 
         LOGGER.debug("Adding observable list data to payeeFilterTable");
         // Add observable list data to the table
@@ -125,10 +136,18 @@ public class PayeeFilterOverviewController {
 
     @FXML
     private void handleSave() {
-        ButtonType result = MessageHandler.showYesNoDialog("Save Payee Filters to Google Drive?");
-        if (result == ButtonType.YES) {
-            LOGGER.debug(String.format("Saving %d Payee Filters to Google Drive", payeeFilterTable.getItems().size()));
-            //TODO: Implement saving Payee Filters to Google Drive here!
+        ButtonType save = MessageHandler.showYesNoDialog("Save Payee Filters to Google Drive?");
+        if (save == ButtonType.YES) {
+            LOGGER.debug("Checking for existing Payee Filters on Google Drive...");
+            //TODO: PAYEE_FILTERS_FILE_NAME is a property, get it from appProperties (somehow)!
+            if (econoStatsController.getFileId(PAYEE_FILTERS_FILE_NAME, MimeTypes.APPLICATION_JSON.toString()) != null) {
+                ButtonType overwrite = MessageHandler.showYesNoDialog("Payee Filter already exists on Google Drive. Overwrite?");
+                if (overwrite == ButtonType.YES) {
+                    savePayeeFilters();
+                }
+            } else {
+                savePayeeFilters();
+            }
         }
     }
 
@@ -152,5 +171,10 @@ public class PayeeFilterOverviewController {
             payees.setItems(FXCollections.observableArrayList());
             excludedPayees.setItems(FXCollections.observableArrayList());
         }
+    }
+
+    private void savePayeeFilters() {
+        LOGGER.debug(String.format("Saving %d Payee Filters to Google Drive", payeeFilterTable.getItems().size()));
+        econoStatsController.savePayeeFilters(PayeeFilter.convertToDomain(econoStatsMain.getPayeeFilters()));
     }
 }

@@ -22,7 +22,7 @@ public interface AccountTransactionDao {
 
     String getFile(String fileId) throws IOException, GeneralSecurityException;
 
-    void saveAccountTransactionsAsJsonString(List<AccountTransaction> accountTransactions, boolean overwrite);
+    void saveAccountTransactionsAsJsonString(List<AccountTransaction> accountTransactions);
 
-    void savePayeeFiltersAsJsonString(List<PayeeFilter> payeeFilters, boolean overwrite);
+    void savePayeeFiltersAsJsonString(List<PayeeFilter> payeeFilters);
 }

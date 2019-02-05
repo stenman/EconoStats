@@ -34,11 +34,16 @@ public class ManualDataUploadTool {
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
         econoStatsController = (EconoStatsController) context.getBean("econoStatsController");
 
+        // SAVE PAYEE FILTERS
         List<PayeeFilter> payeeFilters = savePayeeFiltersToDrive();
-        List<AccountTransaction> accountTransactions = saveAccountTransactionsToDrive();
-        // Pass accountTransaction=null when doing a full reset
-        // Passing a list of accountTransactions here will merge it will an existing list on Drive!
-        generateRecurringTransactions(payeeFilters, null);
+
+        // SAVE ACCOUNT TRANSACTIONS
+        // List<AccountTransaction> accountTransactions = saveAccountTransactionsToDrive();
+
+        // GENERATE RECURRING TRANSACTIONS
+        // ***** Pass accountTransaction=null when doing a full reset *****
+        // ***** Passing a list of accountTransactions here will merge it will an existing list on Drive! *****
+        // generateRecurringTransactions(payeeFilters, null);
     }
 
     private static List<AccountTransaction> saveAccountTransactionsToDrive() {
@@ -48,7 +53,7 @@ public class ManualDataUploadTool {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        dao.saveAccountTransactionsAsJsonString(transactions, true);
+        dao.saveAccountTransactionsAsJsonString(transactions);
         return transactions;
     }
 
@@ -60,7 +65,7 @@ public class ManualDataUploadTool {
             e.printStackTrace();
         }
         List<PayeeFilter> payeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, pFilters);
-        dao.savePayeeFiltersAsJsonString(payeeFilters, true);
+        dao.savePayeeFiltersAsJsonString(payeeFilters);
         return payeeFilters;
     }
 
