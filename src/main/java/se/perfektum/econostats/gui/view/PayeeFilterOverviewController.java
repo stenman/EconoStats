@@ -65,10 +65,10 @@ public class PayeeFilterOverviewController {
     @FXML
     private void handleNewPayeeFilter() {
         PayeeFilter tempPayeeFilter = new PayeeFilter();
-        boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
+        boolean okClicked = econoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
         if (okClicked) {
             LOGGER.debug(String.format("Saving new PayeeFilter: %s", tempPayeeFilter.toString()));
-            EconoStatsMain.getPayeeFilters().add(tempPayeeFilter);
+            econoStatsMain.getPayeeFilters().add(tempPayeeFilter);
         }
     }
 
@@ -80,7 +80,7 @@ public class PayeeFilterOverviewController {
     private void handleEditPayeeFilter() {
         PayeeFilter selectedPayeeFilter = payeeFilterTable.getSelectionModel().getSelectedItem();
         if (selectedPayeeFilter != null) {
-            boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
+            boolean okClicked = econoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
             if (okClicked) {
                 LOGGER.debug(String.format("Saving edited PayeeFilter: %s", selectedPayeeFilter.toString()));
                 showPayeeFilterDetails(selectedPayeeFilter);
@@ -102,7 +102,7 @@ public class PayeeFilterOverviewController {
 
         LOGGER.debug("Adding observable list data to payeeFilterTable");
         // Add observable list data to the table
-        payeeFilterTable.setItems(econoStatsMain.getPayeeFilters());
+        payeeFilterTable.setItems(this.econoStatsMain.getPayeeFilters());
     }
 
     private void showPayeeFilterDetails(PayeeFilter payeeFilter) {
@@ -131,7 +131,7 @@ public class PayeeFilterOverviewController {
     private void handleDeletePayeeFilter() {
         int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            ButtonType result = MessageHandler.showYesNoDialog("Delete " + payeeFilterTable.getItems().get(selectedIndex).getAlias() + " ?");
+            ButtonType result = MessageHandler.showYesNoDialog("Delete " + payeeFilterTable.getItems().get(selectedIndex).getAlias().replace("\n", " ") + " ?");
 
             if (result == ButtonType.YES) {
                 LOGGER.debug(String.format("Removing [%s] from payeeFilterTable", payeeFilterTable.getItems().get(selectedIndex).getAlias()));

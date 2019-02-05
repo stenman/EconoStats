@@ -25,8 +25,8 @@ import se.perfektum.econostats.gui.view.PayeeFilterEditDialogController;
 import se.perfektum.econostats.gui.view.PayeeFilterOverviewController;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +52,9 @@ public class EconoStatsMain extends Application {
 //        econoStats.tempSavePayeeFiltersToDrive();
 //        generateRecurringTransactions();
 
+        // Get Payee Filters from Google Drive
         List<se.perfektum.econostats.domain.PayeeFilter> pfs = econoStats.getPayeeFilters();
-        payeeFilters.addAll(FXCollections.observableArrayList(PayeeFilter.convertFromDomain(pfs)));
+        payeeFilters.addAll(pfs == null ? FXCollections.observableArrayList(Collections.emptyList()) : FXCollections.observableArrayList(PayeeFilter.convertFromDomain(pfs)));
 
         setupMockdata();
 
@@ -142,7 +143,7 @@ public class EconoStatsMain extends Application {
      * @param payeeFilter the PayeeFilter object to be edited
      * @return true if the user clicked Save, false otherwise.
      */
-    public static boolean showPayeeFilterEditDialog(PayeeFilter payeeFilter) {
+    public boolean showPayeeFilterEditDialog(PayeeFilter payeeFilter) {
         try {
             LOGGER.debug("Initiating PayeeFilterEditDialog");
             // Load the fxml file and create a new stage for the popup dialog.
@@ -182,7 +183,7 @@ public class EconoStatsMain extends Application {
      *
      * @return an observable list of PayeeFilters
      */
-    public static ObservableList<PayeeFilter> getPayeeFilters() {
+    public ObservableList<PayeeFilter> getPayeeFilters() {
         return payeeFilters;
     }
 
@@ -242,17 +243,17 @@ public class EconoStatsMain extends Application {
     }
 
     private static void setupMockdata() {
-        List<String> payees1 = new ArrayList<>();
-        payees1.addAll(Arrays.asList("Payee A", "Payee B", "Payee C"));
-        List<String> excludedPayees1 = new ArrayList<>();
-        excludedPayees1.addAll(Arrays.asList("excludedPayee A", "excludedPayee B", "excludedPayee C"));
-        PayeeFilter pf1 = new PayeeFilter(payees1, excludedPayees1, "Some Alias 1", true);
-        List<String> payees2 = new ArrayList<>();
-        payees2.addAll(Arrays.asList("Payee D", "Payee E", "Payee F"));
-        List<String> excludedPayees2 = new ArrayList<>();
-        excludedPayees2.addAll(Arrays.asList("excludedPayee D", "excludedPayee E", "excludedPayee f"));
-        PayeeFilter pf2 = new PayeeFilter(payees2, excludedPayees2, "Some Alias 2", false);
-        payeeFilters.addAll(Arrays.asList(pf1, pf2));
+//        List<String> payees1 = new ArrayList<>();
+//        payees1.addAll(Arrays.asList("Payee A", "Payee B", "Payee C"));
+//        List<String> excludedPayees1 = new ArrayList<>();
+//        excludedPayees1.addAll(Arrays.asList("excludedPayee A", "excludedPayee B", "excludedPayee C"));
+//        PayeeFilter pf1 = new PayeeFilter(payees1, excludedPayees1, "Some Alias 1", true);
+//        List<String> payees2 = new ArrayList<>();
+//        payees2.addAll(Arrays.asList("Payee D", "Payee E", "Payee F"));
+//        List<String> excludedPayees2 = new ArrayList<>();
+//        excludedPayees2.addAll(Arrays.asList("excludedPayee D", "excludedPayee E", "excludedPayee f"));
+//        PayeeFilter pf2 = new PayeeFilter(payees2, excludedPayees2, "Some Alias 2", false);
+//        payeeFilters.addAll(Arrays.asList(pf1, pf2));
 
         AccountTransaction t1 = new AccountTransaction.Builder().name("Transaction 1").build();
         AccountTransaction t2 = new AccountTransaction.Builder().name("Transaction 2").build();
