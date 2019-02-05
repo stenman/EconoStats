@@ -24,8 +24,8 @@ import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION
 /**
  * The main class of this application
  */
-public class EconoStats {
-    final Logger LOGGER = LoggerFactory.getLogger(EconoStats.class);
+public class EconoStatsController {
+    final Logger LOGGER = LoggerFactory.getLogger(EconoStatsController.class);
 
     private SpreadsheetManager spreadsheetManager;
     private CsvReader csvReader;
@@ -41,7 +41,7 @@ public class EconoStats {
 
     private static final String ACCOUNT_TRANSACTIONS = "accountTransactions";
 
-    public EconoStats(SpreadsheetManager spreadsheetManager, CsvReader csvReader, AccountTransactionDao accountTransactionDao, AppProperties appProperties) {
+    public EconoStatsController(SpreadsheetManager spreadsheetManager, CsvReader csvReader, AccountTransactionDao accountTransactionDao, AppProperties appProperties) {
         this.spreadsheetManager = spreadsheetManager;
         this.csvReader = csvReader;
         this.accountTransactionDao = accountTransactionDao;

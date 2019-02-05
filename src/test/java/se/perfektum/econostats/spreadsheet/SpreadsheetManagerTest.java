@@ -8,8 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
-import se.perfektum.econostats.utils.JsonUtils;
 import se.perfektum.econostats.domain.AccountTransaction;
+import se.perfektum.econostats.utils.JsonUtils;
 
 import java.io.IOException;
 import java.util.List;

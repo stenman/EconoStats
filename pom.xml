@@ -8,8 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>se.perfektum.econostats.EconoStats</name>
-    <description>Demo project for Spring Boot</description>
+    <name>EconoStats</name>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

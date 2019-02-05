@@ -10,7 +10,7 @@
 
     <!--Main-->
     <bean id="econoStatsMain" class="se.perfektum.econostats.gui.EconoStatsMain"/>
-    <bean id="econoStats" class="se.perfektum.econostats.EconoStats">
+    <bean id="econoStatsController" class="se.perfektum.econostats.EconoStatsController">
         <constructor-arg index="0" name="spreadsheetManager" ref="odfToolkitSpreadsheetManager"/>
         <constructor-arg index="1" name="csvReader" ref="nordeaCsvReader"/>
         <constructor-arg index="2" name="accountTransactionDao" ref="googleDriveDao"/>
@@ -19,6 +19,9 @@
 
     <!--Dao-->
     <bean id="googleDriveDao" class="se.perfektum.econostats.dao.googledrive.GoogleDriveDao"/>
+    <bean id="convenientUtils" class="se.perfektum.econostats.dao.googledrive.ConvenientUtils">
+        <constructor-arg index="0" name="accountTransactionDao" ref="googleDriveDao"/>
+    </bean>
 
     <!--Spreadsheet-->
     <bean id="odfToolkitSpreadsheetProcessor"

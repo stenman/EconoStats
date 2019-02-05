@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import se.perfektum.econostats.EconoStats;
+import se.perfektum.econostats.EconoStatsController;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 import se.perfektum.econostats.gui.view.EconoStatsOverviewController;
@@ -32,7 +32,7 @@ public class EconoStatsMain extends Application {
 
     static final Logger LOGGER = LoggerFactory.getLogger(EconoStatsMain.class);
 
-    private static EconoStats econoStats;
+    private static EconoStatsController econoStatsController;
     private static Stage primaryStage;
     private TabPane rootLayout;
 
@@ -42,13 +42,13 @@ public class EconoStatsMain extends Application {
 
     public static void main(String args[]) {
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
-        econoStats = (EconoStats) context.getBean("econoStats");
+        econoStatsController = (EconoStatsController) context.getBean("econoStatsController");
 
         // To get aliases from accountTransactions
 //        ObservableList<String> transactionAliases = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).collect(Collectors.toList()));
 
         // Get Payee Filters from Google Drive
-        List<se.perfektum.econostats.domain.PayeeFilter> pfs = econoStats.getPayeeFilters();
+        List<se.perfektum.econostats.domain.PayeeFilter> pfs = econoStatsController.getPayeeFilters();
         payeeFilters.addAll(pfs == null ? FXCollections.observableArrayList(Collections.emptyList()) : FXCollections.observableArrayList(PayeeFilter.convertFromDomain(pfs)));
 
         setupMockdata();

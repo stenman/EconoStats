@@ -9,7 +9,7 @@
     <context:property-placeholder location="classpath:/application.properties"/>
 
     <!--Main-->
-    <bean id="econoStats" class="se.perfektum.econostats.EconoStats">
+    <bean id="econoStatsController" class="se.perfektum.econostats.EconoStatsController">
         <constructor-arg index="0" name="spreadsheetManager" ref="odfToolkitSpreadsheetManager"/>
         <constructor-arg index="1" name="csvReader" ref="nordeaCsvReader"/>
         <constructor-arg index="2" name="accountTransactionDao" ref="googleDriveDao"/>
