@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.gui.EconoStatsMain;
 import se.perfektum.econostats.gui.model.PayeeFilter;
+import se.perfektum.econostats.gui.view.common.MessageHandler;
 
 public class PayeeFilterOverviewController {
 
@@ -64,8 +65,8 @@ public class PayeeFilterOverviewController {
     @FXML
     private void handleNewPayeeFilter() {
         PayeeFilter tempPayeeFilter = new PayeeFilter();
-        boolean saveClicked = EconoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
-        if (saveClicked) {
+        boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
+        if (okClicked) {
             LOGGER.debug(String.format("Saving new PayeeFilter: %s", tempPayeeFilter.toString()));
             EconoStatsMain.getPayeeFilters().add(tempPayeeFilter);
         }
@@ -79,20 +80,14 @@ public class PayeeFilterOverviewController {
     private void handleEditPayeeFilter() {
         PayeeFilter selectedPayeeFilter = payeeFilterTable.getSelectionModel().getSelectedItem();
         if (selectedPayeeFilter != null) {
-            boolean saveClicked = EconoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
-            if (saveClicked) {
+            boolean okClicked = EconoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
+            if (okClicked) {
                 LOGGER.debug(String.format("Saving edited PayeeFilter: %s", selectedPayeeFilter.toString()));
                 showPayeeFilterDetails(selectedPayeeFilter);
             }
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.initOwner(econoStatsMain.getPrimaryStage());
-            alert.setTitle("No Selection");
-            alert.setHeaderText("No Payee Filter Selected");
-            alert.setContentText("Please select a Payee Filter in the table.");
-
-            alert.showAndWait();
+            MessageHandler.showWarning("No Selection", "No Payee Filter Selected", "Please select a Payee Filter in the table.");
         }
     }
 
@@ -136,13 +131,21 @@ public class PayeeFilterOverviewController {
     private void handleDeletePayeeFilter() {
         int selectedIndex = payeeFilterTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + payeeFilterTable.getItems().get(selectedIndex).getAlias() + " ?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-            alert.showAndWait();
+            ButtonType result = MessageHandler.showYesNoDialog("Delete " + payeeFilterTable.getItems().get(selectedIndex).getAlias() + " ?");
 
-            if (alert.getResult() == ButtonType.YES) {
+            if (result == ButtonType.YES) {
                 LOGGER.debug(String.format("Removing [%s] from payeeFilterTable", payeeFilterTable.getItems().get(selectedIndex).getAlias()));
                 payeeFilterTable.getItems().remove(selectedIndex);
             }
+        }
+    }
+
+    @FXML
+    private void handleSave() {
+        ButtonType result = MessageHandler.showYesNoDialog("Save Payee Filters to Google Drive?");
+        if (result == ButtonType.YES) {
+            LOGGER.debug(String.format("Saving %d Payee Filters to Google Drive", payeeFilterTable.getItems().size()));
+            //TODO: Implement saving Payee Filters to Google Drive here!
         }
     }
 }

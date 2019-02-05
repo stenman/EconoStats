@@ -170,7 +170,7 @@ public class EconoStatsMain extends Application {
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
-            return controller.isSaveClicked();
+            return controller.isOkClicked();
         } catch (IOException e) {
             e.printStackTrace();
             return false;

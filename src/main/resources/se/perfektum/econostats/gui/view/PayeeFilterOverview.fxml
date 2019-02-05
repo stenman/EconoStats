@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterOverviewController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.PayeeFilterOverviewController">
     <children>
         <SplitPane dividerPositions="0.3762541806020067" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -50,7 +50,7 @@
                         </SplitPane>
                         <Label layoutX="8.0" layoutY="43.0" text="Included" />
                         <Label layoutX="212.0" layoutY="43.0" text="Excluded" />
-                        <ButtonBar layoutX="203.0" layoutY="244.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                        <ButtonBar layoutX="-19.0" layoutY="220.0" prefHeight="40.0" prefWidth="270.0">
                             <buttons>
                                 <Button mnemonicParsing="false" onAction="#handleNewPayeeFilter" text="New..." />
                                 <Button mnemonicParsing="false" onAction="#handleEditPayeeFilter" text="Edit..." />
@@ -58,6 +58,7 @@
                             </buttons>
                         </ButtonBar>
                         <Label fx:id="aliasLabel" layoutX="54.0" layoutY="5.0" prefHeight="17.0" prefWidth="331.0" />
+                        <Button layoutX="315.0" layoutY="359.0" mnemonicParsing="false" onAction="#handleSave" text="Save" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                     </children>
                 </AnchorPane>
             </items>

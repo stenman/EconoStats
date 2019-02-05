@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.perfektum.econostats.gui.view.common.MessageHandler;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 
 import java.util.Collections;
@@ -33,7 +34,7 @@ public class PayeeFilterEditDialogController {
     private PayeeFilter payeeFilter;
 
     private Stage dialogStage;
-    private boolean saveClicked = false;
+    private boolean okClicked = false;
 
     /**
      * Initializes the controller class. This method is automatically called
@@ -78,27 +79,27 @@ public class PayeeFilterEditDialogController {
     }
 
     /**
-     * Returns true if the user clicked Save, false otherwise.
+     * Returns true if the user clicked Ok, false otherwise.
      *
      * @return
      */
-    public boolean isSaveClicked() {
-        return saveClicked;
+    public boolean isOkClicked() {
+        return okClicked;
     }
 
     /**
-     * Called when the user clicks Save.
+     * Called when the user clicks Ok.
      */
     @FXML
-    private void handleSave() {
+    private void handleOk() {
         if (isInputValid()) {
-            LOGGER.debug("Saving PayeeFilter...");
+            LOGGER.debug("Setting new payeeFilter values");
             payeeFilter.setAlias(alias.getText());
             payeeFilter.setActive(active.isSelected());
             payeeFilter.setPayees(payees.getItems());
             payeeFilter.setExcludePayees(excludedPayees.getItems());
 
-            saveClicked = true;
+            okClicked = true;
             dialogStage.close();
         }
     }
@@ -126,7 +127,7 @@ public class PayeeFilterEditDialogController {
                             .distinct()
                             .collect(Collectors.toList())));
         } else {
-            showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
+            MessageHandler.showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
     }
 
@@ -154,7 +155,7 @@ public class PayeeFilterEditDialogController {
                             .distinct()
                             .collect(Collectors.toList())));
         } else {
-            showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
+            MessageHandler.showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
     }
 
@@ -187,23 +188,14 @@ public class PayeeFilterEditDialogController {
 
     private void addCustomEntry(ListView<String> entry) {
         if (customEntry.getText().isEmpty()) {
-            showError("Empty Entry Error", "Please enter a payee entry in the text field before adding!");
+            MessageHandler.showError("Empty Entry Error", "Please enter a payee entry in the text field before adding!");
         }
         if (!payees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))
                 && !excludedPayees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))) {
             entry.getItems().add(customEntry.getText());
         } else {
-            showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
+            MessageHandler.showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
-    }
-
-    private void showError(String title, String headerText) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.initOwner(dialogStage);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-
-        alert.showAndWait();
     }
 
     /**
@@ -225,15 +217,7 @@ public class PayeeFilterEditDialogController {
         if (errorMessage.length() == 0) {
             return true;
         } else {
-            // Show the error message.
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.initOwner(dialogStage);
-            alert.setTitle("Invalid Fields");
-            alert.setHeaderText("Please correct invalid fields");
-            alert.setContentText(errorMessage);
-
-            alert.showAndWait();
-
+            MessageHandler.showError("Invalid Fields", "Please correct invalid fields!");
             return false;
         }
     }
