@@ -22,9 +22,6 @@ import se.perfektum.econostats.gui.view.PayeeFilterEditDialogController;
 import se.perfektum.econostats.gui.view.PayeeFilterOverviewController;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @EnableConfigurationProperties
@@ -36,23 +33,9 @@ public class EconoStatsMain extends Application {
     private static Stage primaryStage;
     private TabPane rootLayout;
 
-    private static ObservableList<PayeeFilter> payeeFilters = FXCollections.observableArrayList();
-    private static ObservableList<AccountTransaction> accountTransactions = FXCollections.observableArrayList();
-
-
     public static void main(String args[]) {
         ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
         econoStatsController = (EconoStatsController) context.getBean("econoStatsController");
-
-        // To get aliases from accountTransactions
-//        ObservableList<String> transactionAliases = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).collect(Collectors.toList()));
-
-        // Get Payee Filters from Google Drive
-        List<se.perfektum.econostats.domain.PayeeFilter> pfs = econoStatsController.getPayeeFilters();
-        payeeFilters.addAll(pfs == null ? FXCollections.observableArrayList(Collections.emptyList()) : FXCollections.observableArrayList(PayeeFilter.convertFromDomain(pfs)));
-
-        setupMockdata();
-
         launch(args);
     }
 
@@ -158,8 +141,9 @@ public class EconoStatsMain extends Application {
             PayeeFilterEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setPayeeFilter(payeeFilter);
+
             LOGGER.debug("Generating distinct set of Account Transaction Names");
-            ObservableList<String> transactionNames = FXCollections.observableArrayList(accountTransactions.stream().map(AccountTransaction::getName).distinct().collect(Collectors.toList()));
+            ObservableList<String> transactionNames = FXCollections.observableArrayList(econoStatsController.getAccountTransactions().stream().map(AccountTransaction::getName).distinct().sorted().collect(Collectors.toList()));
             controller.setTransactionNames(transactionNames);
 
             LOGGER.debug("PayeeFilterEditDialog initiated, showing dialog");
@@ -174,24 +158,6 @@ public class EconoStatsMain extends Application {
     }
 
     /**
-     * Access method for PayeeFilters.
-     *
-     * @return an observable list of PayeeFilters
-     */
-    public ObservableList<PayeeFilter> getPayeeFilters() {
-        return payeeFilters;
-    }
-
-    /**
-     * Access method for AccountTransactions.
-     *
-     * @return an observable list of AccountTransactions
-     */
-    public static ObservableList<AccountTransaction> getAccountTransactions() {
-        return accountTransactions;
-    }
-
-    /**
      * Returns the main stage.
      *
      * @return
@@ -199,26 +165,4 @@ public class EconoStatsMain extends Application {
     public Stage getPrimaryStage() {
         return primaryStage;
     }
-
-    private static void setupMockdata() {
-//        List<String> payees1 = new ArrayList<>();
-//        payees1.addAll(Arrays.asList("Payee A", "Payee B", "Payee C"));
-//        List<String> excludedPayees1 = new ArrayList<>();
-//        excludedPayees1.addAll(Arrays.asList("excludedPayee A", "excludedPayee B", "excludedPayee C"));
-//        PayeeFilter pf1 = new PayeeFilter(payees1, excludedPayees1, "Some Alias 1", true);
-//        List<String> payees2 = new ArrayList<>();
-//        payees2.addAll(Arrays.asList("Payee D", "Payee E", "Payee F"));
-//        List<String> excludedPayees2 = new ArrayList<>();
-//        excludedPayees2.addAll(Arrays.asList("excludedPayee D", "excludedPayee E", "excludedPayee f"));
-//        PayeeFilter pf2 = new PayeeFilter(payees2, excludedPayees2, "Some Alias 2", false);
-//        payeeFilters.addAll(Arrays.asList(pf1, pf2));
-
-        AccountTransaction t1 = new AccountTransaction.Builder().name("Transaction 1").build();
-        AccountTransaction t2 = new AccountTransaction.Builder().name("Transaction 2").build();
-        AccountTransaction t3 = new AccountTransaction.Builder().name("Transaction 1 REFUND").build();
-        AccountTransaction t4 = new AccountTransaction.Builder().name("Transaction 2").build();
-        AccountTransaction t5 = new AccountTransaction.Builder().name("Transaction 4").build();
-        accountTransactions.addAll(Arrays.asList(t1, t2, t3, t4, t5));
-    }
-
 }

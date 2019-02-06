@@ -7,10 +7,18 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.EconoStatsOverviewController">
     <children>
-      <Button layoutX="435.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleLoadFromDisk" text="Load From Disk" AnchorPane.leftAnchor="435.0" />
-      <Button layoutX="394.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleGenerateRecurringTransactions" text="Generate Recurring Transactions!" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-      <Button layoutX="375.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleOpen" text="Open..." AnchorPane.leftAnchor="375.0" AnchorPane.topAnchor="5.0" />
-      <TextField fx:id="csvPath" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="363.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-      <TextArea fx:id="eventLog" layoutX="14.0" layoutY="250.0" prefHeight="136.0" prefWidth="391.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+      <AnchorPane layoutY="171.0" prefHeight="200.0" prefWidth="600.0">
+         <children>
+            <TextArea fx:id="eventLog" layoutY="64.0" prefHeight="136.0" prefWidth="391.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+            <Button layoutX="394.0" layoutY="198.0" mnemonicParsing="false" onAction="#handleGenerateRecurringTransactions" text="Generate Recurring Transactions!" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="200.0" prefWidth="600.0">
+         <children>
+            <TextField fx:id="csvPath" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="363.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+            <Button layoutX="385.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleOpen" text="Open..." AnchorPane.leftAnchor="385.0" AnchorPane.topAnchor="14.0" />
+            <Button layoutX="445.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleLoadFromDisk" text="Load From Disk" AnchorPane.leftAnchor="445.0" />
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

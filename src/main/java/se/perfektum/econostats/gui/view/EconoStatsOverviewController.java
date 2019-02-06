@@ -7,9 +7,11 @@ import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.EconoStatsController;
+import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.gui.EconoStatsMain;
 
 import java.io.File;
+import java.util.List;
 
 public class EconoStatsOverviewController {
     final Logger LOGGER = LoggerFactory.getLogger(EconoStatsOverviewController.class);
@@ -66,6 +68,19 @@ public class EconoStatsOverviewController {
 
     @FXML
     private void handleLoadFromDisk() {
+        List<AccountTransaction> accountTransactions = null;
+        File file = new File(csvPath.getText());
+        if (file.exists() && !file.isDirectory()) {
+            accountTransactions = econoStatsController.fetchAccountTransactions(csvPath.getText());
+            econoStatsController.setAccountTransactions(accountTransactions);
+        }
+        if (accountTransactions != null && accountTransactions.size() > 0) {
+            LOGGER.debug(String.format("Loaded %s Account Transactions from disk", accountTransactions.size()));
+            eventLog.appendText(String.format("Loaded %s Account Transactions from disk\n", accountTransactions.size()));
+        } else {
+            LOGGER.debug("Failed loading Account Transactions from disk");
+            eventLog.appendText("Failed loading Account Transactions from disk\n");
+        }
     }
 
     @FXML

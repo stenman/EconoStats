@@ -1,21 +1,16 @@
 package se.perfektum.econostats.gui.view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.EconoStatsController;
-import se.perfektum.econostats.configuration.AppProperties;
 import se.perfektum.econostats.dao.googledrive.MimeTypes;
 import se.perfektum.econostats.gui.EconoStatsMain;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 import se.perfektum.econostats.gui.view.common.MessageHandler;
-
-import java.util.Collections;
-import java.util.List;
 
 public class PayeeFilterOverviewController {
 
@@ -60,7 +55,7 @@ public class PayeeFilterOverviewController {
 
         LOGGER.debug("Adding observable list data to payeeFilterTable");
         // Add observable list data to the table
-        payeeFilterTable.setItems(this.econoStatsMain.getPayeeFilters());
+        payeeFilterTable.setItems(this.econoStatsController.getPayeeFilters());
     }
 
     /**
@@ -93,7 +88,7 @@ public class PayeeFilterOverviewController {
         boolean okClicked = econoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
         if (okClicked) {
             LOGGER.debug(String.format("Saving new PayeeFilter: %s", tempPayeeFilter.toString()));
-            econoStatsMain.getPayeeFilters().add(tempPayeeFilter);
+            econoStatsController.getPayeeFilters().add(tempPayeeFilter);
         }
     }
 
@@ -175,6 +170,6 @@ public class PayeeFilterOverviewController {
 
     private void savePayeeFilters() {
         LOGGER.debug(String.format("Saving %d Payee Filters to Google Drive", payeeFilterTable.getItems().size()));
-        econoStatsController.savePayeeFilters(PayeeFilter.convertToDomain(econoStatsMain.getPayeeFilters()));
+        econoStatsController.savePayeeFilters(PayeeFilter.convertToDomain(econoStatsController.getPayeeFilters()));
     }
 }

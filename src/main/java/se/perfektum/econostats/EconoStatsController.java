@@ -1,5 +1,7 @@
 package se.perfektum.econostats;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +46,18 @@ public class EconoStatsController {
 
     private static final String ACCOUNT_TRANSACTIONS = "accountTransactions";
 
+    private static ObservableList<se.perfektum.econostats.gui.model.PayeeFilter> payeeFilters = FXCollections.observableArrayList();
+    private static ObservableList<AccountTransaction> accountTransactions = FXCollections.observableArrayList();
+
     public EconoStatsController(SpreadsheetManager spreadsheetManager, CsvReader csvReader, AccountTransactionDao accountTransactionDao, AppProperties appProperties) {
         this.spreadsheetManager = spreadsheetManager;
         this.csvReader = csvReader;
         this.accountTransactionDao = accountTransactionDao;
 
         initProperties(appProperties);
+
+        List<se.perfektum.econostats.domain.PayeeFilter> pfs = fetchPayeeFilters();
+        payeeFilters.addAll(pfs == null ? FXCollections.observableArrayList(Collections.emptyList()) : FXCollections.observableArrayList(se.perfektum.econostats.gui.model.PayeeFilter.convertFromDomain(pfs)));
     }
 
     public String getCsvPath() {
@@ -60,16 +68,41 @@ public class EconoStatsController {
         return csvFilePath;
     }
 
-    public List<AccountTransaction> getAccountTransactions() {
+    /**
+     * Access method for getting PayeeFilters.
+     *
+     * @return an observable list of PayeeFilters
+     */
+    public ObservableList<se.perfektum.econostats.gui.model.PayeeFilter> getPayeeFilters() {
+        return payeeFilters;
+    }
+
+    /**
+     * Access method for getting AccountTransactions.
+     *
+     * @return an observable list of AccountTransactions
+     */
+    public ObservableList<AccountTransaction> getAccountTransactions() {
+        return accountTransactions;
+    }
+
+    /**
+     * Access method for setting AccountTransactions.
+     */
+    public void setAccountTransactions(List<AccountTransaction> accountTransactions) {
+        this.accountTransactions.addAll(accountTransactions);
+    }
+
+    public List<AccountTransaction> fetchAccountTransactions(String filePath) {
         try {
-            return csvReader.getAccountTransactionsFromFile(null);
+            return csvReader.getAccountTransactionsFromFile(filePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public List<PayeeFilter> getPayeeFilters() {
+    private List<PayeeFilter> fetchPayeeFilters() {
         try {
             String fileId = getFileId(payeeFiltersFileName, MimeTypes.APPLICATION_JSON.toString());
             String filters = fileId == null ? null : accountTransactionDao.getFile(fileId);
