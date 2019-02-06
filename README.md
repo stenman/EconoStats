@@ -12,17 +12,20 @@ Also, it's very much a work in progress, so the current snapshot may not even wo
 Right now there is no install. 
 Currently you have to compile it and run it from IDE/CLI.
 I will address this as soon as time permits...
-It's very primitive, but not too hard if you know what you're doing...
 
-1. Download account transactions from your bank as a csv file.
-2. Set the path to aforementioned csv file in application.properties (_.csvFilePath_).
-    Note: nordea only right now, unless you add your own implementation...
-3. Add Google Drive credentials.json, put it in src/main/resources. You have to do this yourself for now =)
+1. Add Google Drive credentials.json, put it in src/main/resources. You have to do this yourself for now =)
 See https://developers.google.com/drive/api/v3/quickstart/java
     Note: This should not be configurable, so for now you need to register the app yourself...
+2. Download account transactions from your bank as a csv file
+3. Run the application
+4. In the text field, enter the path to the csv (or find it by clicking the _Open..._ button)
+    Note: nordea only right now, unless you add your own implementation...
+5. Click _Load From Disk_
+6. Click the "Payee Filters" tab and create some filters
+7. Go back to the "Econo Stats" tab and now click "Generate Recurring Transactions"
+8. The generated spreadsheet should now be in a folder called "EconoStats" in the root of your Google Drive
 
 ### TODOs
-* TODO: Create GUI (work in progress)
 * TODO: Add spreadsheet notes to each entry that contains transaction date
 * TODO: Use Google Spreadsheet API instead of OdfToolkit (https://developers.google.com/sheets/api/quickstart/java)
 * TODO: Fix file encoding problems
