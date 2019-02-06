@@ -1,9 +1,13 @@
 package se.perfektum.econostats.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
+@Configuration
+@PropertySource("classpath:application.properties")
 @ConfigurationProperties("app")
 public class AppProperties {
     private String outputFilesPath;
@@ -13,6 +17,8 @@ public class AppProperties {
     private String transactionsPath;
     private String recurringTransactionsPath;
     private String payeeFiltersFileName;
+    private String csvPath;
+    private String csvFilePath;
 
     public String getOutputFilesPath() {
         return outputFilesPath;
@@ -70,4 +76,19 @@ public class AppProperties {
         this.payeeFiltersFileName = payeeFiltersFileName;
     }
 
+    public String getCsvPath() {
+        return csvPath;
+    }
+
+    public void setCsvPath(String csvPath) {
+        this.csvPath = csvPath;
+    }
+
+    public String getCsvFilePath() {
+        return csvFilePath;
+    }
+
+    public void setCsvFilePath(String csvFilePath) {
+        this.csvFilePath = csvFilePath;
+    }
 }

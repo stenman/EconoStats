@@ -39,6 +39,8 @@ public class EconoStatsController {
     private String transactionsPath;
     private String recurringTransactionsPath;
     private String payeeFiltersFileName;
+    private String csvPath;
+    private String csvFilePath;
 
     private static final String ACCOUNT_TRANSACTIONS = "accountTransactions";
 
@@ -48,6 +50,14 @@ public class EconoStatsController {
         this.accountTransactionDao = accountTransactionDao;
 
         initProperties(appProperties);
+    }
+
+    public String getCsvPath() {
+        return csvPath;
+    }
+
+    public String getCsvFilePath() {
+        return csvFilePath;
     }
 
     public List<AccountTransaction> getAccountTransactions() {
@@ -176,5 +186,7 @@ public class EconoStatsController {
         transactionsPath = appProperties.getTransactionsPath();
         recurringTransactionsPath = appProperties.getRecurringTransactionsPath();
         payeeFiltersFileName = appProperties.getPayeeFiltersFileName();
+        csvPath = appProperties.getCsvPath();
+        csvFilePath = appProperties.getCsvFilePath();
     }
 }

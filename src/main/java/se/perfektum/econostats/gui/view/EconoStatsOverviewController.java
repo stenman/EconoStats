@@ -1,23 +1,74 @@
 package se.perfektum.econostats.gui.view;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.perfektum.econostats.EconoStatsController;
 import se.perfektum.econostats.gui.EconoStatsMain;
+
+import java.io.File;
 
 public class EconoStatsOverviewController {
     final Logger LOGGER = LoggerFactory.getLogger(EconoStatsOverviewController.class);
 
+    @FXML
+    private TextArea eventLog;
+    @FXML
+    private TextField csvPath;
+
     // Reference to the main application.
     private EconoStatsMain econoStatsMain;
+    private EconoStatsController econoStatsController;
+
+    /**
+     * Default constructor.
+     * The constructor is called before the initialize() method.
+     */
+    public EconoStatsOverviewController() {
+    }
+
+    /**
+     * Initializes the controller class. This method is automatically called
+     * after the fxml file has been loaded.
+     */
+    @FXML
+    private void initialize() {
+    }
 
     /**
      * Is called by the main application to give a reference back to itself.
      *
      * @param econoStatsMain
      */
-    public void setEconoStatsMain(EconoStatsMain econoStatsMain) {
+    public void setReferences(EconoStatsMain econoStatsMain, EconoStatsController econoStatsController) {
         LOGGER.debug("Setting main reference");
         this.econoStatsMain = econoStatsMain;
+        this.econoStatsController = econoStatsController;
+        this.csvPath.setText(this.econoStatsController.getCsvFilePath());
     }
 
+    //TODO: Fix csvFilePath property. It should be configurable! Also, use a config/property-util instead of springs crap...
+    @FXML
+    private void handleOpen() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open bank csv file");
+        File defaultDirectory = new File(econoStatsController.getCsvPath());
+        fileChooser.setInitialDirectory(defaultDirectory);
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File selectedFile = fileChooser.showOpenDialog(econoStatsMain.getPrimaryStage());
+        if (selectedFile != null) {
+            this.csvPath.setText(selectedFile.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void handleLoadFromDisk() {
+    }
+
+    @FXML
+    private void handleGenerateRecurringTransactions() {
+    }
 }

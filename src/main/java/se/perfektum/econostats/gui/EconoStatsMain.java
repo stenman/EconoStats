@@ -101,7 +101,7 @@ public class EconoStatsMain extends Application {
 
             // Give the controller access to the main app.
             EconoStatsOverviewController controller = loader.getController();
-            controller.setEconoStatsMain(this);
+            controller.setReferences(this, econoStatsController);
         } catch (IOException e) {
             e.printStackTrace();
         }
