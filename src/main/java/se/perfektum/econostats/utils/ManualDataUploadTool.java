@@ -38,12 +38,12 @@ public class ManualDataUploadTool {
         List<PayeeFilter> payeeFilters = savePayeeFiltersToDrive();
 
         // SAVE ACCOUNT TRANSACTIONS
-        // List<AccountTransaction> accountTransactions = saveAccountTransactionsToDrive();
+         List<AccountTransaction> accountTransactions = saveAccountTransactionsToDrive();
 
         // GENERATE RECURRING TRANSACTIONS
         // ***** Pass accountTransaction=null when doing a full reset *****
         // ***** Passing a list of accountTransactions here will merge it will an existing list on Drive! *****
-        // generateRecurringTransactions(payeeFilters, null);
+         generateRecurringTransactions(payeeFilters, null);
     }
 
     private static List<PayeeFilter> savePayeeFiltersToDrive() {

@@ -20,6 +20,7 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION_VND_GOOGLE_APPS_FOLDER;
 import static se.perfektum.econostats.utils.FileUtils.saveFileLocally;
@@ -117,8 +118,18 @@ public class EconoStatsController {
         accountTransactionDao.savePayeeFiltersAsJsonString(payeeFilters);
     }
 
+    public void generateRecurringTransactions(){
+        try {
+            generateRecurringTransactions(se.perfektum.econostats.gui.model.PayeeFilter.convertToDomain(payeeFilters), accountTransactions);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void generateRecurringTransactions(List<PayeeFilter> payeeFilters, List<AccountTransaction> accountTransactionsDelta) throws Exception {
         String folderId = getFileId(storagePath, APPLICATION_VND_GOOGLE_APPS_FOLDER);
+
+        payeeFilters = payeeFilters.stream().filter(f -> f.isActive()).collect(Collectors.toList());
 
         File directory = new File(localFilesPath);
         if (!directory.exists()) {

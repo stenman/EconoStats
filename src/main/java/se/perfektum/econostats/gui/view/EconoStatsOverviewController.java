@@ -12,6 +12,7 @@ import se.perfektum.econostats.gui.EconoStatsMain;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EconoStatsOverviewController {
     final Logger LOGGER = LoggerFactory.getLogger(EconoStatsOverviewController.class);
@@ -85,5 +86,7 @@ public class EconoStatsOverviewController {
 
     @FXML
     private void handleGenerateRecurringTransactions() {
+        econoStatsController.generateRecurringTransactions();
+        eventLog.appendText(String.format("Done! %s Account Transactions processed over %s active Payee Filter(s)!\n", econoStatsController.getAccountTransactions().size(), econoStatsController.getPayeeFilters().stream().filter(f -> f.isActive()).collect(Collectors.toList()).size()));
     }
 }
