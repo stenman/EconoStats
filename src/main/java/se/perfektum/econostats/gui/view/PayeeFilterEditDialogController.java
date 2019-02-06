@@ -97,7 +97,7 @@ public class PayeeFilterEditDialogController {
             payeeFilter.setAlias(alias.getText());
             payeeFilter.setActive(active.isSelected());
             payeeFilter.setPayees(payees.getItems());
-            payeeFilter.setExcludePayees(excludedPayees.getItems());
+            payeeFilter.setExcludedPayees(excludedPayees.getItems());
 
             okClicked = true;
             dialogStage.close();
@@ -144,7 +144,7 @@ public class PayeeFilterEditDialogController {
      * Called when the user clicks Add Exclude Payee.
      */
     @FXML
-    private void handleAddExcludePayee() {
+    private void handleAddExcludedPayee() {
         if (Collections.disjoint(payees.getItems(), transactionNames.getSelectionModel().getSelectedItems())) {
             LOGGER.debug(String.format("Adding excluded payee(s)"));
             excludedPayees.setItems(FXCollections.observableArrayList(
@@ -160,10 +160,10 @@ public class PayeeFilterEditDialogController {
     }
 
     /**
-     * Called when the user clicks Remove Exclude Payee.
+     * Called when the user clicks Remove Excluded Payee.
      */
     @FXML
-    private void handleRemoveExcludePayee() {
+    private void handleRemoveExcludedPayee() {
         LOGGER.debug(String.format("Removing excluded payee(s)"));
         excludedPayees.getItems().remove(excludedPayees.getSelectionModel().getSelectedItem());
     }

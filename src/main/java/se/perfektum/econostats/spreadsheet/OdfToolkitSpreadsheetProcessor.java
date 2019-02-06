@@ -47,7 +47,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
 
-        List<AccountTransaction> excludedPayees = excludePayees(accountTransactions, payeeFilters);
+        List<AccountTransaction> excludedPayees = excludedPayees(accountTransactions, payeeFilters);
 
         Map<Year, List<AccountTransaction>> transactionsByYear = excludedPayees.stream().collect(Collectors.groupingBy(d -> Year.of(d.getDate().getYear()), TreeMap::new, Collectors.toList()));
 
@@ -81,10 +81,10 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         return doc;
     }
 
-    private List<AccountTransaction> excludePayees(List<AccountTransaction> transactions, List<PayeeFilter> filters) {
+    private List<AccountTransaction> excludedPayees(List<AccountTransaction> transactions, List<PayeeFilter> filters) {
         for (PayeeFilter filter : filters) {
-            if (filter.getExcludePayees() != null) {
-                for (String exclude : filter.getExcludePayees()) {
+            if (filter.getExcludedPayees() != null) {
+                for (String exclude : filter.getExcludedPayees()) {
                     transactions.removeIf(t -> t.getName().equals(exclude));
                     LOGGER.info(String.format("Removing transaction '%s' before creating spreadsheet", exclude));
                 }

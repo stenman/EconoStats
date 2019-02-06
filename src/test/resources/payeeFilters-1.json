@@ -6,7 +6,7 @@
       "payees": [
         "FRISKTANDV"
       ],
-      "excludePayees": []
+      "excludedPayees": []
     },
     {
       "alias": "Folksam",
@@ -14,7 +14,7 @@
       "payees": [
         "Autogiro FOLKSAM"
       ],
-      "excludePayees": [
+      "excludedPayees": [
         "Autogiro FOLKSAM ÅTER"
       ]
     },
@@ -26,7 +26,7 @@
         "Omsättning lån 3998 77 77772",
         "Omsättning lån 3998 77 77773"
       ],
-      "excludePayees": []
+      "excludedPayees": []
     }
   ]
 }

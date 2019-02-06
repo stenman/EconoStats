@@ -32,8 +32,8 @@
          </children></AnchorPane>
       <Button layoutX="262.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleAddPayee" prefHeight="25.0" prefWidth="59.0" text="Add" />
       <Button layoutX="262.0" layoutY="106.0" mnemonicParsing="false" onAction="#handleRemovePayee" text="Remove" />
-      <Button layoutX="262.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleAddExcludePayee" prefHeight="25.0" prefWidth="59.0" text="Add" />
-      <Button layoutX="262.0" layoutY="282.0" mnemonicParsing="false" onAction="#handleRemoveExcludePayee" text="Remove" />
+      <Button layoutX="262.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleAddExcludedPayee" prefHeight="25.0" prefWidth="59.0" text="Add" />
+      <Button layoutX="262.0" layoutY="282.0" mnemonicParsing="false" onAction="#handleRemoveExcludedPayee" text="Remove" />
       <Button layoutX="540.0" layoutY="446.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
       <Button layoutX="483.0" layoutY="448.0" mnemonicParsing="false" onAction="#handleOk" prefHeight="25.0" prefWidth="52.0" text="Ok" AnchorPane.bottomAnchor="5.0" />
       <AnchorPane layoutX="332.0" layoutY="372.0" prefHeight="99.0" prefWidth="149.0">

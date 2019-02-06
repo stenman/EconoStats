@@ -6,13 +6,13 @@ import java.util.Objects;
 
 public class PayeeFilter {
     private List<String> payees;
-    private List<String> excludePayees;
+    private List<String> excludedPayees;
     private String alias;
     private Boolean active;
 
     public PayeeFilter(List<String> payees, List<String> excludedPayees, String alias, Boolean active) {
         this.payees = payees == null ? Collections.emptyList() : payees;
-        this.excludePayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
+        this.excludedPayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
         this.alias = alias == null ? "" : alias;
         this.active = active == null ? true : active;
     }
@@ -25,12 +25,12 @@ public class PayeeFilter {
         this.payees = payees;
     }
 
-    public List<String> getExcludePayees() {
-        return excludePayees;
+    public List<String> getExcludedPayees() {
+        return excludedPayees;
     }
 
-    public void setExcludePayees(List<String> excludePayees) {
-        this.excludePayees = excludePayees;
+    public void setExcludedPayees(List<String> excludedPayees) {
+        this.excludedPayees = excludedPayees;
     }
 
     public String getAlias() {
@@ -52,7 +52,7 @@ public class PayeeFilter {
     @Override
     public int hashCode() {
         return Objects.hash(getPayees(),
-                getExcludePayees(),
+                getExcludedPayees(),
                 getAlias(),
                 isActive());
     }
@@ -63,7 +63,7 @@ public class PayeeFilter {
         if (!(o instanceof PayeeFilter)) return false;
         PayeeFilter pf = (PayeeFilter) o;
         return Objects.equals(getPayees(), pf.getPayees())
-                && Objects.equals(getExcludePayees(), pf.getExcludePayees())
+                && Objects.equals(getExcludedPayees(), pf.getExcludedPayees())
                 && Objects.equals(getAlias(), pf.getAlias())
                 && Objects.equals(isActive(), pf.isActive());
     }

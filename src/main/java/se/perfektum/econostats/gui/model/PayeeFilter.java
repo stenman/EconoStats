@@ -46,11 +46,11 @@ public class PayeeFilter {
         return this.payees;
     }
 
-    public List<String> getExcludePayees() {
+    public List<String> getExcludedPayees() {
         return this.excludedPayees;
     }
 
-    public void setExcludePayees(List<String> excludedPayees) {
+    public void setExcludedPayees(List<String> excludedPayees) {
         excludedPayees = excludedPayees == null ? Collections.emptyList() : excludedPayees;
         ObservableList<String> observableExcludedPayees = FXCollections.observableArrayList(excludedPayees);
         this.excludedPayees = new SimpleListProperty<>(observableExcludedPayees);
@@ -89,7 +89,7 @@ public class PayeeFilter {
     }
 
     public static se.perfektum.econostats.domain.PayeeFilter convertToDomain(PayeeFilter gpf) {
-        return new se.perfektum.econostats.domain.PayeeFilter(gpf.getPayees(), gpf.getExcludePayees(), gpf.getAlias(), gpf.isActive());
+        return new se.perfektum.econostats.domain.PayeeFilter(gpf.getPayees(), gpf.getExcludedPayees(), gpf.getAlias(), gpf.isActive());
     }
 
     public static List<PayeeFilter> convertFromDomain(List<se.perfektum.econostats.domain.PayeeFilter> dpfs) {
@@ -97,13 +97,13 @@ public class PayeeFilter {
     }
 
     public static PayeeFilter convertFromDomain(se.perfektum.econostats.domain.PayeeFilter dpf) {
-        return new PayeeFilter(dpf.getPayees(), dpf.getExcludePayees(), dpf.getAlias(), dpf.isActive());
+        return new PayeeFilter(dpf.getPayees(), dpf.getExcludedPayees(), dpf.getAlias(), dpf.isActive());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getPayees(),
-                getExcludePayees(),
+                getExcludedPayees(),
                 getAlias(),
                 isActive());
     }
@@ -114,7 +114,7 @@ public class PayeeFilter {
         if (!(o instanceof PayeeFilter)) return false;
         PayeeFilter pf = (PayeeFilter) o;
         return Objects.equals(getPayees(), pf.getPayees())
-                && Objects.equals(getExcludePayees(), pf.getExcludePayees())
+                && Objects.equals(getExcludedPayees(), pf.getExcludedPayees())
                 && Objects.equals(getAlias(), pf.getAlias())
                 && Objects.equals(isActive(), pf.isActive());
     }

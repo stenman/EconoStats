@@ -46,17 +46,6 @@ public class ManualDataUploadTool {
         // generateRecurringTransactions(payeeFilters, null);
     }
 
-    private static List<AccountTransaction> saveAccountTransactionsToDrive() {
-        List<AccountTransaction> transactions = null;
-        try {
-            transactions = csvReader.getAccountTransactionsFromFile(localAccountTransactions);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        dao.saveAccountTransactionsAsJsonString(transactions);
-        return transactions;
-    }
-
     private static List<PayeeFilter> savePayeeFiltersToDrive() {
         String pFilters = null;
         try {
@@ -67,6 +56,17 @@ public class ManualDataUploadTool {
         List<PayeeFilter> payeeFilters = JsonUtils.getJsonElement(PayeeFilter.class, pFilters);
         dao.savePayeeFiltersAsJsonString(payeeFilters);
         return payeeFilters;
+    }
+
+    private static List<AccountTransaction> saveAccountTransactionsToDrive() {
+        List<AccountTransaction> transactions = null;
+        try {
+            transactions = csvReader.getAccountTransactionsFromFile(localAccountTransactions);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        dao.saveAccountTransactionsAsJsonString(transactions);
+        return transactions;
     }
 
     private static void generateRecurringTransactions(List<PayeeFilter> payeeFilters, List<AccountTransaction> accountTransactions) {
