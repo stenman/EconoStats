@@ -15,6 +15,9 @@ I will address this as soon as time permits...
 
 1. Add Google Drive credentials.json, put it in src/main/resources. You have to do this yourself for now =)
 See https://developers.google.com/drive/api/v3/quickstart/java
+    - Click "Enable the Drive API"
+    - Download credentials
+    - Put credentials.json in src/main/resources
     Note: This should not be configurable, so for now you need to register the app yourself...
 2. Download account transactions from your bank as a csv file
 3. Run the application
