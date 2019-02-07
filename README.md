@@ -2,7 +2,7 @@
 
 ### IMPORTANT! 
 ### DISCLAIMER: I take NO RESPONSIBILITY for anything that might happen (eg. data loss, corruption of data etc.) to any part of the system and/or software this application is executed upon or has any communication with (such as Google Drive).
-### That being said, it should work fine.
+### That being said, it should work fine. <<< The Google Drive API commands used can never overwrite or delete something that is not created by the app itself >>>
 
 A simple tool for creating spreadsheet reports of bank transactions.
 Early alpha version, so don't expect too much.
