@@ -2,7 +2,7 @@
 
 ### IMPORTANT! 
 ### DISCLAIMER: I take NO RESPONSIBILITY for anything that might happen (eg. data loss, corruption of data etc.) to any part of the system and/or software this application is executed upon or has any communication with (such as Google Drive).
-### That being said, it should work fine.
+### That being said, it should work fine. <<< The Google Drive API commands used can never overwrite or delete something that is not created by the app itself >>>
 
 A simple tool for creating spreadsheet reports of bank transactions.
 Early alpha version, so don't expect too much.
@@ -15,6 +15,9 @@ I will address this as soon as time permits...
 
 1. Add Google Drive credentials.json, put it in src/main/resources. You have to do this yourself for now =)
 See https://developers.google.com/drive/api/v3/quickstart/java
+    - Click "Enable the Drive API"
+    - Download credentials
+    - Put credentials.json in src/main/resources
     Note: This should not be configurable, so for now you need to register the app yourself...
 2. Download account transactions from your bank as a csv file
 3. Run the application
