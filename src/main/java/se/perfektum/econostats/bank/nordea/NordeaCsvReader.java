@@ -69,7 +69,10 @@ public class NordeaCsvReader implements CsvReader {
                     at.setName(nextLine[1]);
                     at.setCategory(nextLine[2]);
                     String amount = nextLine[3];
-                    String balance = nextLine[4];
+                    String balance = null;
+                    if (nextLine[4] != null) {
+                        balance = nextLine[4];
+                    }
                     if (amount != null && !amount.equals("")) {
                         try {
                             // For some reason Nordea sometimes throws in (or lets through)

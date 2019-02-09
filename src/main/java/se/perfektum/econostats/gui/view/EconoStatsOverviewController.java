@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.EconoStatsController;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.gui.EconoStatsMain;
+import se.perfektum.econostats.utils.SystemUtils;
 
 import java.io.File;
 import java.util.List;
@@ -58,8 +59,10 @@ public class EconoStatsOverviewController {
     private void handleOpen() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open bank csv file");
-        File defaultDirectory = new File(econoStatsController.getCsvPath());
-        fileChooser.setInitialDirectory(defaultDirectory);
+        if (SystemUtils.isWindows()) {
+            File defaultDirectory = new File(econoStatsController.getCsvPath());
+            fileChooser.setInitialDirectory(defaultDirectory);
+        }
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File selectedFile = fileChooser.showOpenDialog(econoStatsMain.getPrimaryStage());
         if (selectedFile != null) {
