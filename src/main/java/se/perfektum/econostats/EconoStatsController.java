@@ -118,7 +118,7 @@ public class EconoStatsController {
         accountTransactionDao.savePayeeFiltersAsJsonString(payeeFilters);
     }
 
-    public void generateRecurringTransactions(){
+    public void generateRecurringTransactions() {
         try {
             generateRecurringTransactions(se.perfektum.econostats.gui.model.PayeeFilter.convertToDomain(payeeFilters), accountTransactions);
         } catch (Exception e) {
@@ -209,6 +209,9 @@ public class EconoStatsController {
             if (items.isEmpty()) {
                 LOGGER.debug(String.format("Could not find file '%s' in storage", name));
                 return null;
+//            } else if (items.) {
+//                LOGGER.debug(String.format("Could not find file '%s' in storage", name));
+//                return null;
             } else if (items.size() > 1) {
                 LOGGER.error("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
                 throw new IOException("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");

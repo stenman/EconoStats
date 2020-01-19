@@ -46,7 +46,6 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     //TODO: When opening the spreadsheet in drive, the active sheet is the earliest year. Can this be changed (to the latest year)?
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
-
         List<AccountTransaction> excludedPayees = excludedPayees(accountTransactions, payeeFilters);
 
         Map<Year, List<AccountTransaction>> transactionsByYear = excludedPayees.stream().collect(Collectors.groupingBy(d -> Year.of(d.getDate().getYear()), TreeMap::new, Collectors.toList()));
@@ -100,7 +99,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         Set<PayeeFilter> adaptedFilters = new HashSet<>();
         for (PayeeFilter filter : filters) {
             for (String payee : filter.getPayees()) {
-                if (trans.stream().anyMatch(t -> t.contains(payee))) {
+                if (trans.stream().anyMatch(t -> t.toLowerCase().contains(payee.toLowerCase()))) {
                     adaptedFilters.add(filter);
                     break;
                 }
@@ -110,12 +109,14 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
     private void processPayees(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters, Table sheet) {
+        List<AccountTransaction> added = new ArrayList<>();
         for (int i = 0; i < payeeFilters.size(); i++) {
             Map<YearMonth, Integer> amounts = new HashMap<>();
 
             // Accumulate amounts for each filter, grouped by year and month
             for (AccountTransaction transaction : accountTransactions) {
-                if (payeeFilters.get(i).getPayees().stream().anyMatch(transaction.getName()::contains)) {
+                if (payeeFilters.get(i).getPayees().stream().map(d -> d.toLowerCase()).anyMatch(transaction.getName().toLowerCase()::contains)) {
+                    added.add(transaction);
                     YearMonth ym = YearMonth.of(transaction.getDate().getYear(), transaction.getDate().getMonthValue());
                     amounts.merge(ym, Math.abs(transaction.getAmount() / 100), Integer::sum);
                 }
@@ -138,6 +139,10 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
             setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT), "", true, PASTEL_PURPLE);
             sheet.getCellByPosition(i + COLUMN_OFFSET, ROW_COUNT).setFormula(String.format("=ROUND(SUM(%s2:%s13);%s)", odfColName, odfColName, ROUNDING));
         }
+        System.out.println("Removing stuff....");
+        accountTransactions.removeAll(added);
+        System.out.println(accountTransactions.stream().map(d -> d.toString()).collect(Collectors.toList()));
+        System.out.println("Done!");
     }
 
     private void setHeaders(List<PayeeFilter> payeeFilters, Table sheet) {

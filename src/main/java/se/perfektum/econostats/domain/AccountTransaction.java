@@ -151,4 +151,9 @@ public class AccountTransaction {
                 amount == at.amount &&
                 balance == at.balance;
     }
+
+    @Override
+    public String toString() {
+        return this.getName() + " " + this.getAmount() + " " + this.getDate() + " " + this.getCategory();
+    }
 }
