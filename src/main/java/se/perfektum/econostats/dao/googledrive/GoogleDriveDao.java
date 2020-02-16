@@ -153,6 +153,9 @@ public class GoogleDriveDao implements AccountTransactionDao {
         // Load client secrets.
         LOGGER.trace(String.format("Loading local client secrets from file '%s'", CREDENTIALS_FILE_PATH));
         InputStream in = GoogleDriveDao.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        if (in == null) {
+            throw new IOException(String.format("Could not find file %s", CREDENTIALS_FILE_PATH));
+        }
         LOGGER.trace("Loading Google client secrets");
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
