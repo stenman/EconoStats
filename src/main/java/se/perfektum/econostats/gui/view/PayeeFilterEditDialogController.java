@@ -1,14 +1,17 @@
 package se.perfektum.econostats.gui.view;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 import se.perfektum.econostats.gui.view.common.MessageHandler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +20,10 @@ import java.util.stream.Stream;
 public class PayeeFilterEditDialogController {
 
     final Logger LOGGER = LoggerFactory.getLogger(PayeeFilterEditDialogController.class);
+
+    private static final String DEFAULT_CONTROL_INNER_BACKGROUND = "derive(-fx-base,80%)";
+    private static final String HIGHLIGHTED_GREEN_CONTROL_INNER_BACKGROUND = "derive(PALEGREEN, 50%)";
+    private static final String HIGHLIGHTED_RED_CONTROL_INNER_BACKGROUND = "derive(SALMON, 50%)";
 
     @FXML
     private ListView<String> transactionNames;
@@ -32,7 +39,8 @@ public class PayeeFilterEditDialogController {
     private CheckBox active;
 
     private PayeeFilter payeeFilter;
-
+    private List<String> includedPayeeFilters;
+    private List<String> excludedPayeeFilters;
     private Stage dialogStage;
     private boolean okClicked = false;
 
@@ -43,6 +51,38 @@ public class PayeeFilterEditDialogController {
     @FXML
     private void initialize() {
         transactionNames.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        transactionNames.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (item == null || empty) {
+                            setText(null);
+                            setStyle("-fx-control-inner-background: " + DEFAULT_CONTROL_INNER_BACKGROUND + ";");
+                        } else {
+                            setText(item);
+                            if (includedPayeeFilters.stream().anyMatch(i -> i.contains(item))) {
+                                setStyle("-fx-control-inner-background: " + HIGHLIGHTED_GREEN_CONTROL_INNER_BACKGROUND + ";");
+                            } else if (excludedPayeeFilters.stream().anyMatch(i -> i.contains(item))) {
+                                setStyle("-fx-control-inner-background: " + HIGHLIGHTED_RED_CONTROL_INNER_BACKGROUND + ";");
+                            } else {
+                                setStyle("-fx-control-inner-background: " + DEFAULT_CONTROL_INNER_BACKGROUND + ";");
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    public void setIncludedPayees(ObservableList<PayeeFilter> payeeFilters) {
+        includedPayeeFilters = new ArrayList<>();
+        excludedPayeeFilters = new ArrayList<>();
+        includedPayeeFilters.addAll(payeeFilters.stream().flatMap(d -> d.getPayees().stream()).distinct().collect(Collectors.toList()));
+        excludedPayeeFilters.addAll(payeeFilters.stream().flatMap(d -> d.getExcludedPayees().stream()).distinct().collect(Collectors.toList()));
     }
 
     /**

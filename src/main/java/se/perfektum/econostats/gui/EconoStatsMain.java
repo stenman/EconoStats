@@ -142,6 +142,8 @@ public class EconoStatsMain extends Application {
             controller.setDialogStage(dialogStage);
             controller.setPayeeFilter(payeeFilter);
 
+            controller.setIncludedPayees(econoStatsController.getPayeeFilters());
+
             LOGGER.debug("Generating distinct set of Account Transaction Names");
             ObservableList<String> transactionNames = FXCollections.observableArrayList(
                     econoStatsController
