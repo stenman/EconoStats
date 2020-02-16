@@ -143,7 +143,14 @@ public class EconoStatsMain extends Application {
             controller.setPayeeFilter(payeeFilter);
 
             LOGGER.debug("Generating distinct set of Account Transaction Names");
-            ObservableList<String> transactionNames = FXCollections.observableArrayList(econoStatsController.getAccountTransactions().stream().map(AccountTransaction::getName).distinct().sorted().collect(Collectors.toList()));
+            ObservableList<String> transactionNames = FXCollections.observableArrayList(
+                    econoStatsController
+                            .getAccountTransactions()
+                            .stream()
+                            .map(AccountTransaction::getName)
+                            .distinct()
+                            .sorted()
+                            .collect(Collectors.toList()));
             controller.setTransactionNames(transactionNames);
 
             LOGGER.debug("PayeeFilterEditDialog initiated, showing dialog");

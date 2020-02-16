@@ -85,10 +85,14 @@ public class PayeeFilterOverviewController {
     @FXML
     private void handleNewPayeeFilter() {
         PayeeFilter tempPayeeFilter = new PayeeFilter();
-        boolean okClicked = econoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
-        if (okClicked) {
-            LOGGER.debug(String.format("Saving new PayeeFilter: %s", tempPayeeFilter.toString()));
-            econoStatsController.getPayeeFilters().add(tempPayeeFilter);
+        if (isTransactionsFileLoaded()) {
+            boolean okClicked = econoStatsMain.showPayeeFilterEditDialog(tempPayeeFilter);
+            if (okClicked) {
+                LOGGER.debug(String.format("Saving new PayeeFilter: %s", tempPayeeFilter.toString()));
+                econoStatsController.getPayeeFilters().add(tempPayeeFilter);
+            }
+        } else {
+            MessageHandler.showWarning("No Transaction File Loaded", "No Transaction File Loaded", "Please load a transactions file (csv) containing your financial transactions.");
         }
     }
 
@@ -99,13 +103,15 @@ public class PayeeFilterOverviewController {
     @FXML
     private void handleEditPayeeFilter() {
         PayeeFilter selectedPayeeFilter = payeeFilterTable.getSelectionModel().getSelectedItem();
-        if (selectedPayeeFilter != null) {
+        if (isTransactionsFileLoaded() && selectedPayeeFilter != null) {
             boolean okClicked = econoStatsMain.showPayeeFilterEditDialog(selectedPayeeFilter);
             if (okClicked) {
                 LOGGER.debug(String.format("Saving edited PayeeFilter: %s", selectedPayeeFilter.toString()));
                 showPayeeFilterDetails(selectedPayeeFilter);
             }
 
+        } else if (!isTransactionsFileLoaded()) {
+            MessageHandler.showWarning("No Transaction File Loaded", "No Transaction File Loaded", "Please load a transactions file (csv) containing your financial transactions.");
         } else {
             MessageHandler.showWarning("No Selection", "No Payee Filter Selected", "Please select a Payee Filter in the table.");
         }
@@ -171,5 +177,9 @@ public class PayeeFilterOverviewController {
     private void savePayeeFilters() {
         LOGGER.debug(String.format("Saving %d Payee Filters to Google Drive", payeeFilterTable.getItems().size()));
         econoStatsController.savePayeeFilters(PayeeFilter.convertToDomain(econoStatsController.getPayeeFilters()));
+    }
+
+    private boolean isTransactionsFileLoaded() {
+        return !econoStatsController.getAccountTransactions().isEmpty();
     }
 }
