@@ -1,27 +1,23 @@
 package se.perfektum.econostats.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AccountTransaction {
     private LocalDate date;
-    private String name;
-    private String category;
-    private int amount;
-    private int balance;
+    private BigDecimal amount;
+    private String sender = "";
+    private String receiver = "";
+    private String name = "";
+    private String header = "";
+    private BigDecimal balance;
+    private String currency = "";
     private LocalDateTime stampInserted;
     private LocalDateTime stampChanged;
-
-    public AccountTransaction(Builder b) {
-        this.date = b.date;
-        this.name = b.name;
-        this.category = b.category;
-        this.amount = b.amount;
-        this.balance = b.balance;
-        this.stampInserted = b.stampInserted;
-        this.stampChanged = b.stampChanged;
-    }
+    @Deprecated
+    private String category = "";
 
     public AccountTransaction() {
     }
@@ -34,6 +30,30 @@ public class AccountTransaction {
         this.date = date;
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
     public String getName() {
         return name;
     }
@@ -42,28 +62,28 @@ public class AccountTransaction {
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getHeader() {
+        return header;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setHeader(String header) {
+        this.header = header;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public int getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public LocalDateTime getStampInserted() {
@@ -82,17 +102,59 @@ public class AccountTransaction {
         this.stampChanged = stampChanged;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public AccountTransaction(Builder b) {
+        this.date = b.date;
+        this.amount = b.amount;
+        this.sender = b.sender;
+        this.receiver = b.receiver;
+        this.name = b.name;
+        this.header = b.header;
+        this.balance = b.balance;
+        this.currency = b.currency;
+        this.stampInserted = b.stampInserted;
+        this.stampChanged = b.stampChanged;
+        this.category = b.category;
+    }
+
     public static class Builder {
         private LocalDate date;
+        private BigDecimal amount;
+        private String sender;
+        private String receiver;
         private String name;
-        private String category;
-        private int amount;
-        private int balance;
+        private String header;
+        private BigDecimal balance;
+        private String currency;
         private LocalDateTime stampInserted;
         private LocalDateTime stampChanged;
+        @Deprecated
+        private String category;
 
         public Builder date(LocalDate date) {
             this.date = date;
+            return this;
+        }
+
+        public Builder amount(BigDecimal amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder sender(String sender) {
+            this.sender = sender;
+            return this;
+        }
+
+        public Builder receiver(String receiver) {
+            this.receiver = receiver;
             return this;
         }
 
@@ -101,18 +163,18 @@ public class AccountTransaction {
             return this;
         }
 
-        public Builder category(String category) {
-            this.category = category;
+        public Builder header(String header) {
+            this.header = header;
             return this;
         }
 
-        public Builder amount(int amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public Builder balance(int balance) {
+        public Builder balance(BigDecimal balance) {
             this.balance = balance;
+            return this;
+        }
+
+        public Builder currency(String currency) {
+            this.currency = currency;
             return this;
         }
 
@@ -126,6 +188,11 @@ public class AccountTransaction {
             return this;
         }
 
+        public Builder category(String category) {
+            this.category = category;
+            return this;
+        }
+
         public AccountTransaction build() {
             return new AccountTransaction(this);
         }
@@ -133,27 +200,93 @@ public class AccountTransaction {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAmount(),
-                getDate(),
-                getName(),
-                getBalance(),
-                getCategory());
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((amount == null) ? 0 : amount.hashCode());
+        result = prime * result + ((balance == null) ? 0 : balance.hashCode());
+        result = prime * result + ((category == null) ? 0 : category.hashCode());
+        result = prime * result + ((currency == null) ? 0 : currency.hashCode());
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((header == null) ? 0 : header.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
+        result = prime * result + ((sender == null) ? 0 : sender.hashCode());
+        result = prime * result + ((stampChanged == null) ? 0 : stampChanged.hashCode());
+        result = prime * result + ((stampInserted == null) ? 0 : stampInserted.hashCode());
+        return result;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AccountTransaction at = (AccountTransaction) o;
-        return Objects.equals(date, at.date) &&
-                Objects.equals(name, at.name) &&
-                Objects.equals(category, at.category) &&
-                amount == at.amount &&
-                balance == at.balance;
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AccountTransaction other = (AccountTransaction) obj;
+        if (amount == null) {
+            if (other.amount != null)
+                return false;
+        } else if (!amount.equals(other.amount))
+            return false;
+        if (balance == null) {
+            if (other.balance != null)
+                return false;
+        } else if (!balance.equals(other.balance))
+            return false;
+        if (category == null) {
+            if (other.category != null)
+                return false;
+        } else if (!category.equals(other.category))
+            return false;
+        if (currency == null) {
+            if (other.currency != null)
+                return false;
+        } else if (!currency.equals(other.currency))
+            return false;
+        if (date == null) {
+            if (other.date != null)
+                return false;
+        } else if (!date.equals(other.date))
+            return false;
+        if (header == null) {
+            if (other.header != null)
+                return false;
+        } else if (!header.equals(other.header))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (receiver == null) {
+            if (other.receiver != null)
+                return false;
+        } else if (!receiver.equals(other.receiver))
+            return false;
+        if (sender == null) {
+            if (other.sender != null)
+                return false;
+        } else if (!sender.equals(other.sender))
+            return false;
+        if (stampChanged == null) {
+            if (other.stampChanged != null)
+                return false;
+        } else if (!stampChanged.equals(other.stampChanged))
+            return false;
+        if (stampInserted == null) {
+            if (other.stampInserted != null)
+                return false;
+        } else if (!stampInserted.equals(other.stampInserted))
+            return false;
+        return true;
     }
 
     @Override
     public String toString() {
-        return this.getName() + " " + this.getAmount() + " " + this.getDate() + " " + this.getCategory();
+        return "AccountTransaction [date=" + date + ", amount=" + amount + ", sender=" + sender + ", receiver=" + receiver + ", name=" + name + ", header=" + header + ", balance=" + balance + ", currency=" + currency + ", stampInserted=" + stampInserted + ", stampChanged=" + stampChanged
+                + ", category=" + category + "]";
     }
+
 }

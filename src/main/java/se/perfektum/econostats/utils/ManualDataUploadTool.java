@@ -1,7 +1,13 @@
 package se.perfektum.econostats.utils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import se.perfektum.econostats.EconoStatsController;
 import se.perfektum.econostats.bank.CsvReader;
 import se.perfektum.econostats.bank.nordea.NordeaCsvReader;
@@ -10,13 +16,9 @@ import se.perfektum.econostats.dao.googledrive.GoogleDriveDao;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 /**
- * Simple tool for uploading/resetting data on Google Drive. Mainly for testing purposes.
+ * Simple tool for uploading/resetting data on Google Drive. Mainly for testing
+ * purposes.
  * <p>
  * NOTE: recurringTransactions file will NOT be restored!
  */
@@ -38,12 +40,13 @@ public class ManualDataUploadTool {
         List<PayeeFilter> payeeFilters = savePayeeFiltersToDrive();
 
         // SAVE ACCOUNT TRANSACTIONS
-         List<AccountTransaction> accountTransactions = saveAccountTransactionsToDrive();
+        List<AccountTransaction> accountTransactions = saveAccountTransactionsToDrive();
 
         // GENERATE RECURRING TRANSACTIONS
         // ***** Pass accountTransaction=null when doing a full reset *****
-        // ***** Passing a list of accountTransactions here will merge it will an existing list on Drive! *****
-         generateRecurringTransactions(payeeFilters, null);
+        // ***** Passing a list of accountTransactions here will merge it will an
+        // existing list on Drive! *****
+        generateRecurringTransactions(payeeFilters, null);
     }
 
     private static List<PayeeFilter> savePayeeFiltersToDrive() {

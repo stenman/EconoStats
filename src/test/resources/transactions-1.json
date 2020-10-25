@@ -6,9 +6,9 @@
         "month": 8,
         "day": 28
       },
-      "name": "Autogiro FRISKTANDV",
+      "header": "Autogiro FRISKTANDV",
       "category": "",
-      "amount": -6700,
+      "amount": -67.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -43,9 +43,9 @@
         "month": 7,
         "day": 7
       },
-      "name": "Autogiro FOLKSAM",
+      "header": "Autogiro FOLKSAM",
       "category": "Household",
-      "amount": -100000,
+      "amount": -1000.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -80,9 +80,9 @@
         "month": 7,
         "day": 7
       },
-      "name": "Autogiro FOLKSAM ÅTER",
+      "header": "Autogiro FOLKSAM ÅTER",
       "category": "Household",
-      "amount": 25000,
+      "amount": 250.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -117,9 +117,9 @@
         "month": 6,
         "day": 6
       },
-      "name": "Not in filter",
+      "header": "Not in filter",
       "category": "",
-      "amount": -100000,
+      "amount": -1000.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -154,9 +154,9 @@
         "month": 7,
         "day": 11
       },
-      "name": "Betalning BG 170-3453 Inteleon AB",
+      "header": "Betalning BG 170-3453 Inteleon AB",
       "category": "",
-      "amount": -800,
+      "amount": -8.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -191,9 +191,9 @@
         "month": 8,
         "day": 11
       },
-      "name": "Betalning BG 170-3453 Inteleon AB",
+      "header": "Betalning BG 170-3453 Inteleon AB",
       "category": "",
-      "amount": -5800,
+      "amount": -58.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -228,9 +228,9 @@
         "month": 9,
         "day": 11
       },
-      "name": "Betalning BG 170-3453 Inteleon AB",
+      "header": "Betalning BG 170-3453 Inteleon AB",
       "category": "",
-      "amount": -23800,
+      "amount": -238.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -265,9 +265,9 @@
         "month": 9,
         "day": 29
       },
-      "name": "Omsättning lån 3998 77 77771",
+      "header": "Omsättning lån 3998 77 77771",
       "category": "",
-      "amount": -23100,
+      "amount": -231.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -302,9 +302,9 @@
         "month": 9,
         "day": 27
       },
-      "name": "Omsättning lån 3998 77 77771",
+      "header": "Omsättning lån 3998 77 77771",
       "category": "",
-      "amount": -100800,
+      "amount": -1008.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -339,9 +339,9 @@
         "month": 9,
         "day": 27
       },
-      "name": "Omsättning lån 3998 77 77772",
+      "header": "Omsättning lån 3998 77 77772",
       "category": "",
-      "amount": -57800,
+      "amount": -578.00,
       "balance": 0,
       "stampInserted": {
         "date": {
@@ -376,9 +376,9 @@
         "month": 9,
         "day": 27
       },
-      "name": "Omsättning lån 3998 77 77773",
+      "header": "Omsättning lån 3998 77 77773",
       "category": "",
-      "amount": -239500,
+      "amount": -2395.00,
       "balance": 0,
       "stampInserted": {
         "date": {

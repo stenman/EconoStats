@@ -83,7 +83,7 @@ public class EconoStatsOverviewController {
             eventLog.appendText(String.format("Loaded %s Account Transactions from disk\n", accountTransactions.size()));
         } else {
             LOGGER.debug("Failed loading Account Transactions from disk");
-            eventLog.appendText("Failed loading Account Transactions from disk. Are you sure the file exists?\n");
+            eventLog.appendText("Failed loading Account Transactions from disk. Are you sure the file exists and has the correct format?\n");
         }
     }
 

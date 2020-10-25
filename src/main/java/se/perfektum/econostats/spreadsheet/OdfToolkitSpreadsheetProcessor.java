@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
@@ -19,9 +20,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Gets AccountTransactions from storage
- * Performs various calculations on transaction values
- * Creates a spreadsheet on monthly payments
+ * Gets AccountTransactions from storage Performs various calculations on
+ * transaction values Creates a spreadsheet on monthly payments
  */
 public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     final Logger LOGGER = LoggerFactory.getLogger(OdfToolkitSpreadsheetProcessor.class);
@@ -39,11 +39,15 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private static final Color PASTEL_PINK = new Color(250, 210, 255);
     private static final Color PASTEL_PURPLE = new Color(220, 210, 255);
 
-    //TODO: Refactor out all parts that processes AccountTransactions and PayeeFilters, as these don't really qualify as OdfToolkit specifics
-    //TODO: Create an "anchor" or similar, to be able to move the whole construct anywhere in the sheet.
-    //TODO: Fix widths (calculation of this is pretty bad as it is)
-    //TODO: For some reason, appending a new sheet creates 5 columns from the start... can this be fixed?
-    //TODO: When opening the spreadsheet in drive, the active sheet is the earliest year. Can this be changed (to the latest year)?
+    // TODO: Refactor out all parts that processes AccountTransactions and
+    // PayeeFilters, as these don't really qualify as OdfToolkit specifics
+    // TODO: Create an "anchor" or similar, to be able to move the whole construct
+    // anywhere in the sheet.
+    // TODO: Fix widths (calculation of this is pretty bad as it is)
+    // TODO: For some reason, appending a new sheet creates 5 columns from the
+    // start... can this be fixed?
+    // TODO: When opening the spreadsheet in drive, the active sheet is the earliest
+    // year. Can this be changed (to the latest year)?
     @Override
     public SpreadsheetDocument createSpreadsheet(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters) throws Exception {
         List<AccountTransaction> excludedPayees = excludedPayees(accountTransactions, payeeFilters);
@@ -84,7 +88,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         for (PayeeFilter filter : filters) {
             if (filter.getExcludedPayees() != null) {
                 for (String exclude : filter.getExcludedPayees()) {
-                    transactions.removeIf(t -> t.getName().equals(exclude));
+                    transactions.removeIf(t -> t.getHeader().equals(exclude));
                     LOGGER.info(String.format("Removing transaction '%s' before creating spreadsheet", exclude));
                 }
             }
@@ -94,7 +98,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
 
     private List<PayeeFilter> adaptPayeeFilters(List<AccountTransaction> transactions, List<PayeeFilter> filters) {
 
-        Set<String> trans = transactions.stream().map(AccountTransaction::getName).collect(Collectors.toSet());
+        Set<String> trans = transactions.stream().map(AccountTransaction::getHeader).collect(Collectors.toSet());
 
         Set<PayeeFilter> adaptedFilters = new HashSet<>();
         for (PayeeFilter filter : filters) {
@@ -111,24 +115,24 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private void processPayees(List<AccountTransaction> accountTransactions, List<PayeeFilter> payeeFilters, Table sheet) {
         List<AccountTransaction> added = new ArrayList<>();
         for (int i = 0; i < payeeFilters.size(); i++) {
-            Map<YearMonth, Integer> amounts = new HashMap<>();
+            Map<YearMonth, BigDecimal> amounts = new HashMap<>();
 
             // Accumulate amounts for each filter, grouped by year and month
             for (AccountTransaction transaction : accountTransactions) {
-                if (payeeFilters.get(i).getPayees().stream().map(d -> d.toLowerCase()).anyMatch(transaction.getName().toLowerCase()::contains)) {
+                if (payeeFilters.get(i).getPayees().stream().map(d -> d.toLowerCase()).anyMatch(transaction.getHeader().toLowerCase()::contains)) {
                     added.add(transaction);
                     YearMonth ym = YearMonth.of(transaction.getDate().getYear(), transaction.getDate().getMonthValue());
-                    amounts.merge(ym, Math.abs(transaction.getAmount() / 100), Integer::sum);
+                    // TODO: Why ROUND here? Try removing it!
+                    amounts.merge(ym, transaction.getAmount().abs().setScale(0, BigDecimal.ROUND_DOWN), BigDecimal::add);
                 }
             }
 
             // Set payee headers
             // Calculate payee invoices
-            for (Map.Entry<YearMonth, Integer> entry : amounts.entrySet()) {
+            for (Map.Entry<YearMonth, BigDecimal> entry : amounts.entrySet()) {
                 String alias = payeeFilters.get(i).getAlias();
                 setCellValues(sheet.getCellByPosition(i + COLUMN_OFFSET, 0), alias, true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, alias, StyleTypeDefinitions.HorizontalAlignmentType.DEFAULT);
-                sheet.getCellByPosition(i + COLUMN_OFFSET, entry.getKey().getMonth().getValue())
-                        .setDoubleValue((double) Math.abs(entry.getValue().intValue()));
+                sheet.getCellByPosition(i + COLUMN_OFFSET, entry.getKey().getMonth().getValue()).setDoubleValue((double) Math.abs(entry.getValue().doubleValue()));
             }
 
             // Calculate average per payee
@@ -186,7 +190,8 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     private void calcMonthlyTotals(List<PayeeFilter> payeeFilters, Table sheet) {
         for (int i = 2; i < ROW_COUNT; i++) {
             setCellValues(sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1), "", true);
-            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1).setFormula(String.format("=IF(COUNTBLANK(B%s:%s)=%d;\"\";ROUND(SUM(B%s:%s);%d))", i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, payeeFilters.size(), i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, ROUNDING));
+            sheet.getCellByPosition(payeeFilters.size() + COLUMN_OFFSET, i - 1)
+                    .setFormula(String.format("=IF(COUNTBLANK(B%s:%s)=%d;\"\";ROUND(SUM(B%s:%s);%d))", i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, payeeFilters.size(), i, getColumnName(payeeFilters.size() + COLUMN_OFFSET) + i, ROUNDING));
         }
     }
 
@@ -205,7 +210,7 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
         setCellValues(sheet.getCellByPosition(0, 12), Month.DECEMBER.getDisplayName(TextStyle.SHORT, Locale.ENGLISH), true, PASTEL_PEACH, HEADER_DEFAULT_SIZE, StyleTypeDefinitions.HorizontalAlignmentType.RIGHT);
     }
 
-    //TODO: Should be a static class in a Spreadsheet utility class!
+    // TODO: Should be a static class in a Spreadsheet utility class!
     private String getColumnName(int index) {
         String[] result = new String[index];
         String colName;
@@ -221,4 +226,3 @@ public class OdfToolkitSpreadsheetProcessor implements SpreadsheetProcessor {
     }
 
 }
-

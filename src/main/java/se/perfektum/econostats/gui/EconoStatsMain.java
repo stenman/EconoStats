@@ -149,7 +149,7 @@ public class EconoStatsMain extends Application {
                     econoStatsController
                             .getAccountTransactions()
                             .stream()
-                            .map(AccountTransaction::getName)
+                            .map(AccountTransaction::getHeader)
                             .distinct()
                             .sorted()
                             .collect(Collectors.toList()));
