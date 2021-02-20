@@ -37,8 +37,7 @@ public class NordeaCsvReader implements CsvReader {
     private NordeaProperties nordeaProperties;
 
     /**
-     * Reads a csv file from disk and parses it to AccountTransactions. If no path
-     * is provided, the configuration file path will be used.
+     * Reads a csv file from disk and parses it to AccountTransactions. If no path is provided, the configuration file path will be used.
      *
      * @param csvFile Path to csv file to parse
      * @return List of lines without headers

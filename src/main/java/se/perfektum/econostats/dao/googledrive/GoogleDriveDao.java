@@ -47,8 +47,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
     public static final String APPLICATION_VND_GOOGLE_APPS_FOLDER = "application/vnd.google-apps.folder";
 
     /**
-     * Global instance of the scopes required by this application.
-     * If modifying these scopes, delete your previously saved tokens/ folder.
+     * Global instance of the scopes required by this application. If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
@@ -60,9 +59,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
         fileMetadata.setMimeType(APPLICATION_VND_GOOGLE_APPS_FOLDER);
 
         LOGGER.debug(String.format("Creating folder on Google Drive: '%s'", name));
-        File file = getService().files().create(fileMetadata)
-                .setFields("id")
-                .execute();
+        File file = getService().files().create(fileMetadata).setFields("id").execute();
         return file.getId();
     }
 
@@ -76,9 +73,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
         FileContent mediaContent = new FileContent(fileContentMimeType, filePath);
 
         LOGGER.debug(String.format("Creating file on Google Drive: filePath:[%s], parents:[%s], fileMimeType:[%s], fileContentMimeType:[%s]", filePath, parents, fileMimeType, fileContentMimeType));
-        File file = getService().files().create(fileMetadata, mediaContent)
-                .setFields("id")
-                .execute();
+        File file = getService().files().create(fileMetadata, mediaContent).setFields("id").execute();
         return file.getId();
     }
 
@@ -93,11 +88,10 @@ public class GoogleDriveDao implements AccountTransactionDao {
 
         FileContent mediaContent = new FileContent(fileContentMimeType, filePath);
 
-        LOGGER.debug(String.format("Updating file on Google Drive with the following parameters - fileId:[%s], name:[%s], parents:[%s], mimeType:[%s], fileContentMimeType:[%s], filePath:[%s]"
-                , fileId, fileMetadata.getName(), fileMetadata.getParents(), fileMetadata.getMimeType(), fileContentMimeType, filePath));
+        LOGGER.debug(String.format("Updating file on Google Drive with the following parameters - fileId:[%s], name:[%s], parents:[%s], mimeType:[%s], fileContentMimeType:[%s], filePath:[%s]", fileId,
+                fileMetadata.getName(), fileMetadata.getParents(), fileMetadata.getMimeType(), fileContentMimeType, filePath));
         getService().files().update(fileId, fileMetadata, mediaContent).execute();
     }
-
 
     @Override
     public List<String> searchForFile(String name, String mimeType) throws IOException, GeneralSecurityException {
@@ -105,7 +99,8 @@ public class GoogleDriveDao implements AccountTransactionDao {
         LOGGER.debug(String.format("Searching for file on Google Drive - name:'%s', mimeType:'%s'", name, mimeType));
         List<String> items = new ArrayList<>();
         do {
-            FileList result = getService().files().list()
+            FileList result = getService().files()
+                    .list()
                     .setQ("mimeType = '" + mimeType + "' and trashed = false")
                     .setSpaces("drive")
                     .setFields("nextPageToken, files(id, name, parents)")
@@ -125,20 +120,19 @@ public class GoogleDriveDao implements AccountTransactionDao {
     public String getFile(String fileId) throws IOException, GeneralSecurityException {
         OutputStream outputStream = new ByteArrayOutputStream();
         LOGGER.debug(String.format("Downloading file from Google Drive - fileId:'%s'", fileId));
-        getService().files().get(fileId)
-                .executeMediaAndDownloadTo(outputStream);
+        getService().files().get(fileId).executeMediaAndDownloadTo(outputStream);
         return outputStream.toString();
     }
 
     @Override
     public void saveAccountTransactionsAsJsonString(List<AccountTransaction> accountTransactions) {
-        //TODO: These should be properties
+        // TODO: These should be properties
         saveJsonItemsToDrive(accountTransactions, "transactions", "accountTransactions");
     }
 
     @Override
     public void savePayeeFiltersAsJsonString(List<PayeeFilter> payeeFilters) {
-        //TODO: These should be properties
+        // TODO: These should be properties
         saveJsonItemsToDrive(payeeFilters, "payeeFilters", "payeeFilters");
     }
 
@@ -160,9 +154,9 @@ public class GoogleDriveDao implements AccountTransactionDao {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
-        LOGGER.trace(String.format("Building Google Authorization Code Flow with the following parameters - SCOPES:[%s], Tokens Directory Path:[%s], Access Type:[%s]", SCOPES, TOKENS_DIRECTORY_PATH, ACCESS_TYPE));
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+        LOGGER.trace(String.format("Building Google Authorization Code Flow with the following parameters - SCOPES:[%s], Tokens Directory Path:[%s], Access Type:[%s]", SCOPES, TOKENS_DIRECTORY_PATH,
+                ACCESS_TYPE));
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType(ACCESS_TYPE)
                 .build();
@@ -176,9 +170,7 @@ public class GoogleDriveDao implements AccountTransactionDao {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         LOGGER.trace(String.format("Building authorized Drive API client server for '%s'", APPLICATION_NAME));
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build();
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT)).setApplicationName(APPLICATION_NAME).build();
         return service;
     }
 

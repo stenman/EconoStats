@@ -28,15 +28,13 @@ public class EconoStatsOverviewController {
     private EconoStatsController econoStatsController;
 
     /**
-     * Default constructor.
-     * The constructor is called before the initialize() method.
+     * Default constructor. The constructor is called before the initialize() method.
      */
     public EconoStatsOverviewController() {
     }
 
     /**
-     * Initializes the controller class. This method is automatically called
-     * after the fxml file has been loaded.
+     * Initializes the controller class. This method is automatically called after the fxml file has been loaded.
      */
     @FXML
     private void initialize() {
@@ -54,7 +52,7 @@ public class EconoStatsOverviewController {
         this.csvPath.setText(this.econoStatsController.getCsvFilePath());
     }
 
-    //TODO: Fix csvFilePath property. It should be configurable! Also, use a config/property-util instead of springs crap...
+    // TODO: Fix csvFilePath property. It should be configurable! Also, use a config/property-util instead of springs crap...
     @FXML
     private void handleOpen() {
         FileChooser fileChooser = new FileChooser();
@@ -90,6 +88,7 @@ public class EconoStatsOverviewController {
     @FXML
     private void handleGenerateRecurringTransactions() {
         econoStatsController.generateRecurringTransactions();
-        eventLog.appendText(String.format("Done! %s Account Transactions processed over %s active Payee Filter(s)!\n", econoStatsController.getAccountTransactions().size(), econoStatsController.getPayeeFilters().stream().filter(f -> f.isActive()).collect(Collectors.toList()).size()));
+        eventLog.appendText(String.format("Done! %s Account Transactions processed over %s active Payee Filter(s)!\n", econoStatsController.getAccountTransactions().size(),
+                econoStatsController.getPayeeFilters().stream().filter(f -> f.isActive()).collect(Collectors.toList()).size()));
     }
 }

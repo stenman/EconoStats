@@ -114,9 +114,8 @@ public class EconoStatsMain extends Application {
     }
 
     /**
-     * Opens a dialog to edit details for the specified PayeeFilter. If the user
-     * clicks Save, the changes are saved into the provided payeeFilter object and true
-     * is returned.
+     * Opens a dialog to edit details for the specified PayeeFilter. If the user clicks Save, the changes are saved into the provided payeeFilter
+     * object and true is returned.
      *
      * @param payeeFilter the PayeeFilter object to be edited
      * @return true if the user clicked Save, false otherwise.
@@ -145,14 +144,8 @@ public class EconoStatsMain extends Application {
             controller.setIncludedPayees(econoStatsController.getPayeeFilters());
 
             LOGGER.debug("Generating distinct set of Account Transaction Names");
-            ObservableList<String> transactionNames = FXCollections.observableArrayList(
-                    econoStatsController
-                            .getAccountTransactions()
-                            .stream()
-                            .map(AccountTransaction::getHeader)
-                            .distinct()
-                            .sorted()
-                            .collect(Collectors.toList()));
+            ObservableList<String> transactionNames = FXCollections
+                    .observableArrayList(econoStatsController.getAccountTransactions().stream().map(AccountTransaction::getHeader).distinct().sorted().collect(Collectors.toList()));
             controller.setTransactionNames(transactionNames);
 
             LOGGER.debug("PayeeFilterEditDialog initiated, showing dialog");

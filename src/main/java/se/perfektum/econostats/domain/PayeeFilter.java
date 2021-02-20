@@ -51,20 +51,17 @@ public class PayeeFilter {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPayees(),
-                getExcludedPayees(),
-                getAlias(),
-                isActive());
+        return Objects.hash(getPayees(), getExcludedPayees(), getAlias(), isActive());
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PayeeFilter)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof PayeeFilter))
+            return false;
         PayeeFilter pf = (PayeeFilter) o;
-        return Objects.equals(getPayees(), pf.getPayees())
-                && Objects.equals(getExcludedPayees(), pf.getExcludedPayees())
-                && Objects.equals(getAlias(), pf.getAlias())
+        return Objects.equals(getPayees(), pf.getPayees()) && Objects.equals(getExcludedPayees(), pf.getExcludedPayees()) && Objects.equals(getAlias(), pf.getAlias())
                 && Objects.equals(isActive(), pf.isActive());
     }
 }

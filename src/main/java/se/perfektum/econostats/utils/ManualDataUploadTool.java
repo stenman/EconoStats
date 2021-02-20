@@ -17,8 +17,7 @@ import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.domain.PayeeFilter;
 
 /**
- * Simple tool for uploading/resetting data on Google Drive. Mainly for testing
- * purposes.
+ * Simple tool for uploading/resetting data on Google Drive. Mainly for testing purposes.
  * <p>
  * NOTE: recurringTransactions file will NOT be restored!
  */

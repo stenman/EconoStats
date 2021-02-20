@@ -13,7 +13,7 @@ public class MessageHandler {
         alert.showAndWait();
     }
 
-    public static void showWarning(String title, String headerText, String contentText){
+    public static void showWarning(String title, String headerText, String contentText) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
