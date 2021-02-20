@@ -1,18 +1,7 @@
 package se.perfektum.econostats;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import se.perfektum.econostats.bank.CsvReader;
-import se.perfektum.econostats.configuration.AppProperties;
-import se.perfektum.econostats.dao.AccountTransactionDao;
-import se.perfektum.econostats.dao.googledrive.MimeTypes;
-import se.perfektum.econostats.domain.AccountTransaction;
-import se.perfektum.econostats.domain.PayeeFilter;
-import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
-import se.perfektum.econostats.utils.JsonUtils;
+import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION_VND_GOOGLE_APPS_FOLDER;
+import static se.perfektum.econostats.utils.FileUtils.saveFileLocally;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +11,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static se.perfektum.econostats.dao.googledrive.GoogleDriveDao.APPLICATION_VND_GOOGLE_APPS_FOLDER;
-import static se.perfektum.econostats.utils.FileUtils.saveFileLocally;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import se.perfektum.econostats.bank.CsvReader;
+import se.perfektum.econostats.configuration.AppProperties;
+import se.perfektum.econostats.dao.AccountTransactionDao;
+import se.perfektum.econostats.dao.googledrive.MimeTypes;
+import se.perfektum.econostats.domain.AccountTransaction;
+import se.perfektum.econostats.domain.PayeeFilter;
+import se.perfektum.econostats.spreadsheet.SpreadsheetManager;
+import se.perfektum.econostats.utils.JsonUtils;
 
 /**
  * The main class of this application
@@ -58,7 +59,8 @@ public class EconoStatsController {
         initProperties(appProperties);
 
         List<se.perfektum.econostats.domain.PayeeFilter> pfs = fetchPayeeFilters();
-        payeeFilters.addAll(pfs == null ? FXCollections.observableArrayList(Collections.emptyList()) : FXCollections.observableArrayList(se.perfektum.econostats.gui.model.PayeeFilter.convertFromDomain(pfs)));
+        payeeFilters.addAll(
+                pfs == null ? FXCollections.observableArrayList(Collections.emptyList()) : FXCollections.observableArrayList(se.perfektum.econostats.gui.model.PayeeFilter.convertFromDomain(pfs)));
     }
 
     public String getCsvPath() {
@@ -91,6 +93,7 @@ public class EconoStatsController {
      * Access method for setting AccountTransactions.
      */
     public void setAccountTransactions(List<AccountTransaction> accountTransactions) {
+        this.accountTransactions.clear();
         this.accountTransactions.addAll(accountTransactions);
     }
 
@@ -198,9 +201,9 @@ public class EconoStatsController {
     /**
      * Searches for a file in storage.
      */
-    //TODO: make optional
-    //TODO: This is Google Drive, not general. Make general.
-    //TODO: Logs and exceptions should probably be moved to storage area
+    // TODO: make optional
+    // TODO: This is Google Drive, not general. Make general.
+    // TODO: Logs and exceptions should probably be moved to storage area
     public String getFileId(String name, String mimeType) {
         try {
             List<String> items;
@@ -209,9 +212,6 @@ public class EconoStatsController {
             if (items.isEmpty()) {
                 LOGGER.debug(String.format("Could not find file '%s' in storage", name));
                 return null;
-//            } else if (items.) {
-//                LOGGER.debug(String.format("Could not find file '%s' in storage", name));
-//                return null;
             } else if (items.size() > 1) {
                 LOGGER.error("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");
                 throw new IOException("Inconsistency in file/folder structure. More than one item found! Please check folder/file structure!");

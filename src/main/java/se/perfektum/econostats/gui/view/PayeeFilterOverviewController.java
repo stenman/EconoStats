@@ -1,11 +1,16 @@
 package se.perfektum.econostats.gui.view;
 
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import se.perfektum.econostats.EconoStatsController;
 import se.perfektum.econostats.dao.googledrive.MimeTypes;
 import se.perfektum.econostats.gui.EconoStatsMain;
@@ -37,8 +42,7 @@ public class PayeeFilterOverviewController {
     private EconoStatsController econoStatsController;
 
     /**
-     * Default constructor.
-     * The constructor is called before the initialize() method.
+     * Default constructor. The constructor is called before the initialize() method.
      */
     public PayeeFilterOverviewController() {
     }
@@ -59,8 +63,7 @@ public class PayeeFilterOverviewController {
     }
 
     /**
-     * Initializes the controller class. This method is automatically called
-     * after the fxml file has been loaded.
+     * Initializes the controller class. This method is automatically called after the fxml file has been loaded.
      */
     @FXML
     private void initialize() {
@@ -74,13 +77,11 @@ public class PayeeFilterOverviewController {
         showPayeeFilterDetails(null);
 
         // Listen for selection changes and show the payeeFilter details when changed.
-        payeeFilterTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> showPayeeFilterDetails(newValue));
+        payeeFilterTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showPayeeFilterDetails(newValue));
     }
 
     /**
-     * Called when the user clicks the new button. Opens a dialog to edit
-     * details for a new PayeeFilter.
+     * Called when the user clicks the new button. Opens a dialog to edit details for a new PayeeFilter.
      */
     @FXML
     private void handleNewPayeeFilter() {
@@ -97,8 +98,7 @@ public class PayeeFilterOverviewController {
     }
 
     /**
-     * Called when the user clicks the edit button. Opens a dialog to edit
-     * details for the selected PayeeFilter.
+     * Called when the user clicks the edit button. Opens a dialog to edit details for the selected PayeeFilter.
      */
     @FXML
     private void handleEditPayeeFilter() {
@@ -140,7 +140,8 @@ public class PayeeFilterOverviewController {
         ButtonType save = MessageHandler.showYesNoDialog("Save Payee Filters to Google Drive?");
         if (save == ButtonType.YES) {
             LOGGER.debug("Checking for existing Payee Filters on Google Drive...");
-            //TODO: PAYEE_FILTERS_FILE_NAME is a property, get it from appProperties (somehow)!
+            // TODO: PAYEE_FILTERS_FILE_NAME is a property, get it from appProperties
+            // (somehow)!
             if (econoStatsController.getFileId(PAYEE_FILTERS_FILE_NAME, MimeTypes.APPLICATION_JSON.toString()) != null) {
                 ButtonType overwrite = MessageHandler.showYesNoDialog("Payee Filter already exists on Google Drive. Overwrite?");
                 if (overwrite == ButtonType.YES) {
@@ -159,7 +160,7 @@ public class PayeeFilterOverviewController {
             payees.setFocusTraversable(false);
             excludedPayees.setMouseTransparent(true);
             excludedPayees.setFocusTraversable(false);
-            // Fill payeeFilter list  with info from the payeeFilter object.
+            // Fill payeeFilter list with info from the payeeFilter object.
             aliasLabel.setText(payeeFilter.getAlias().replace("\n", " "));
             payees.setItems(payeeFilter.payeesProperty());
             excludedPayees.setItems(payeeFilter.excludedPayeesProperty());

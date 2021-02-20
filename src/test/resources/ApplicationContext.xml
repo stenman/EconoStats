@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!--Configuration-->
-    <context:component-scan base-package="se.perfektum.econostats"/>
-    <context:property-placeholder location="classpath:/application.properties"/>
+    <!--Configuration -->
+    <context:component-scan base-package="se.perfektum.econostats" />
+    <context:property-placeholder location="classpath:/application.properties" />
 
-    <!--Main-->
+    <!--Main -->
     <bean id="econoStatsController" class="se.perfektum.econostats.EconoStatsController">
-        <constructor-arg index="0" name="spreadsheetManager" ref="odfToolkitSpreadsheetManager"/>
-        <constructor-arg index="1" name="csvReader" ref="nordeaCsvReader"/>
-        <constructor-arg index="2" name="accountTransactionDao" ref="googleDriveDao"/>
-        <constructor-arg index="3" name="appProperties" ref="appProperties"/>
+        <constructor-arg index="0" name="spreadsheetManager" ref="odfToolkitSpreadsheetManager" />
+        <constructor-arg index="1" name="csvReader" ref="nordeaCsvReader" />
+        <constructor-arg index="2" name="accountTransactionDao" ref="googleDriveDao" />
+        <constructor-arg index="3" name="appProperties" ref="appProperties" />
     </bean>
 
-    <!--Dao-->
-    <bean id="googleDriveDao" class="se.perfektum.econostats.dao.googledrive.GoogleDriveDao"/>
+    <!--Dao -->
+    <bean id="googleDriveDao" class="se.perfektum.econostats.dao.googledrive.GoogleDriveDao" />
 
-    <!--Spreadsheet-->
+    <!--Spreadsheet -->
     <bean id="odfToolkitSpreadsheetProcessor"
-          class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor"/>
-    <bean id="odfToolkitSpreadsheetManager" class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetManager">
-        <constructor-arg index="0" name="spreadsheetProcessor" ref="odfToolkitSpreadsheetProcessor"/>
+        class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetProcessor" />
+    <bean id="odfToolkitSpreadsheetManager"
+        class="se.perfektum.econostats.spreadsheet.OdfToolkitSpreadsheetManager">
+        <constructor-arg index="0" name="spreadsheetProcessor" ref="odfToolkitSpreadsheetProcessor" />
     </bean>
 </beans>

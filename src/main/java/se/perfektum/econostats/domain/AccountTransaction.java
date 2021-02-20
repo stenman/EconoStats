@@ -3,7 +3,6 @@ package se.perfektum.econostats.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class AccountTransaction {
     private LocalDate date;
@@ -211,8 +210,6 @@ public class AccountTransaction {
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
         result = prime * result + ((sender == null) ? 0 : sender.hashCode());
-        result = prime * result + ((stampChanged == null) ? 0 : stampChanged.hashCode());
-        result = prime * result + ((stampInserted == null) ? 0 : stampInserted.hashCode());
         return result;
     }
 
@@ -270,23 +267,13 @@ public class AccountTransaction {
                 return false;
         } else if (!sender.equals(other.sender))
             return false;
-        if (stampChanged == null) {
-            if (other.stampChanged != null)
-                return false;
-        } else if (!stampChanged.equals(other.stampChanged))
-            return false;
-        if (stampInserted == null) {
-            if (other.stampInserted != null)
-                return false;
-        } else if (!stampInserted.equals(other.stampInserted))
-            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "AccountTransaction [date=" + date + ", amount=" + amount + ", sender=" + sender + ", receiver=" + receiver + ", name=" + name + ", header=" + header + ", balance=" + balance + ", currency=" + currency + ", stampInserted=" + stampInserted + ", stampChanged=" + stampChanged
-                + ", category=" + category + "]";
+        return "AccountTransaction [date=" + date + ", amount=" + amount + ", sender=" + sender + ", receiver=" + receiver + ", name=" + name + ", header=" + header + ", balance=" + balance
+                + ", currency=" + currency + ", stampInserted=" + stampInserted + ", stampChanged=" + stampChanged + ", category=" + category + "]";
     }
 
 }

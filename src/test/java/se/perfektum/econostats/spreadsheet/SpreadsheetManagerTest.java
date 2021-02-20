@@ -1,22 +1,25 @@
 package se.perfektum.econostats.spreadsheet;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.utils.JsonUtils;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.*;
 
 public class SpreadsheetManagerTest {
 
@@ -61,7 +64,9 @@ public class SpreadsheetManagerTest {
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
             public boolean matches(final Object argument) {
-                return ((LoggingEvent) argument).getFormattedMessage().contains("Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)! This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day. BE ADVISED that this might yield erroneous results! Please check your imported file!");
+                return ((LoggingEvent) argument).getFormattedMessage()
+                        .contains(
+                                "Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)! This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day. BE ADVISED that this might yield erroneous results! Please check your imported file!");
             }
         }));
 

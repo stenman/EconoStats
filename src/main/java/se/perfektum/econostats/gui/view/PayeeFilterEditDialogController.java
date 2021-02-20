@@ -1,21 +1,27 @@
 package se.perfektum.econostats.gui.view;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import se.perfektum.econostats.gui.model.PayeeFilter;
-import se.perfektum.econostats.gui.view.common.MessageHandler;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import se.perfektum.econostats.gui.model.PayeeFilter;
+import se.perfektum.econostats.gui.view.common.MessageHandler;
 
 public class PayeeFilterEditDialogController {
 
@@ -45,8 +51,7 @@ public class PayeeFilterEditDialogController {
     private boolean okClicked = false;
 
     /**
-     * Initializes the controller class. This method is automatically called
-     * after the fxml file has been loaded.
+     * Initializes the controller class. This method is automatically called after the fxml file has been loaded.
      */
     @FXML
     private void initialize() {
@@ -115,7 +120,8 @@ public class PayeeFilterEditDialogController {
         active.setSelected(payeeFilter.activeProperty().getValue());
         payees.setItems(payeeFilter.payeesProperty());
         excludedPayees.setItems(payeeFilter.excludedPayeesProperty());
-        LOGGER.debug(String.format("PayeeFilter new/edit dialog initiated. Setting filter parameters...\nalias: %s\npayees: %s\nexcluded payees: %s", alias.getText(), active, payees.getItems(), excludedPayees.getItems()));
+        LOGGER.debug(String.format("PayeeFilter new/edit dialog initiated. Setting filter parameters...\nalias: %s\npayees: %s\nexcluded payees: %s", alias.getText(), active, payees.getItems(),
+                excludedPayees.getItems()));
     }
 
     /**
@@ -159,13 +165,8 @@ public class PayeeFilterEditDialogController {
     private void handleAddPayee() {
         if (Collections.disjoint(excludedPayees.getItems(), transactionNames.getSelectionModel().getSelectedItems())) {
             LOGGER.debug(String.format("Adding payee(s)"));
-            payees.setItems(FXCollections.observableArrayList(
-                    Stream.concat(
-                            payees.getItems().stream(),
-                            transactionNames.getSelectionModel().getSelectedItems().stream()
-                    )
-                            .distinct()
-                            .collect(Collectors.toList())));
+            payees.setItems(FXCollections
+                    .observableArrayList(Stream.concat(payees.getItems().stream(), transactionNames.getSelectionModel().getSelectedItems().stream()).distinct().collect(Collectors.toList())));
         } else {
             MessageHandler.showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
@@ -187,13 +188,8 @@ public class PayeeFilterEditDialogController {
     private void handleAddExcludedPayee() {
         if (Collections.disjoint(payees.getItems(), transactionNames.getSelectionModel().getSelectedItems())) {
             LOGGER.debug(String.format("Adding excluded payee(s)"));
-            excludedPayees.setItems(FXCollections.observableArrayList(
-                    Stream.concat(
-                            excludedPayees.getItems().stream(),
-                            transactionNames.getSelectionModel().getSelectedItems().stream()
-                    )
-                            .distinct()
-                            .collect(Collectors.toList())));
+            excludedPayees.setItems(FXCollections
+                    .observableArrayList(Stream.concat(excludedPayees.getItems().stream(), transactionNames.getSelectionModel().getSelectedItems().stream()).distinct().collect(Collectors.toList())));
         } else {
             MessageHandler.showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
         }
@@ -230,8 +226,7 @@ public class PayeeFilterEditDialogController {
         if (customEntry.getText().isEmpty()) {
             MessageHandler.showError("Empty Entry Error", "Please enter a payee entry in the text field before adding!");
         }
-        if (!payees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))
-                && !excludedPayees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))) {
+        if (!payees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText())) && !excludedPayees.getItems().stream().anyMatch(s -> s.equalsIgnoreCase(customEntry.getText()))) {
             entry.getItems().add(customEntry.getText());
         } else {
             MessageHandler.showError("Duplicate Entry Error", "The item you are trying to add\nalready exists in the list of payees or excluded payees!");
