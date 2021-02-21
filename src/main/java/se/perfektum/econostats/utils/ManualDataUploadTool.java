@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import se.perfektum.econostats.EconoStatsController;
@@ -31,9 +30,11 @@ public class ManualDataUploadTool {
     static private AccountTransactionDao dao = new GoogleDriveDao();
     static private CsvReader csvReader = new NordeaCsvReader();
 
+    @SuppressWarnings("unused")
     public static void main(String args[]) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
-        econoStatsController = (EconoStatsController) context.getBean("econoStatsController");
+        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml")) {
+            econoStatsController = context.getBean(EconoStatsController.class);
+        }
 
         // SAVE PAYEE FILTERS
         List<PayeeFilter> payeeFilters = savePayeeFiltersToDrive();
@@ -43,8 +44,7 @@ public class ManualDataUploadTool {
 
         // GENERATE RECURRING TRANSACTIONS
         // ***** Pass accountTransaction=null when doing a full reset *****
-        // ***** Passing a list of accountTransactions here will merge it will an
-        // existing list on Drive! *****
+        // ***** Passing a list of accountTransactions here will merge it with an existing list on Drive! *****
         generateRecurringTransactions(payeeFilters, null);
     }
 

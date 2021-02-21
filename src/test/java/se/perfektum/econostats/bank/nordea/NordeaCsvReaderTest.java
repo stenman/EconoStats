@@ -1,7 +1,7 @@
 package se.perfektum.econostats.bank.nordea;
 
 import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -26,10 +27,16 @@ public class NordeaCsvReaderTest {
 
     @Mock
     NordeaProperties nordeaProperties;
+    private AutoCloseable closeable;
 
     @Before
-    public void before() {
-        MockitoAnnotations.initMocks(this);
+    public void openMocks() {
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        closeable.close();
     }
 
     @Test

@@ -1,5 +1,13 @@
 package se.perfektum.econostats.gui;
 
+import java.io.IOException;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,20 +17,12 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.perfektum.econostats.EconoStatsController;
 import se.perfektum.econostats.domain.AccountTransaction;
 import se.perfektum.econostats.gui.model.PayeeFilter;
 import se.perfektum.econostats.gui.view.EconoStatsOverviewController;
 import se.perfektum.econostats.gui.view.PayeeFilterEditDialogController;
 import se.perfektum.econostats.gui.view.PayeeFilterOverviewController;
-
-import java.io.IOException;
-import java.util.stream.Collectors;
 
 @EnableConfigurationProperties
 public class EconoStatsMain extends Application {
@@ -34,8 +34,9 @@ public class EconoStatsMain extends Application {
     private TabPane rootLayout;
 
     public static void main(String args[]) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
-        econoStatsController = (EconoStatsController) context.getBean("econoStatsController");
+        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml")) {
+            econoStatsController = context.getBean(EconoStatsController.class);
+        }
         launch(args);
     }
 

@@ -93,8 +93,8 @@ public class EconoStatsController {
      * Access method for setting AccountTransactions.
      */
     public void setAccountTransactions(List<AccountTransaction> accountTransactions) {
-        this.accountTransactions.clear();
-        this.accountTransactions.addAll(accountTransactions);
+        EconoStatsController.accountTransactions.clear();
+        EconoStatsController.accountTransactions.addAll(accountTransactions);
     }
 
     public List<AccountTransaction> fetchAccountTransactions(String filePath) {

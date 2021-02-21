@@ -1,7 +1,7 @@
 package se.perfektum.econostats.spreadsheet;
 
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.argThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import se.perfektum.econostats.domain.AccountTransaction;
@@ -23,10 +24,11 @@ import se.perfektum.econostats.utils.JsonUtils;
 
 public class SpreadsheetManagerTest {
 
-    private Appender mockAppender;
+    private Appender<ILoggingEvent> mockAppender;
     private OdfToolkitSpreadsheetProcessor odfToolkitSpreadsheetProcessor = mock(OdfToolkitSpreadsheetProcessor.class);
     private OdfToolkitSpreadsheetManager spreadsheetManager = new OdfToolkitSpreadsheetManager(odfToolkitSpreadsheetProcessor);
 
+    @SuppressWarnings("unchecked")
     @Before
     public void before() {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -49,7 +51,6 @@ public class SpreadsheetManagerTest {
         assertThat(expected, IsIterableContainingInAnyOrder.containsInAnyOrder(actual.toArray()));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void mergeAccountTransactions_similar_transactions() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -61,9 +62,9 @@ public class SpreadsheetManagerTest {
 
         List<AccountTransaction> actual = spreadsheetManager.mergeAccountTransactions(importedAccountTransactions, transactions);
 
-        verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
+        verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
             @Override
-            public boolean matches(final Object argument) {
+            public boolean matches(final ILoggingEvent argument) {
                 return ((LoggingEvent) argument).getFormattedMessage()
                         .contains(
                                 "Imported transactions contains one or more duplicate transactions. This will result in loss of as least one transaction (by distinction)! This may occur if there are eg. two deposits and one withdrawal with the exact same amount on the same day. BE ADVISED that this might yield erroneous results! Please check your imported file!");
