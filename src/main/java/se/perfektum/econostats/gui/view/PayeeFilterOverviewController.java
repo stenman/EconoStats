@@ -156,9 +156,7 @@ public class PayeeFilterOverviewController {
     private void showPayeeFilterDetails(PayeeFilter payeeFilter) {
         if (payeeFilter != null) {
             LOGGER.debug("Populating list of payeeFilters");
-            payees.setMouseTransparent(true);
             payees.setFocusTraversable(false);
-            excludedPayees.setMouseTransparent(true);
             excludedPayees.setFocusTraversable(false);
             // Fill payeeFilter list with info from the payeeFilter object.
             aliasLabel.setText(payeeFilter.getAlias().replace("\n", " "));

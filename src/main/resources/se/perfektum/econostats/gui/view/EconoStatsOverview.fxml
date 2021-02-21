@@ -6,21 +6,21 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.EconoStatsOverviewController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.perfektum.econostats.gui.view.EconoStatsOverviewController">
     <children>
-      <AnchorPane layoutY="171.0" prefHeight="200.0" prefWidth="600.0">
+      <AnchorPane AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
          <children>
-            <TextArea fx:id="eventLog" editable="false" layoutY="64.0" prefHeight="136.0" prefWidth="391.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
-            <Button layoutX="394.0" layoutY="198.0" mnemonicParsing="false" onAction="#handleGenerateRecurringTransactions" text="Generate Recurring Transactions!" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+            <TextField fx:id="csvPath" layoutY="21.0" prefHeight="25.0" prefWidth="363.0" />
+            <Button layoutX="371.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleOpen" text="Open..." AnchorPane.leftAnchor="371.0" AnchorPane.topAnchor="21.0" />
+            <Button layoutY="53.0" mnemonicParsing="false" onAction="#handleLoadFromDisk" text="Load File" AnchorPane.leftAnchor="0.0" />
+            <Label text="CSV file from bank containing accounting transactions" />
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="200.0" prefWidth="600.0">
+      <AnchorPane layoutY="94.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="100.0">
          <children>
-            <TextField fx:id="csvPath" layoutX="14.0" layoutY="27.0" prefHeight="25.0" prefWidth="363.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="27.0" />
-            <Button layoutX="385.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleOpen" text="Open..." AnchorPane.leftAnchor="385.0" AnchorPane.topAnchor="27.0" />
-            <Button layoutX="14.0" layoutY="59.0" mnemonicParsing="false" onAction="#handleLoadFromDisk" text="Load File" AnchorPane.leftAnchor="14.0" />
-            <Label layoutX="14.0" layoutY="6.0" text="CSV file from bank containing accounting transactions" />
+            <TextArea fx:id="eventLog" editable="false" layoutY="1.0" prefHeight="495.0" prefWidth="420.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
+      <Button layoutX="608.0" layoutY="561.0" mnemonicParsing="false" onAction="#handleGenerateRecurringTransactions" text="Generate Recurring Transactions!" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
     </children>
 </AnchorPane>
